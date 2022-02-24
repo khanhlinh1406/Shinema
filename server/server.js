@@ -2,32 +2,16 @@ const express = require('express')
 var app = express()
 var bodyParser = require('body-parser')
 
-const AccountModel = require('./models/account')
-
 app.use(bodyParser.urlencoded({ extended: false }))
 app.use(bodyParser.json())
 
-app.post('/register', (req, res, next) => {
-    AccountModel.findOne({
-        username: req.body.username
-    })
-        .then(data => {
-            if (data) {
-                res.json('user ton tai')
-            }
-            else {
-                return AccountModel.create({
-                    username: req.body.username,
-                    password: req.body.password
-                })
-            }
-        })
-        .then(data => {
-            res.json("Successful")
-        })
-        .catch(err => {
-            res.status(500).json("Error")
-        })
+const mongoose = require('mongoose');
+mongoose.connect('mongodb+srv://shinema_db:ThucLinh123@cluster0.leaz1.mongodb.net/Shinema?retryWrites=true&w=majority')
+mongoose.connection.on("connected", () => {
+    console.log("MongoDB Connected!")
+})
+mongoose.connection.on("error", () => {
+    console.log("Connect MongoDB Failed!")
 })
 
 var accountRouter = require('./routers/AccountRouter')

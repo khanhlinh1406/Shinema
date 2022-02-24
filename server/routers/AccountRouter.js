@@ -15,7 +15,7 @@ router.get('/', (req, res, next) => {
 
 router.post('/', (req, res, next) => {
     AccountModel.findOne({
-        username: req.body.username
+        email: req.body.email
     })
         .then(data => {
             if (data) {
@@ -23,8 +23,17 @@ router.post('/', (req, res, next) => {
             }
             else {
                 return AccountModel.create({
-                    username: req.body.username,
-                    password: req.body.password
+                    name: req.body.name,
+                    contact: req.body.contact,
+                    identifyNumber: req.body.identifyNumber,
+                    address: req.body.address,
+                    birthday: req.body.birthday,
+                    email: req.body.email,
+                    password: req.body.password,
+                    rank: req.body.rank,
+                    score: req.body.score,
+                    listTicketId: req.body.listTicketId,
+                    listReview: req.body.listReview,
                 })
             }
         })
