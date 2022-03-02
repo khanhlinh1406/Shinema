@@ -6,59 +6,51 @@ exports.getAll = function (req, res) {
             res.json(data)
         })
         .catch(err => {
-            res.status(500).json('Server error')
+            res.status(500).json({ Err: err })
         })
 }
 
 exports.getByEmail = function (res, req) {
-
+    AccountModel.findOne({
+        email: req.body.email
+    })
+        .then(data => {
+            res.json(data)
+        })
+        .catch(err => {
+            res.status(500).json({ Err: err })
+        })
 }
 
-exports.post = function (req, res) {
+exports.create = function (req, res) {
     AccountModel.findOne({
         email: req.body.email
     })
         .then(data => {
             if (data) {
-                res.json('user ton tai')
+                res.json('Email exist')
             }
             else {
-                return AccountModel.create({
-                    name: req.body.name,
-                    contact: req.body.contact,
-                    identifyNumber: req.body.identifyNumber,
-                    address: req.body.address,
-                    birthday: req.body.birthday,
-                    email: req.body.email,
-                    password: req.body.password,
-                    rank: req.body.rank,
-                    score: req.body.score,
-                    listTicketId: req.body.listTicketId,
-                    listReview: req.body.listReview,
-                })
+                const newAccount = req.body;
+                return AccountModel.create(newAccount)
             }
         })
         .then(data => {
             res.json("Successful")
         })
         .catch(err => {
-            res.status(500).json("Error")
+            res.status(500).json({ Err: err })
         })
 }
 
 exports.update = function (req, res) {
-    AccountModel.updateOne(
-        {
-            email: req.params.email
-        },
-        {
-            password: req.body.newPassword
-        })
+    const newAccount = req.body;
+    AccountModel.updateOne({ email: req.params.email }, { newAccount }, { new: 'true' })
         .then(data => {
             res.json("Update successful")
         })
         .catch(err => {
-            res.status(500).json("Update error")
+            res.status(500).json({ Err: err })
         })
 }
 

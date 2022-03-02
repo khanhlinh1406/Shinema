@@ -2,20 +2,39 @@ const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
 const AccountSchema = new Schema({
-    name: String,
+    name: {
+        type: String,
+        required: true
+    },
     contact: String,
     identifyNumber: String,
     address: String,
     birthday: String,
-    email: String,
-    password: String,
-    rank: String,
-    score: Number,
+    email: {
+        type: String,
+        required: true
+    },
+    password: {
+        type: String,
+        required: true
+    },
+    rank: {
+        type: String,
+        required: true,
+        default: 'Customer'
+    },
+    score: {
+        type: Number,
+        required: true,
+        default: 0
+    },
     listTicketId: Array,
     listReview: Array,
-}, {
-    collection: 'account'
-});
+},
+    { timestamps: true },
+    {
+        collection: 'account'
+    });
 
 const AccountModel = mongoose.model('account', AccountSchema)
 
