@@ -10,7 +10,7 @@ exports.getAll = function (req, res) {
         })
 }
 
-exports.getByEmail = function (res, req) {
+exports.getByEmail = function (req, res) {
     AccountModel.findOne({
         email: req.body.email
     })
