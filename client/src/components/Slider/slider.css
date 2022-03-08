@@ -1,8 +1,8 @@
-.slide_container{
+.slide__container{
     width: 100%;
     height: 100%;
 }
-.slide_item{       
+.slide__item{       
     width: 100%;
     height: auto;
     background-position: center;

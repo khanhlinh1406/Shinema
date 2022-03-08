@@ -1,10 +1,19 @@
 import './App.css';
-import { Home } from './containers'
+import { Routes, Route, Link } from 'react-router-dom';
+
+import { Home, Movie, Actor } from './containers'
+import { MainNavBar } from './components';
 
 function App() {
   return (
     <div className="App">
-      <Home />
+      <MainNavBar />
+
+      <Routes>
+        <Route path="/" element={<Home />} />
+        <Route path="/movies" element={<Movie />} />
+        <Route path="/actors" element={<Actor />} />
+      </Routes>
     </div>
   );
 }

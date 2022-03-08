@@ -31,7 +31,7 @@ const Slider = () => {
     }, []);
 
     return (
-        <div className="slide_container">
+        <div className="slide__container">
             <Swiper
                 modules={[Autoplay]}
                 grabCursor={true}
@@ -43,9 +43,7 @@ const Slider = () => {
                 {
                     movieItems.map((item, i) => (
                         <SwiperSlide key={i}>
-                            {({ isActive }) => (
-                                <img className="slide_item" src={apiConfig.originalImage(item.backdrop_path)} />
-                            )}
+                            <SlideItem item={item} />
                         </SwiperSlide>
                     ))
                 }
@@ -53,6 +51,32 @@ const Slider = () => {
 
         </div>
     );
+}
+
+const SlideItem = props => {
+    const item = props.item
+    const background = apiConfig.originalImage(item.backdrop_path ? item.backdrop_path : item.poster_path)
+
+    return (
+        <div className="slide__item"
+            style={{ backgroundImage: `url(${background})` }}
+        >
+            <div>
+                <div className="slide__item__content__info">
+                    <h2 className="title">{item.title}</h2>
+                    <div className="overview">{item.overview}</div>
+                    <div>
+                        <button>Xem trailer</button>
+                        <button>Đặt vé</button>
+                    </div>
+                </div>
+                <div className="slider__item__content__poster">
+                    <img className="slide_item" src={apiConfig.originalImage(item.poster_path)} alt="" />
+                </div>
+            </div>
+
+        </div>
+    )
 }
 
 export default Slider;
