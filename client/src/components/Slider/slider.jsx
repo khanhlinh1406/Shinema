@@ -61,7 +61,8 @@ const SlideItem = props => {
         <div className="slide__item"
             style={{ backgroundImage: `url(${background})` }}
         >
-            <div>
+
+            <div className="slide__item__contain">
                 <div className="slide__item__content__info">
                     <h2 className="title">{item.title}</h2>
                     <div className="overview">{item.overview}</div>
@@ -70,11 +71,10 @@ const SlideItem = props => {
                         <button>Đặt vé</button>
                     </div>
                 </div>
-                <div className="slider__item__content__poster">
-                    <img className="slide_item" src={apiConfig.originalImage(item.poster_path)} alt="" />
-                </div>
-            </div>
 
+                <img className="slider__item__content__poster" src={apiConfig.originalImage(item.poster_path)} alt="" />
+
+            </div>
         </div>
     )
 }
