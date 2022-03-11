@@ -1,36 +1,40 @@
-.mainNavBar{
+.mainNavBar {
     display: flex;
     top: 0;
-    left: 0;  
+    left: 0;
     position: absolute;
     z-index: 2;
     padding: 2rem 6rem
-    
 }
 
-.mainNavBar-links{
+.mainNavBar img {
+    height: 3rem;
+    cursor: pointer;
+}
+
+.mainNavBar-links {
     flex: 1;
     display: flex;
     justify-content: flex-start;
-    align-items: center;  
-    flex-direction: row; 
+    align-items: center;
+    flex-direction: row;
+    font-weight: bold;
 }
 
 .mainNavBar-links p,
-.mainNavBar-menu_container p{
+.mainNavBar-menu_container p {
     color: #fff;
     font-family: var(--font-family);
     font-weight: 500;
     font-size: 18px;
     line-height: 25px;
     text-transform: capitalize;
-
     margin: 0 1.5rem;
     cursor: pointer;
 }
 
 .mainNavBar-sign button,
-.mainNavBar-menu_container button{
+.mainNavBar-menu_container button {
     padding: 0.5rem 1rem;
     color: #fff;
     background-color: #FF4820;
@@ -39,30 +43,26 @@
     font-weight: 500;
     line-height: 25px;
     border-radius: 5px;
-    border:0;
+    border: 0;
     outline: none;
     cursor: pointer;
-
 }
 
-.mainNavBar-menu{
+.mainNavBar-menu {
     margin-left: 1rem;
-
     display: none;
     position: relative;
-    
 }
 
-.mainNavBar-menu svg{
+.mainNavBar-menu svg {
     cursor: pointer;
 }
 
-.mainNavBar-menu_container{
+.mainNavBar-menu_container {
     display: flex;
     justify-content: flex-end;
     align-items: flex-end;
     flex-direction: column;
-
     text-align: end;
     background: var(--color-footer);
     padding: 2rem;
@@ -72,41 +72,36 @@
     margin-top: 1rem;
     min-width: 210px;
     border-radius: 5px;
-    box-shadow: 0 0 5 rbg(0,0,0,0.2);
+    box-shadow: 0 0 5 rbg(0, 0, 0, 0.2);
 }
 
 .mainNavBar-menu_container p {
     margin: 1rem 0;
 }
 
-.mainNavBar-menu_container-links-sign{
+.mainNavBar-menu_container-links-sign {
     display: none;
 }
 
-@media screen and (max-width: 1050px){
-     
-}
+@media screen and (max-width: 1050px) {}
 
-@media screen and (max-width: 730px){
-    .mainNavBar{
+@media screen and (max-width: 730px) {
+    .mainNavBar {
         padding: 2rem 2rem
     }
-
-    .mainNavBar-menu{
+    .mainNavBar-menu {
         display: none;
     }
 }
 
-@media screen and (max-width: 560px){
-    .mainNavBar{
+@media screen and (max-width: 560px) {
+    .mainNavBar {
         padding: 2rem
     }
-
-    .mainNavBar-links{
+    .mainNavBar-links {
         display: none;
     }
-
-    .mainNavBar-menu{
+    .mainNavBar-menu {
         display: flex;
     }
 }

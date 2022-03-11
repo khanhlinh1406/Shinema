@@ -18,7 +18,11 @@ const Slider = () => {
 
     useEffect(() => {
         const getMovies = async () => {
-            const params = { page: 1 }
+            const params = {
+                page: 1,
+                language: 'vi'
+            }
+
             try {
                 const response = await tmdbApi.getMoviesList(movieType.popular, { params });
                 setMovieItems(response.results.slice(0, 4));
@@ -64,11 +68,11 @@ const SlideItem = props => {
 
             <div className="slide__item__contain">
                 <div className="slide__item__content__info">
-                    <h2 className="title">{item.title}</h2>
-                    <div className="overview">{item.overview}</div>
-                    <div>
-                        <button>Xem trailer</button>
-                        <button>Đặt vé</button>
+                    <h2 className="slide__item__content__info__title">{item.title}</h2>
+                    <div className="slide__item__content__info__overview">{item.overview}</div>
+                    <div className="slide__item__content__info__button">
+                        <button className="slide__item__content__info__button__bookTicket">ĐẶT VÉ</button>
+                        <button className="slide__item__content__info__button__trailer">TRAILER</button>
                     </div>
                 </div>
 
