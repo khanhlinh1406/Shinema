@@ -1,17 +1,38 @@
 import React, { useState } from 'react';
 import './mainNavBar.css'
 import { Link } from 'react-router-dom'
-import Logo from '../../assets/Logo.png'
+
+import { AiOutlineUser } from 'react-icons/ai'
+import { BsBell } from 'react-icons/bs'
+
+import { CustomerMenu } from '../Menu/menu';
+
 const MainNavBar = () => {
 
     return (
+
         <div className='mainNavBar'>
-            <img src={Logo}></img>
-            <div className='mainNavBar-links'>
-                <p> <Link to="/">Trang chủ</Link></p>
-                <p> <Link to="/moives">Phim</Link></p>
-                <p> <Link to="/actors">Diễn viên</Link></p>
+            <div>
+                <div className='mainNavBar-links'>
+                    <p>Góc điện ảnh</p>
+
+                    {/* <BsBell className='mainNavBar__icon' color='#fff' size={27} />
+                    <AiOutlineUser className='mainNavBar__icon' color='#fff' size={27} /> */}
+
+                    <NotSignInMenu />
+                </div>
+                {/* <CustomerMenu /> */}
             </div>
+        </div>
+    )
+
+}
+
+export const NotSignInMenu = () => {
+    return (
+        <div className='mainNavBar__login'>
+            <p >Đăng nhập</p>
+            <button className='mainNavBar__login__btn mainNavBar__login__btn--register'>Đăng ký</button>
         </div>
     )
 }

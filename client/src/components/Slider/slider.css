@@ -68,13 +68,18 @@
     outline: none;
     cursor: pointer;
     border-radius: 20px;
-    box-shadow: 1px 1px 15px #FF4820
+    box-shadow: 1px 1px 15px #FF4820;
+    transition: opacity 0.2 ease;
+}
+
+.slide__item__content__info__button__bookTicket:hover {
+    opacity: 0.8;
 }
 
 .slide__item__content__info__button__trailer {
     padding: 0.5rem 4rem;
     color: #FFF;
-    background-color: transparent;
+    background-color: rgb(255, 255, 255, 0.3);
     font-family: var(--font-family);
     font-weight: 1000;
     font-size: 18px;
@@ -84,4 +89,9 @@
     cursor: pointer;
     border-radius: 20px;
     margin-left: 20px;
+    transition: opacity 0.2 ease;
+}
+
+.slide__item__content__info__button__trailer:hover {
+    opacity: 0.8;
 }
