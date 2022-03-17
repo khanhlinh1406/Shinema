@@ -7,7 +7,7 @@ import { VscHistory } from 'react-icons/vsc'
 import { IoIosInformationCircleOutline } from 'react-icons/io'
 import { IoIosLogOut } from 'react-icons/io'
 
-const defaultColor = '#272727'
+const defaultColor = '#fff'
 
 export const CustomerMenu = () => {
     return (
@@ -26,7 +26,7 @@ export const CustomerMenu = () => {
 
             <div className='menu__item'>
                 <p> <Link to="/userInfor">Đăng xuất</Link></p>
-                <IoIosLogOut className='menu__item__icon' color={defaultColor} size={25} />
+                <IoIosLogOut className='menu__item__icon' color={defaultColor} size={23} />
             </div>
 
         </div>

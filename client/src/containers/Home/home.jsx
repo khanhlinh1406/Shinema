@@ -1,11 +1,14 @@
 import React from "react";
-import { Navbar, Slider } from '../../components/index'
+import { Navbar, Slider, FilmSlider } from '../../components/index'
 
 const Home = () => {
     return (
         <div className="home">
             <Slider />
             <Navbar />
+            <FilmSlider typeFilm="popular" />
+            <FilmSlider typeFilm="upcoming" />
+            <FilmSlider typeFilm="top_rated" />
         </div>
     )
 }
