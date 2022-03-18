@@ -1,0 +1,19 @@
+
+.typeOfFilm__container{
+    min-height: 25rem;
+    width: 100%;
+    display: block; 
+    padding: 3rem 1rem
+}
+
+.typeOfFilm__container__title{
+    color: #fff;
+    text-transform: uppercase;
+    text-align: center;
+    font-size: 2rem;
+}
+
+
+.typeOfFilm__item__container{
+    background-color: #ffff;
+}
