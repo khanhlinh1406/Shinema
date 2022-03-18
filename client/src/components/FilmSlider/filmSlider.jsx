@@ -10,7 +10,7 @@ import "swiper/css/navigation"
 import { Pagination, FreeMode, Navigation } from "swiper";
 
 import tmdbApi from "../../api/tmdbApi";
-import {movieType} from '../../api/tmdbApi'
+import { movieType } from '../../api/tmdbApi'
 import apiConfig from "../../api/apiConfig";
 
 const FilmSlider = ({ typeFilm }) => {
@@ -19,15 +19,14 @@ const FilmSlider = ({ typeFilm }) => {
     const [movieTypes, setMovieTypes] = useState("");
 
     useEffect(() => {
-        const getMovies = async ({typeFilm}) => {
+        const getMovies = async () => {
             const params = {
                 page: 1,
             }
-
             try {
                 const response = await tmdbApi.getMoviesList(typeFilm, { params: params });
-                setMovieItems(response.results.slice(0, 4))
-                console.log("response.results" + response)
+                setMovieItems(response.results.slice(0, 15))
+                console.log(response)
             } catch {
                 console.log("Film slider error")
             }
@@ -47,15 +46,19 @@ const FilmSlider = ({ typeFilm }) => {
         getTypes();
     }, []);
 
-
     return (
         <div className="typeOfFilm__container">
-            <h3 class="typeOfFilm__container__title">
-                {movieTypes}
-            </h3>
 
-            <Swiper slidesPerView={4}
-                spaceBetween={30}
+            <div className="typeOfFilm__container__header">
+                <h3 className="typeOfFilm__container__header__title">
+                    {movieTypes}
+                </h3>
+
+                <button className="typeOfFilm__container__header__viewMore">Xem thêm</button>
+
+            </div>
+            <Swiper className="typeOfFilm__container__swiper"
+                slidesPerView={5}
                 centeredSlides={true}
                 pagination={{
                     clickable: true,
@@ -63,21 +66,18 @@ const FilmSlider = ({ typeFilm }) => {
                 loop={true}
                 freeMode={true}
                 navigation={true}
-                modules={[Pagination, Navigation, FreeMode]}>
-
+                modules={[Pagination, Navigation, FreeMode]}
+            >
                 {
-                    movieItems.map((item, i) => {
+                    movieItems.map((item, i) => (
                         <SwiperSlide key={i}>
                             <SlideItem item={item} />
                         </SwiperSlide>
-                    })
+                    ))
                 }
-
             </Swiper>
-
         </div>
-
-    )
+    );
 }
 
 const SlideItem = props => {
@@ -85,9 +85,9 @@ const SlideItem = props => {
     const background = apiConfig.originalImage(item.poster_path)
 
     return (
-        <div class="typeOfFilm__item__container">
-            <img class="typeOfFilm__item__container__img" src={background} alt={item.title} />
-            <label class="typeOfFilm__item__container__title">{item.title}</label>
+        <div className="typeOfFilm__item__container">
+            <img className="typeOfFilm__item__container__img" src={background} alt={item.title} />
+            <label className="typeOfFilm__item__container__title">{item.title}</label>
         </div>
     )
 }

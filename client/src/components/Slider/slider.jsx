@@ -26,7 +26,7 @@ const Slider = () => {
             try {
                 const response = await tmdbApi.getMoviesList(movieType.now_playing, { params });
                 setMovieItems(response.results.slice(0, 4));
-                console.log(response);
+               /// console.log(response);
             } catch {
                 console.log('error');
             }
