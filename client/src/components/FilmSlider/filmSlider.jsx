@@ -13,6 +13,10 @@ import tmdbApi from "../../api/tmdbApi";
 import { movieType } from '../../api/tmdbApi'
 import apiConfig from "../../api/apiConfig";
 
+import { GrFormNext, GrFormPrevious } from 'react-icons/gr';
+
+import { FaAngleLeft, FaAngleRight } from 'react-icons/fa'
+
 const FilmSlider = ({ typeFilm }) => {
 
     const [movieItems, setMovieItems] = useState([]);
@@ -59,8 +63,9 @@ const FilmSlider = ({ typeFilm }) => {
 
 
             <div className="typeOfFilm__container__content">
-                <div className="typeOfFilm__container__content__prev">
-                    
+
+                <div >
+                    <FaAngleLeft className="typeOfFilm__container__content__prev" color='#ff4820' size={65}/>
                 </div>
 
                 <Swiper className="typeOfFilm__container__content__swiper"
@@ -89,7 +94,9 @@ const FilmSlider = ({ typeFilm }) => {
                     }
                 </Swiper>
 
-                <div className="typeOfFilm__container__content__next"></div>
+                <div >
+                    <FaAngleRight className="typeOfFilm__container__content__next" size={65} color='#ff4820'/>
+                </div>
 
             </div>
 
