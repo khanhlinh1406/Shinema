@@ -2,12 +2,13 @@
 .typeOfFilm__container{
     width: 100%;
     display: block; 
-    padding: 3rem 1rem;
+    padding-top: 3rem;
+    padding-left: 1rem;
+    padding-right: 1rem;
     height: auto;
 }
 
 .typeOfFilm__container__header{
-    display: block;
     width: 100%;
     margin-bottom: 1rem;
 }
@@ -40,20 +41,46 @@
     transition: background-color 0.2 ease;
     position:absolute;
     right: 0;
-    margin-right: 40px;
+    margin-right: 50px;
     padding: 8px 35px;
 }
 
-.typeOfFilm__container__header__viewMore :hover{
+.typeOfFilm__container__header__viewMore:hover{
     background-color: #fff;
-    color: rgba(255, 255, 255, 0.014);
-    
+    color: black;    
 }
 
-.typeOfFilm__container__swiper {
+/* div cha */
+.typeOfFilm__container__content{
+    position: relative;
+}
+
+/* swiper */
+.typeOfFilm__container__content__swiper {
     width: 100%;
     height: 100%;
 }
+
+/* div mau trang */
+.typeOfFilm__container__content__prev { 
+    width: 50px;
+    height: 50px;
+    background-color: #fff;
+    position: absolute;
+    z-index: 2;
+    top: 30%;
+    left: 10px;
+ }
+
+ .typeOfFilm__container__content__next { 
+    width: 50px;
+    height: 50px;
+    background-color: #fff;
+    position: absolute;
+    z-index: 2;
+    top: 30%;
+    right: 10px
+ }
 
 .typeOfFilm__item__container{
     width: 230px;
@@ -63,7 +90,7 @@
 
 .typeOfFilm__item__container__img{
     display: flex;
-    height: 75%;
+    height: 80%;
     width: 100%;
     background-position: center;
     background-size: cover;

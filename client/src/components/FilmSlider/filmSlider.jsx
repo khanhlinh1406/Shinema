@@ -55,27 +55,44 @@ const FilmSlider = ({ typeFilm }) => {
                 </h3>
 
                 <button className="typeOfFilm__container__header__viewMore">Xem thêm</button>
+            </div>
+
+
+            <div className="typeOfFilm__container__content">
+                <div className="typeOfFilm__container__content__prev">
+                    
+                </div>
+
+                <Swiper className="typeOfFilm__container__content__swiper"
+                    slidesPerView={5}
+                    centeredSlides={true}
+                    // pagination={{
+                    //     clickable: true,
+                    // }}
+                    loop
+                    freeMode
+                    navigation={{
+                        nextEl: '.typeOfFilm__container__content__next',
+                        prevEl: '.typeOfFilm__container__content__prev'
+                    }
+                    }
+
+                   // navigation
+                    modules={[Pagination, Navigation, FreeMode]}
+                >
+                    {
+                        movieItems.map((item, i) => (
+                            <SwiperSlide key={i}>
+                                <SlideItem item={item} />
+                            </SwiperSlide>
+                        ))
+                    }
+                </Swiper>
+
+                <div className="typeOfFilm__container__content__next"></div>
 
             </div>
-            <Swiper className="typeOfFilm__container__swiper"
-                slidesPerView={5}
-                centeredSlides={true}
-                pagination={{
-                    clickable: true,
-                }}
-                loop={true}
-                freeMode={true}
-                navigation={true}
-                modules={[Pagination, Navigation, FreeMode]}
-            >
-                {
-                    movieItems.map((item, i) => (
-                        <SwiperSlide key={i}>
-                            <SlideItem item={item} />
-                        </SwiperSlide>
-                    ))
-                }
-            </Swiper>
+
         </div>
     );
 }
