@@ -40,11 +40,11 @@ const FilmSlider = ({ typeFilm }) => {
 
         const getTypes = () => {
             if (typeFilm === movieType.popular)
-                setMovieTypes('Popular');
+                setMovieTypes('Phổ biến');
             if (typeFilm === movieType.upcoming)
-                setMovieTypes('Upcoming');;
+                setMovieTypes('Sắp chiếu');;
             if (typeFilm === movieType.top_rated)
-                setMovieTypes('Top rated');
+                setMovieTypes('Đánh giá cao');
         }
 
         getTypes();
