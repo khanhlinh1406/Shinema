@@ -2,20 +2,22 @@ const express = require('express')
 const bodyParser = require('body-parser')
 const mongoose = require('mongoose');
 
+const dotenv = require('dotenv')
+dotenv.config()
+
 const app = express()
 const PORT = process.env.port || 3001
-const URI = 'mongodb+srv://shinema_db:ThucLinh123@cluster0.leaz1.mongodb.net/Shinema?retryWrites=true&w=majority'
 
 app.use(bodyParser.urlencoded({ extended: false }))
 app.use(bodyParser.json())
 
-app.all('/', function (req, res, next) {
+app.all('/', function(req, res, next) {
     res.header("Access-Control-Allow-Origin", "*");
     res.header("Access-Control-Allow-Headers", "X-Requested-With");
     next()
 });
 
-mongoose.connect(URI)
+mongoose.connect(process.env.MONGODB_URI)
     .then(() => {
         console.log("MongoDB Connected!")
         app.listen(PORT, () => {

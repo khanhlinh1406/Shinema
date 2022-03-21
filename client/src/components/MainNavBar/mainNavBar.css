@@ -88,6 +88,37 @@
     display: none;
 }
 
+.mainNavbar-menu__container {
+    display: flex;
+    justify-content: flex-end;
+    align-items: flex-end;
+    flex-direction: column;
+    font-weight: bold;
+    background-color: #ff492094;
+    padding: 10px;
+    position: absolute;
+    top: 70px;
+    right: 45px;
+    margin-top: 1rem;
+    min-width: 250px;
+    border-radius: 10px;
+    box-shadow: 0 0 5 rbg(0, 0, 0, 0.2);
+}
+
+.mainNavbar-menu__item {
+    display: flex;
+    text-align: end;
+    margin: 13px 5px;
+    cursor: pointer;
+}
+
+.mainNavbar-menu__item p {
+    font-family: var(--font-family);
+    color: #fff;
+    font-weight: 400;
+    margin-right: 15px;
+}
+
 
 /* ---------------------------------------------------- */
 

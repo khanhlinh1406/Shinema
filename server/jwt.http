@@ -1,0 +1,9 @@
+GET http://localhost:3001/api/account
+
+###
+POST http://localhost:3001/api/account/login
+
+{
+    "email": "trithuc",
+    "password": "123456"
+}
