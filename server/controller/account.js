@@ -67,30 +67,3 @@ exports.deleteByEmail = function(req, res) {
             res.status(500).json("Delete error")
         })
 }
-
-exports.login = function(req, res) {
-    const data = req.body
-    const accessToken = jwt.sign(data, process.env.ACCESS_TOKEN_SECRET, { expiresIn: '30s' })
-    res.json({ accessToken })
-        // AccountModel.findOne({
-        //         email: req.body.email
-        //     })
-        //     .then(data => {
-        //         if (data) {
-        //             if (data.password == req.body.password) {
-        //                 const data = req.body.email
-        //                 const accessToken = jwt.sign(data, process.env.ACCESS_TOKEN_SECRET, { expiresIn: '30s' })
-        //                 res.json({ accessToken })
-        //             }
-        //         } else {
-        //             res.json('Email does not exist')
-        //         }
-
-    //     })
-    //     .then(data => {
-    //         res.json("Successful")
-    //     })
-    //     .catch(err => {
-    //         res.status(500).json("loi roi")
-    //     })
-}

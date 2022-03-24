@@ -51,7 +51,7 @@ const FilmSlider = ({ typeFilm }) => {
     }, []);
 
     return (
-        <div className="typeOfFilm__container">
+        <div className="typeOfFilm__container" id={typeFilm}>
 
             <div className="typeOfFilm__container__header">
                 <h3 className="typeOfFilm__container__header__title">
@@ -65,7 +65,7 @@ const FilmSlider = ({ typeFilm }) => {
             <div className="typeOfFilm__container__content">
 
                 <div >
-                    <FaAngleLeft className="typeOfFilm__container__content__prev" color='#ff4820' size={65}/>
+                    <FaAngleLeft className="typeOfFilm__container__content__prev" color='#ff4820' size={65} />
                 </div>
 
                 <Swiper className="typeOfFilm__container__content__swiper"
@@ -82,7 +82,7 @@ const FilmSlider = ({ typeFilm }) => {
                     }
                     }
 
-                   // navigation
+                    // navigation
                     modules={[Pagination, Navigation, FreeMode]}
                 >
                     {
@@ -95,7 +95,7 @@ const FilmSlider = ({ typeFilm }) => {
                 </Swiper>
 
                 <div >
-                    <FaAngleRight className="typeOfFilm__container__content__next" size={65} color='#ff4820'/>
+                    <FaAngleRight className="typeOfFilm__container__content__next" size={65} color='#ff4820' />
                 </div>
 
             </div>

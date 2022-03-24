@@ -1,6 +1,6 @@
 import React from "react";
 import { Navbar, Slider, FilmSlider } from '../../components/index'
-import {tmdb, movieType} from '../../api/tmdbApi'
+import { tmdb, movieType } from '../../api/tmdbApi'
 
 const Home = () => {
     return (

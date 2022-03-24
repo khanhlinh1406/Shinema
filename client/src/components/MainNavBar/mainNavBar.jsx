@@ -19,7 +19,7 @@ const selectedColor = '#ff492094'
 
 const MainNavBar = () => {
 
-    const [logged, setLogged] = useState(true);
+    const [logged, setLogged] = useState(false);
     const [accountToggle, setAccountToggle] = useState(false)
 
     const [menuToggle, setMenuToggle] = useState(false)
@@ -80,7 +80,7 @@ const MainNavBar = () => {
 export const NotSignInMenu = () => {
     return (
         <div className='mainNavBar__login'>
-            <p >Đăng nhập</p>
+            <p ><Link to="/login">Đăng nhập</Link></p>
             <button className='mainNavBar__login__btn mainNavBar__login__btn--register'>Đăng ký</button>
         </div>
     )
