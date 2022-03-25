@@ -1,15 +1,15 @@
 const initState = {
     data: [],
-    user: {}
+    movie: {}
 }
 
-export const UserReducer = (state = initState, action) => {
+export const MovieReducer = (state = initState, action) => {
     switch (action.type) {
-        case 'ADD_USER':
+        case 'ADD_MOVIE':
             addUser(state, action)
-        case 'UPDATE_USER':
+        case 'UPDATE_MOVIE':
             updateUser(state, action)
-        case 'REMOVE_USER':
+        case 'REMOVE_MOVIE':
             removeUser(state, action)
 
         default:
@@ -17,19 +17,19 @@ export const UserReducer = (state = initState, action) => {
     }
 }
 
-addUser = (state, action) => {
+addMovie = (state, action) => {
     return {
         ...state,
         data: action.payload
     }
 }
 
-updateUser = (state, action) => {
+updateMovie = (state, action) => {
     let updateData = state.data;
-    updateData = updateData.map(user => {
-        if (user.id == action.payload.id)
+    updateData = updateData.map(movie => {
+        if (movie.id == action.payload.id)
             return action.payload
-        else return user
+        else return movie
     })
 
     return {
@@ -38,9 +38,9 @@ updateUser = (state, action) => {
     }
 }
 
-removeUser = (state, action) => {
-    let removeUser = state.data;
-    removeUser.user = removeUser.filter(user => user.id != action.payload.id)
+removeMovie = (state, action) => {
+    let removeMovie = state.data;
+    removeMovie.movie = removeMovie.filter(movie => movie.id != action.payload.id)
 
     return {
         ...state,
