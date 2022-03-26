@@ -18,7 +18,6 @@ exports.authenToken = (req, res, next) => {
             } else {
                 next();
             }
-
         })
     }
 }

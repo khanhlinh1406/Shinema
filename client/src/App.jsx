@@ -7,13 +7,34 @@ import { MainNavBar } from './components';
 function App() {
   return (
     <div className="App">
-      <MainNavBar />
+
 
       <Routes>
-        <Route path="/" element={<Home />} />
-        <Route path="/actors" element={<Actor />} />
-        <Route path="/genres" element={<Genre />} />
-        <Route path="/reviews" element={<Review />} />
+        <Route path="/" element={
+          <div>
+            <MainNavBar />
+            <Home />
+          </div>
+        } />
+
+        <Route path="/actors" element={
+          <div>
+            <MainNavBar />
+            <Actor />
+          </div>
+        } />
+
+        <Route path="/genres" element={<div>
+          <MainNavBar />
+          <Genre />
+        </div>} />
+
+        <Route path="/reviews" element={
+          <div>
+            <MainNavBar />
+            <Review />
+          </div>} />
+
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
       </Routes>

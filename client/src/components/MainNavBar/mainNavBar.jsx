@@ -81,7 +81,7 @@ export const NotSignInMenu = () => {
     return (
         <div className='mainNavBar__login'>
             <p ><Link to="/login">Đăng nhập</Link></p>
-            <button className='mainNavBar__login__btn mainNavBar__login__btn--register'>Đăng ký</button>
+            <button className='mainNavBar__login__btn mainNavBar__login__btn--register'><p ><Link to="/register">Đăng ký</Link></p></button>
         </div>
     )
 }
