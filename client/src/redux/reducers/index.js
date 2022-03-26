@@ -8,3 +8,5 @@ const allReducers = combineReducers({
   MovieReducer
   // add more reducers here
 });
+
+export default allReducers

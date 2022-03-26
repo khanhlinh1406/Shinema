@@ -1,20 +1,20 @@
-export const add = (movie) =>{
+export const add = (movieObj) =>{
     return {
         type: 'ADD_MOVIE',
-        payload: movie
+        payload: movieObj
     }
 }
 
-export const update = (movie) =>{
+export const update = (movieObj) =>{
     return {
         type: 'UPDATE_MOVIE',
-        payload: movie
+        payload: movieObj
     }
 }
 
-export const remove = (movie) =>{
+export const remove = (movieObj) =>{
     return {
         type: 'REMOVE_MOVIE',
-        payload: movie
+        payload: movieObj
     }
 }

@@ -4,27 +4,35 @@ const initState = {
 }
 
 export const MovieReducer = (state = initState, action) => {
+   /// console.log(action.type);
     switch (action.type) {
+        
         case 'ADD_MOVIE':
-            addUser(state, action)
+            addMovie(state, action)
         case 'UPDATE_MOVIE':
-            updateUser(state, action)
+            updateMovie(state, action)
         case 'REMOVE_MOVIE':
-            removeUser(state, action)
+            removeMovie(state, action)
 
         default:
             return state;
     }
 }
 
-addMovie = (state, action) => {
+export default MovieReducer
+
+const addMovie = (state, action) => {
+  ///  console.log('Add new movie')
     return {
         ...state,
-        data: action.payload
+        data: [
+            ...state.data,
+            action.payload
+        ]
     }
 }
 
-updateMovie = (state, action) => {
+const updateMovie = (state, action) => {
     let updateData = state.data;
     updateData = updateData.map(movie => {
         if (movie.id == action.payload.id)
@@ -38,12 +46,12 @@ updateMovie = (state, action) => {
     }
 }
 
-removeMovie = (state, action) => {
+const removeMovie = (state, action) => {
     let removeMovie = state.data;
     removeMovie.movie = removeMovie.filter(movie => movie.id != action.payload.id)
 
     return {
         ...state,
-        data: removeUser
+        data: removeMovie
     }
 }

@@ -17,14 +17,16 @@ export const UserReducer = (state = initState, action) => {
     }
 }
 
-addUser = (state, action) => {
+export default UserReducer
+
+const addUser = (state, action) => {
     return {
         ...state,
-        data: action.payload
+        data: [...state.data, action.payload]
     }
 }
 
-updateUser = (state, action) => {
+const updateUser = (state, action) => {
     let updateData = state.data;
     updateData = updateData.map(user => {
         if (user.id == action.payload.id)
@@ -38,7 +40,7 @@ updateUser = (state, action) => {
     }
 }
 
-removeUser = (state, action) => {
+const removeUser = (state, action) => {
     let removeUser = state.data;
     removeUser.user = removeUser.filter(user => user.id != action.payload.id)
 

@@ -13,11 +13,17 @@ import tmdbApi from "../../api/tmdbApi";
 import { movieType } from '../../api/tmdbApi'
 import apiConfig from "../../api/apiConfig";
 
-import { GrFormNext, GrFormPrevious } from 'react-icons/gr';
-
 import { FaAngleLeft, FaAngleRight } from 'react-icons/fa'
 
+
+import {useSelector, useDispatch} from 'react-redux'
+import {add,update,remove} from "../../redux/actions/movieAction"
+import { MovieReducer } from './../../redux/reducers/movieReducer';
+
+
 const FilmSlider = ({ typeFilm }) => {
+    const movie = useSelector(state => state.MovieReducer)
+    const dispatch = useDispatch()
 
     const [movieItems, setMovieItems] = useState([]);
     const [movieTypes, setMovieTypes] = useState("");
@@ -81,7 +87,11 @@ const FilmSlider = ({ typeFilm }) => {
                         prevEl: '.typeOfFilm__container__content__prev'
                     }
                     }
-
+                    onClick={ () =>{
+                        dispatch(add({name:'abc', type:'cartoon'}))
+                        console.log('Redux')
+                        console.log(movie)
+                    }}
                     // navigation
                     modules={[Pagination, Navigation, FreeMode]}
                 >
