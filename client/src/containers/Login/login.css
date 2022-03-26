@@ -66,6 +66,16 @@
     align-items: center;
 }
 
+.login__form__title {
+    display: flex;
+    align-items: flex-end;
+}
+
+.login__form__title img {
+    margin-right: 10px;
+    margin-bottom: 10px;
+}
+
 .login__form__ip {
     padding: 20px 25px;
     flex: 1;

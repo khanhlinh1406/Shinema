@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import './login.css'
 
 import background_login from '../../assets/background_login.jpg'
+import logo_png from '../../assets/logo_png.png'
 
 import { AiOutlineEye, AiOutlineEyeInvisible, AiOutlineGoogle } from 'react-icons/ai'
 import { MdOutlineEmail } from 'react-icons/md'
@@ -17,11 +18,6 @@ const Login = () => {
     const [emailWarningVisible, setEmailWarningVisible] = useState(false)
     const [passwordErr, setPasswordErr] = useState(false)
 
-    const checkEmail = (val) => {
-        let reg = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
-        return reg.test(val) === false
-    }
-
     return (
         <div className="login">
             <div className="login__background">
@@ -30,7 +26,10 @@ const Login = () => {
             </div>
 
             <div className="login__form__container">
-                <h2>ĐĂNG NHẬP</h2>
+                <div className="login__form__title">
+                    <img style={{ width: 40 }} src={logo_png} alt="logo_png" />
+                    <h2>ĐĂNG NHẬP</h2>
+                </div>
 
                 <div className="login__form__ip__container">
                     <input className="login__form__ip" type="email" placeholder="Email" />
