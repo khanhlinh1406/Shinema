@@ -39,7 +39,6 @@ const FilmSlider = ({ typeFilm }) => {
             try {
                 const response = await tmdbApi.getMoviesList(typeFilm, { params: params });
                 setMovieItems(response.results.slice(0, 15))
-                console.log(response)
             } catch {
                 console.log("Film slider error")
             }
@@ -60,7 +59,7 @@ const FilmSlider = ({ typeFilm }) => {
     }, []);
 
     useEffect(() => {
-            console.log(movie)
+           //// console.log(movie)
     },[movie])
     
 
@@ -104,12 +103,7 @@ const FilmSlider = ({ typeFilm }) => {
                     //     nextEl: {next},
                     //     prevEl: {prev}
                     // }}
-                    onClick={ () =>{
-                     ///   console.log(dispatch(add({name:'abc', type:'cartoon'})))
-                        dispatch(add({name:'abc', type:'cartoon'}))
-                        console.log('Redux')
-                       
-                    }}
+                   
                     // navigation
                     modules={[Pagination, Navigation, FreeMode]}
                 >
