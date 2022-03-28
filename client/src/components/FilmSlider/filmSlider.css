@@ -84,7 +84,6 @@
     height: 400px;
     background-color: transparent;
     position: relative;
-    cursor: pointer;
 } 
 
 .typeOfFilm__item__container:hover .typeOfFilm__item__container__hoverItem{
@@ -120,13 +119,14 @@
 
     padding: 0px;
     position: absolute;
-    bottom: 10px;
+    top: 0;
+    bottom: 0;
     right: 0;
     left: 0;
     margin: auto;
 
     width: 70%;
-    height: 10%;
+    height: 15%;
     cursor: pointer;
     border-radius: 25px;
     
@@ -134,8 +134,9 @@
 }
 
 .typeOfFilm__item__container__hoverItem__buyTicketBtn:hover{
-    box-shadow: 1px 1px 15px #FF4820;
+    box-shadow: 1px 1px 10px #FF4820;
 }
+
 
 .typeOfFilm__item__container__img{
     height: 80%;
@@ -152,6 +153,12 @@
     align-items: center;
     display:inline-block;
     font-size:1.1rem;
+    cursor: pointer;
+}
+
+.typeOfFilm__container__header__title:hover{
+    font-weight: bold;
+    
 }
 
 
