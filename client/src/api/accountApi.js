@@ -1,11 +1,18 @@
-import Api from ".";
+import ApiAuthen from "./ApiAuthen";
+import ApiDatabase from "./ApiDatabase";
 
-const url = '/account'
+
 const AccountApi = {
-    getAll: async () => {
-        const res = await Api.get(url + '/');
+    login: async(email, password) => {
+        const res = await ApiAuthen.get('/login');
+
+        ApiDatabase.defaults.headers['x-access-token'] = res.accessToken
         return res.data
     },
+    getAll: async() => {
+        const res = await ApiDatabase.get('/account/');
+        return res.data
+    }
 }
 
 export default AccountApi

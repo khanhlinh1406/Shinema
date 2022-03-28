@@ -9,6 +9,8 @@ import { MdOutlineEmail } from 'react-icons/md'
 import { FaFacebookF } from 'react-icons/fa'
 import { BiError } from 'react-icons/bi'
 
+import AccountApi from "../../api/accountApi";
+
 const Login = () => {
     const [email, setEmail] = useState()
     const [password, setPassword] = useState()
@@ -18,6 +20,15 @@ const Login = () => {
     const [emailWarningVisible, setEmailWarningVisible] = useState(false)
     const [passwordErr, setPasswordErr] = useState(false)
 
+    const loginHandle = async () => {
+        console.log('dang nhap')
+        await AccountApi.login('trithuc', '123456').then(
+            res => console.log(res)
+        )
+        // await AccountApi.getAll().then(
+        //     res => console.log(res)
+        // )
+    }
     return (
         <div className="login">
             <div className="login__background">
@@ -59,7 +70,7 @@ const Login = () => {
                     </div>
                 </div>
 
-                <button className="login__form__btn login__form__btn--login">Đăng nhập</button>
+                <button className="login__form__btn login__form__btn--login" onClick={loginHandle}>Đăng nhập</button>
 
                 <hr style={{ marginBottom: 60 }} />
 

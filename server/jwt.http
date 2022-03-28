@@ -1,9 +1,13 @@
-GET http://localhost:5500/api/account
-//Authorization: Beaer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6InRyaXRodWMiLCJpYXQiOjE2NDc5NDkxNzUsImV4cCI6MTY0Nzk0OTIwNX0.7wgyrZ2sGNfsX-xsHkqY1BWHjofWzK5B2l6sltoundM
+GET http://localhost:5000/api/account
+Authorization: x-access-token eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6InRyaXRodWMiLCJpYXQiOjE2NDgzOTU2MzIsImV4cCI6MTY0ODM5NTY2Mn0.24cq2OhumUouyDFR9qTnymmja6vOdWVTGMdEDIEJJ1M
 
 ###
 POST http://localhost:5500/auth/refreshToken
 Content-Type: application/json
+
+{
+  "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6InRyaXRodWMiLCJpYXQiOjE2NDgzOTQ2ODV9.8kRIAVKxcW07m69vj6mpJaMHVSdkXUjTlYPUhEXK9Vo"
+}
 
 ###
 POST http://localhost:5500/auth/login
