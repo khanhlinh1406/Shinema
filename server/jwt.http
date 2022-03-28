@@ -1,12 +1,12 @@
 GET http://localhost:5000/api/account
-Authorization: x-access-token eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6InRyaXRodWMiLCJpYXQiOjE2NDgzOTU2MzIsImV4cCI6MTY0ODM5NTY2Mn0.24cq2OhumUouyDFR9qTnymmja6vOdWVTGMdEDIEJJ1M
+Authorization: x-access-token eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpYXQiOjE2NDg0NTcyNzUsImV4cCI6MTY0ODQ1NzMwNX0.bQcXvp9at7Ox6DYISUqlIsrLL4w4OiLr9qVGMLRVdFI
 
 ###
 POST http://localhost:5500/auth/refreshToken
 Content-Type: application/json
 
 {
-  "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6InRyaXRodWMiLCJpYXQiOjE2NDgzOTQ2ODV9.8kRIAVKxcW07m69vj6mpJaMHVSdkXUjTlYPUhEXK9Vo"
+  "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6InRyaXRodWMiLCJpYXQiOjE2NDg0NTcxMjB9.rSCz3e1ANCmxrp1JdGtn8LFjc6_Ff2nFutKaM3TyR1Q"
 }
 
 ###

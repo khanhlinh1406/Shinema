@@ -25,9 +25,7 @@ const Login = () => {
         await AccountApi.login('trithuc', '123456').then(
             res => console.log(res)
         )
-        // await AccountApi.getAll().then(
-        //     res => console.log(res)
-        // )
+
     }
 
     const getAccounts = async () => {
@@ -35,9 +33,6 @@ const Login = () => {
         await AccountApi.getAll().then(
             res => console.log(res)
         )
-        // await AccountApi.getAll().then(
-        //     res => console.log(res)
-        // )
     }
 
     return (

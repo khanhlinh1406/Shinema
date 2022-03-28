@@ -6,10 +6,14 @@ const JWTModel = require('../models/JWTRefToken')
 const AccountModel = require('../models/account')
 
 router.post('/refreshToken', (req, res) => {
-    const refreshToken = req.cookies.refresh_token;
-    //const refreshToken = req.body.token
+    //const refreshToken = req.cookies.refresh_token;
+    const refreshToken = req.body.token
 
-    if (!refreshToken) res.sendStatus(401);
+    if (!refreshToken) {
+        res.sendStatus(401);
+        return;
+    }
+
 
     JWTModel.find({
             refreshToken: refreshToken
@@ -17,7 +21,9 @@ router.post('/refreshToken', (req, res) => {
         .then(data => {
             if (data.length != 0) {
                 jwt.verify(refreshToken, process.env.REFRESH_TOKEN_SECRET, (err, data) => {
+                    console.log('ma no ngu1')
                     if (err) {
+                        console.log('ma no ngu')
                         res.sendStatus(401);
                         return;
                     }
@@ -26,15 +32,10 @@ router.post('/refreshToken', (req, res) => {
                         process.env.ACCESS_TOKEN_SECRET, { expiresIn: '30s' }
                     );
 
-                    res.cookie('access_token', accessToken, {
-                        maxAge: 60 * 1000,
-                        httpOnly: true,
-                        //secure: true
-                    })
-
                     res.json({ accessToken });
                 })
             } else {
+                console.log('ma no ngu2')
                 res.sendStatus(401)
             }
         })
@@ -61,16 +62,16 @@ router.post('/login', (req, res) => {
                     const accessToken = jwt.sign(payload, process.env.ACCESS_TOKEN_SECRET, { expiresIn: '30s' })
                     const refreshToken = jwt.sign(payload, process.env.REFRESH_TOKEN_SECRET)
 
-                    res.cookie('access_token', accessToken, {
-                        maxAge: 60 * 1000,
-                        httpOnly: true,
-                        //secure: true
-                    })
-                    res.cookie('refresh_token', refreshToken, {
-                        maxAge: 365 * 24 * 60 * 60 * 1000,
-                        httpOnly: true,
-                        //secure: true
-                    })
+                    // res.cookie('access_token', accessToken, {
+                    //     maxAge: 60 * 1000,
+                    //     httpOnly: true,
+                    //     //secure: true
+                    // })
+                    // res.cookie('refresh_token', refreshToken, {
+                    //     maxAge: 365 * 24 * 60 * 60 * 1000,
+                    //     httpOnly: true,
+                    //     //secure: true
+                    // })
 
                     const _JWTRefTokens = new JWTModel({
                         refreshToken: refreshToken
