@@ -104,6 +104,8 @@ const FilmSlider = ({ typeFilm }) => {
                     //     nextEl: {next},
                     //     prevEl: {prev}
                     // }}
+
+                    
                    
                     // navigation
                     modules={[Pagination, Navigation, FreeMode]}
@@ -145,7 +147,9 @@ const SlideItem = props => {
     return (
         <div className="typeOfFilm__item__container">
             <div className="typeOfFilm__item__container__hoverItem">
-               <button className="typeOfFilm__item__container__hoverItem__buyTicketBtn">Đặt vé</button> 
+               <button className="typeOfFilm__item__container__hoverItem__buyTicketBtn" onClick={
+                        dispatch(add({name: 'abc', value:'jjjj'}))
+                    }>Đặt vé</button> 
                
             </div>
             <img className="typeOfFilm__item__container__img" src={background} alt={item.title} />

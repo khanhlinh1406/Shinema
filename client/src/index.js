@@ -6,11 +6,13 @@ import { BrowserRouter } from 'react-router-dom'
 
 import { createStore } from 'redux';
 import { Provider } from 'react-redux';
-
+import {composeWithDevTools } from 'redux-devtools-extension'
+import { configureStore } from '@reduxjs/toolkit'
 
 import allReducers from "./redux/reducers/index";
 
-const store = createStore(allReducers);
+const composedEhancers = composeWithDevTools();
+const store = createStore(allReducers, composedEhancers);
 
 ReactDOM.render(
   <React.StrictMode>
