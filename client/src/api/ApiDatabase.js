@@ -9,8 +9,6 @@ const ApiDatabase = axios.create({
     baseURL: URL_SERVER,
     headers: {
         'Content-Type': 'application/json',
-        'Access-Control-Allow-Origin': "*",
-        "Access-Control-Allow-Headers": "X-Requested-With"
     },
     //withCredentials: true,
 });

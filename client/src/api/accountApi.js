@@ -4,12 +4,10 @@ import ApiDatabase from "./ApiDatabase";
 
 const AccountApi = {
     login: async(email, password) => {
-        const res = await ApiAuthen.get('/login', {
+        const res = await ApiAuthen.post('/login', {
             email: email,
             password: password
         });
-
-        ApiDatabase.defaults.headers['x-access-token'] = res.accessToken
         return res.data
     },
     getAll: async() => {
