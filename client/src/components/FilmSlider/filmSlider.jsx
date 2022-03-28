@@ -25,6 +25,9 @@ const FilmSlider = ({ typeFilm }) => {
     const movie = useSelector(state => state.MovieReducer)
     const dispatch = useDispatch()
 
+    const prev = "typeOfFilm__container__content__prev__" + typeFilm;
+    const next = "typeOfFilm__container__content__next__"+ typeFilm;
+
     const [movieItems, setMovieItems] = useState([]);
     const [movieTypes, setMovieTypes] = useState("");
 
@@ -56,6 +59,11 @@ const FilmSlider = ({ typeFilm }) => {
         getTypes();
     }, []);
 
+    useEffect(() => {
+            console.log(movie)
+    },[movie])
+    
+
     return (
         <div className="typeOfFilm__container" id={typeFilm}>
 
@@ -70,9 +78,19 @@ const FilmSlider = ({ typeFilm }) => {
 
             <div className="typeOfFilm__container__content">
 
-                <div >
-                    <FaAngleLeft className="typeOfFilm__container__content__prev" color='#ff4820' size={65} />
-                </div>
+                {/* <div >
+                    <FaAngleLeft style={{ 
+                         cursor: 'pointer',
+                         left: 5,
+                         width: 30,
+                         height: 55,
+                         position: 'absolute',
+                         zindex: 2,
+                         top: 35,
+                         borderradius: 40,
+                         textalign: 'center',
+                    }} color='#ff4820' size={65} className={prev} />
+                </div> */}
 
                 <Swiper className="typeOfFilm__container__content__swiper"
                     slidesPerView={5}
@@ -82,15 +100,15 @@ const FilmSlider = ({ typeFilm }) => {
                     // }}
                     loop
                     freeMode
-                    navigation={{
-                        nextEl: '.typeOfFilm__container__content__next',
-                        prevEl: '.typeOfFilm__container__content__prev'
-                    }
-                    }
+                    // navigation={{
+                    //     nextEl: {next},
+                    //     prevEl: {prev}
+                    // }}
                     onClick={ () =>{
+                     ///   console.log(dispatch(add({name:'abc', type:'cartoon'})))
                         dispatch(add({name:'abc', type:'cartoon'}))
                         console.log('Redux')
-                        console.log(movie)
+                       
                     }}
                     // navigation
                     modules={[Pagination, Navigation, FreeMode]}
@@ -104,9 +122,20 @@ const FilmSlider = ({ typeFilm }) => {
                     }
                 </Swiper>
 
-                <div >
-                    <FaAngleRight className="typeOfFilm__container__content__next" size={65} color='#ff4820' />
-                </div>
+                {/* <div >
+                    <FaAngleRight className={next} size={65} color='#ff4820' 
+                     style={{
+                        cursor: 'pointer',
+                        right: 5,
+                        width: 30,
+                        height: 55,
+                        position: 'absolute',
+                        zindex: 2,
+                        top: 35,
+                        borderradius: 40,
+                        textalign: 'center',
+                     }}/>
+                </div> */}
 
             </div>
 
@@ -120,8 +149,11 @@ const SlideItem = props => {
 
     return (
         <div className="typeOfFilm__item__container">
+            <div className="typeOfFilm__item__container__hoverItem">
+                <button className="typeOfFilm__item__container__hoverItem__buyTicketBtn">Đặt vé</button>
+            </div>
             <img className="typeOfFilm__item__container__img" src={background} alt={item.title} />
-            <label className="typeOfFilm__item__container__title">{item.title}</label>
+            <label className="typeOfFilm__item__container__title">{item.title}</label>   
         </div>
     )
 }

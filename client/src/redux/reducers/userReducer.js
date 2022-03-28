@@ -20,10 +20,11 @@ export const UserReducer = (state = initState, action) => {
 export default UserReducer
 
 const addUser = (state, action) => {
-    return {
-        ...state,
-        data: [...state.data, action.payload]
+    const newState = {
+        ...state,   
+        data:[...state.data, action.payload],
     }
+    return newState;
 }
 
 const updateUser = (state, action) => {
@@ -34,18 +35,21 @@ const updateUser = (state, action) => {
         else return user
     })
 
-    return {
+    const newState = {
         ...state,
         data: updateData
     }
+    return newState;
 }
 
 const removeUser = (state, action) => {
     let removeUser = state.data;
     removeUser.user = removeUser.filter(user => user.id != action.payload.id)
 
-    return {
+    const newState ={
         ...state,
         data: removeUser
     }
+
+    return newState;
 }

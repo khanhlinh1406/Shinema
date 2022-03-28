@@ -4,9 +4,8 @@ const initState = {
 }
 
 export const MovieReducer = (state = initState, action) => {
-   /// console.log(action.type);
     switch (action.type) {
-        
+
         case 'ADD_MOVIE':
             addMovie(state, action)
         case 'UPDATE_MOVIE':
@@ -22,14 +21,15 @@ export const MovieReducer = (state = initState, action) => {
 export default MovieReducer
 
 const addMovie = (state, action) => {
-  ///  console.log('Add new movie')
-    return {
+    const newState = {
         ...state,
         data: [
-            ...state.data,
-            action.payload
+            ...state.data, action.payload
         ]
     }
+
+    console.log(newState);
+    return newState;
 }
 
 const updateMovie = (state, action) => {
@@ -40,18 +40,21 @@ const updateMovie = (state, action) => {
         else return movie
     })
 
-    return {
-        ...state,
+    const newState = {
+        ...state, 
         data: updateData
     }
+
+    return newState
 }
 
 const removeMovie = (state, action) => {
     let removeMovie = state.data;
     removeMovie.movie = removeMovie.filter(movie => movie.id != action.payload.id)
 
-    return {
+    const newState = {
         ...state,
         data: removeMovie
     }
+    return newState
 }
