@@ -11,7 +11,7 @@ const AccountApi = {
         return res.data
     },
     getAll: async() => {
-        const res = await ApiDatabase.get('/account/');
+        const res = await ApiDatabase.get('/account');
         return res.data
     }
 }

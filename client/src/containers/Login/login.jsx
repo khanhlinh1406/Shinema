@@ -29,6 +29,17 @@ const Login = () => {
         //     res => console.log(res)
         // )
     }
+
+    const getAccounts = async () => {
+        console.log('get accounts')
+        await AccountApi.getAll().then(
+            res => console.log(res)
+        )
+        // await AccountApi.getAll().then(
+        //     res => console.log(res)
+        // )
+    }
+
     return (
         <div className="login">
             <div className="login__background">
@@ -74,7 +85,7 @@ const Login = () => {
 
                 <hr style={{ marginBottom: 60 }} />
 
-                <div className="login__form__socialMedia">
+                <div className="login__form__socialMedia" onClick={getAccounts}>
                     <AiOutlineGoogle size={23} />
                     <p>Đăng nhập với Google</p>
                 </div>
