@@ -6,8 +6,14 @@ const dotenv = require('dotenv')
 dotenv.config()
 
 const app = express()
-const PORT = process.env.port || 3001
 
+const PORT = process.env.URL_SERVER
+
+const cors = require('cors');
+app.use(cors());
+
+var cookieParser = require('cookie-parser')
+app.use(cookieParser())
 app.use(bodyParser.urlencoded({ extended: false }))
 app.use(bodyParser.json())
 

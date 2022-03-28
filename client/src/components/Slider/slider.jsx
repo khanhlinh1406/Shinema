@@ -10,7 +10,6 @@ import AccountApi from '../../api/accountApi'
 import tmdbApi, { category, movieType } from "../../api/tmdbApi";
 import apiConfig from "../../api/apiConfig";
 
-
 const Slider = () => {
     SwiperCore.use([Autoplay]);
 
@@ -26,7 +25,7 @@ const Slider = () => {
             try {
                 const response = await tmdbApi.getMoviesList(movieType.now_playing, { params });
                 setMovieItems(response.results.slice(0, 4));
-               /// console.log(response);
+                /// console.log(response);
             } catch {
                 console.log('error');
             }
