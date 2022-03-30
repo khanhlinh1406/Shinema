@@ -16,23 +16,19 @@ import apiConfig from "../../api/apiConfig";
 import { FaAngleLeft, FaAngleRight } from 'react-icons/fa'
 import { RiInformationFill } from 'react-icons/ri';
 
+import {createSearchParams } from 'react-router-dom'
 
 import { useSelector, useDispatch } from 'react-redux'
 import { add, update, remove } from "../../redux/actions/movieAction"
 import { MovieReducer } from './../../redux/reducers/movieReducer';
 
-
-import { Link, createSearchParams } from 'react-router-dom'
 import { useNavigate } from "react-router";
-import { GiConsoleController } from "react-icons/gi";
 
+import { movieSelector } from "../../redux/selector";
 
 
 const FilmSlider = ({ typeFilm }) => {
-
-
-    const movie = useSelector(state => state.MovieReducer)
-    const dispatch = useDispatch()
+    const movie = useSelector(movieSelector)
 
     const prev = "typeOfFilm__container__content__prev__" + typeFilm;
     const next = "typeOfFilm__container__content__next__" + typeFilm;
@@ -67,11 +63,7 @@ const FilmSlider = ({ typeFilm }) => {
         getTypes();
     }, []);
 
-    useEffect(() => {
-        //// console.log(movie)
-    }, [movie])
-
-
+    useEffect(() => {console.log(movie)}, [movie]);
     return (
         <div className="typeOfFilm__container" id={typeFilm}>
 
@@ -154,9 +146,12 @@ const FilmSlider = ({ typeFilm }) => {
 const SlideItem = props => {
     const item = props.item;
     const background = apiConfig.originalImage(item.poster_path)
+    const dispatch = useDispatch();
 
     const navigate = useNavigate();
     const GoToDetails = () => {
+      ///  dispatch(add({name: 'abc', old: 'xyz'}))
+
         const params = {category: 'movie', id: props.item.id}
         navigate({
             pathname: '/filmDetails',

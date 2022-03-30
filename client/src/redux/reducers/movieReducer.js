@@ -21,14 +21,15 @@ export const MovieReducer = (state = initState, action) => {
 export default MovieReducer
 
 const addMovie = (state, action) => {
+    console.log('aaaaaaaa')
     const newState = {
         ...state,
         data: [
-            ...state.data, action.payload
+            ...state.data, 
+            action.payload
         ]
     }
-
-    console.log(newState);
+    console.log(newState)
     return newState;
 }
 

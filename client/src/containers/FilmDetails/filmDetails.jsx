@@ -24,6 +24,7 @@ const FilmDetails = () => {
       try {
         const response = await tmdbApi.detail(category.movie, filmId, { params: params });
         setFilm(response)
+        window.scrollTo(0,0)
       } catch (err){
         console.log(err)
       }
@@ -33,12 +34,19 @@ const FilmDetails = () => {
   })
 
   return (
-    <div
+    <div>
+      {
+        film && (
+          <div className="banner" style = {{
+            backgroundImage: `url(${apiConfig.originalImage(film.backdrop_path || film.poster_path)})`
+          }}>
 
-    >
-      <p>aaaaaaaaaaa</p>
-
+          </div>
+        )
+      }
     </div>
+      
+
   )
 }
 
