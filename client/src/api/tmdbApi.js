@@ -37,6 +37,7 @@ const tmdbApi = {
     },
     detail: (cate, id, params) => {
         const url = category[cate] + '/' + id;
+        console.log(url);
         return axiosClient.get(url, params);
     },
     credits: (cate, id) => {
@@ -46,7 +47,7 @@ const tmdbApi = {
     similar: (cate, id) => {
         const url = category[cate] + '/' + id + '/similar';
         return axiosClient.get(url, { params: {} });
-    }
+    },
 }
 
 export default tmdbApi;

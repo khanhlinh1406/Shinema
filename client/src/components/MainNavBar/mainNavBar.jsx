@@ -17,6 +17,7 @@ import { CustomerMenu } from '../Menu/menu';
 const defaultColor = '#fff'
 const selectedColor = '#ff492094'
 
+
 const MainNavBar = () => {
 
     const [logged, setLogged] = useState(false);

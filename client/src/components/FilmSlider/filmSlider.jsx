@@ -17,17 +17,25 @@ import { FaAngleLeft, FaAngleRight } from 'react-icons/fa'
 import { RiInformationFill } from 'react-icons/ri';
 
 
-import {useSelector, useDispatch} from 'react-redux'
-import {add,update,remove} from "../../redux/actions/movieAction"
+import { useSelector, useDispatch } from 'react-redux'
+import { add, update, remove } from "../../redux/actions/movieAction"
 import { MovieReducer } from './../../redux/reducers/movieReducer';
 
 
+import { Link, createSearchParams } from 'react-router-dom'
+import { useNavigate } from "react-router";
+import { GiConsoleController } from "react-icons/gi";
+
+
+
 const FilmSlider = ({ typeFilm }) => {
+
+
     const movie = useSelector(state => state.MovieReducer)
     const dispatch = useDispatch()
 
     const prev = "typeOfFilm__container__content__prev__" + typeFilm;
-    const next = "typeOfFilm__container__content__next__"+ typeFilm;
+    const next = "typeOfFilm__container__content__next__" + typeFilm;
 
     const [movieItems, setMovieItems] = useState([]);
     const [movieTypes, setMovieTypes] = useState("");
@@ -60,9 +68,9 @@ const FilmSlider = ({ typeFilm }) => {
     }, []);
 
     useEffect(() => {
-           //// console.log(movie)
-    },[movie])
-    
+        //// console.log(movie)
+    }, [movie])
+
 
     return (
         <div className="typeOfFilm__container" id={typeFilm}>
@@ -105,15 +113,18 @@ const FilmSlider = ({ typeFilm }) => {
                     //     prevEl: {prev}
                     // }}
 
-                    
-                   
+
                     // navigation
                     modules={[Pagination, Navigation, FreeMode]}
                 >
                     {
                         movieItems.map((item, i) => (
                             <SwiperSlide key={i}>
-                                <SlideItem item={item} />
+                                <SlideItem item={item}
+
+
+
+                                />
                             </SwiperSlide>
                         ))
                     }
@@ -144,16 +155,22 @@ const SlideItem = props => {
     const item = props.item;
     const background = apiConfig.originalImage(item.poster_path)
 
+    const navigate = useNavigate();
+    const GoToDetails = () => {
+        const params = {category: 'movie', id: props.item.id}
+        navigate({
+            pathname: '/filmDetails',
+            search:`?${createSearchParams(params)}`
+        });
+    }
     return (
-        <div className="typeOfFilm__item__container">
+        <div className="typeOfFilm__item__container" onClick={GoToDetails}>
             <div className="typeOfFilm__item__container__hoverItem">
-               <button className="typeOfFilm__item__container__hoverItem__buyTicketBtn" onClick={
-                        dispatch(add({name: 'abc', value:'jjjj'}))
-                    }>Đặt vé</button> 
-               
+                <button className="typeOfFilm__item__container__hoverItem__buyTicketBtn">Đặt vé</button>
+
             </div>
             <img className="typeOfFilm__item__container__img" src={background} alt={item.title} />
-            <label className="typeOfFilm__item__container__title">{item.title}</label>   
+            <label className="typeOfFilm__item__container__title">{item.title}</label>
         </div>
     )
 }

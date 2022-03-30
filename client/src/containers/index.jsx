@@ -7,3 +7,4 @@ export { default as Review } from './Review/review';
 export { default as UserInfor } from './UserInfor/userInfor';
 export { default as Login } from './Login/login';
 export { default as Register } from './Register/register';
+export {default as FilmDetails} from './FilmDetails/filmDetails';
