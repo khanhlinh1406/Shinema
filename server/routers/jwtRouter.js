@@ -21,9 +21,7 @@ router.post('/refreshToken', (req, res) => {
         .then(data => {
             if (data.length != 0) {
                 jwt.verify(refreshToken, process.env.REFRESH_TOKEN_SECRET, (err, data) => {
-                    console.log('ma no ngu1')
                     if (err) {
-                        console.log('ma no ngu')
                         res.sendStatus(401);
                         return;
                     }
@@ -35,7 +33,6 @@ router.post('/refreshToken', (req, res) => {
                     res.json({ accessToken });
                 })
             } else {
-                console.log('ma no ngu2')
                 res.sendStatus(401)
             }
         })

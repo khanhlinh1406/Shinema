@@ -31,6 +31,8 @@ const mFunction = {
             result += characters.charAt(Math.floor(Math.random() * charactersLength));
         }
         return result;
-    }
+    },
+
+
 }
 module.exports = mFunction;

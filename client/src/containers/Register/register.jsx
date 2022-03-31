@@ -1,4 +1,4 @@
-import React, { StrictMode, useState } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import './register.css'
 
 import background_login from '../../assets/background_login.jpg'
@@ -7,6 +7,7 @@ import logo_png from '../../assets/logo_png.png'
 import { BiError } from 'react-icons/bi'
 
 import AccountApi from "../../api/accountApi";
+import EmailApi from '../../api/emailApi'
 import mFunction from "../../function";
 
 import Button from '@mui/material/Button';
@@ -18,6 +19,12 @@ import VisibilityOutlined from '@mui/icons-material/VisibilityOutlined';
 import VisibilityOffOutlined from '@mui/icons-material/VisibilityOffOutlined';
 import InputAdornment from '@mui/material/InputAdornment';
 import FormControl from '@mui/material/FormControl';
+
+import Dialog from '@mui/material/Dialog';
+import DialogActions from '@mui/material/DialogActions';
+import DialogContent from '@mui/material/DialogContent';
+import DialogContentText from '@mui/material/DialogContentText';
+import DialogTitle from '@mui/material/DialogTitle';
 
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import { red, grey } from "@mui/material/colors";
@@ -32,7 +39,10 @@ const Register = () => {
     const [confirmPasswordErrVisible, setConfirmPasswordErrVisible] = useState(false)
 
     const registerHandle = async () => {
-        checkInfo()
+        if (checkInfo()) {
+            sendMail();
+            handleClickOpenDialog()
+        }
     }
 
     const checkInfo = async () => {
@@ -73,17 +83,32 @@ const Register = () => {
                 .then(res => {
                     console.log(res)
                     if (res != 'Email already exists') {
-                        //send email
                         setEmailWarningVisible(false)
+                        return true
                     }
                     else {
                         setEmailWarningVisible(true)
+                        return false
                     }
                 })
                 .catch(err => {
                     console.log(err)
                 })
         }
+    }
+
+    const sendMail = () => {
+        var mailOptions = {
+            to: values.email,
+            subject: 'Xác nhận tài khoản',
+            text: 'Cảm ơn bạn đã sử dụng dịch vụ của Shinema, mã xác nhận của bạn là: ' + mFunction.makeId(6)
+        };
+
+        EmailApi.sendVerify(mailOptions)
+            .then(res => {
+                console.log(res)
+            })
+            .catch(err => console.log(err))
     }
 
     const btnTheme = createTheme({
@@ -111,6 +136,7 @@ const Register = () => {
         showPassword: false,
         confirmPassword: '',
         showConfirmPassword: false,
+        verify: ''
     });
 
     const handleChange = (prop) => (event) => {
@@ -134,6 +160,57 @@ const Register = () => {
     const handleMouseDownPassword = (event) => {
         event.preventDefault();
     };
+
+    const [openDialog, setOpenDialog] = useState(false)
+    const handleClickOpenDialog = () => {
+        setOpenDialog(true);
+        clearTimer(getDeadTime());
+    };
+
+    const handleCloseDialog = () => {
+        setOpenDialog(false);
+    };
+
+    //--------------------countdown--------------------//
+    const Ref = useRef(null);
+    const [timer, setTimer] = useState('00:00');
+
+    const getTimeRemaining = (e) => {
+        const total = Date.parse(e) - Date.parse(new Date());
+        const seconds = Math.floor((total / 1000) % 60);
+        const minutes = Math.floor((total / 1000 / 60) % 60);
+        const hours = Math.floor((total / 1000 * 60 * 60) % 24);
+        return {
+            total, hours, minutes, seconds
+        };
+    }
+
+    const startTimer = (e) => {
+        let { total, hours, minutes, seconds }
+            = getTimeRemaining(e);
+        if (total >= 0) {
+            setTimer(
+                // (hours > 9 ? hours : '0' + hours) + ':' +
+                (minutes > 9 ? minutes : '0' + minutes) + ':'
+                + (seconds > 9 ? seconds : '0' + seconds)
+            )
+        }
+    }
+
+    const clearTimer = (e) => {
+        setTimer('00:10');
+        if (Ref.current) clearInterval(Ref.current);
+        const id = setInterval(() => {
+            startTimer(e);
+        }, 1000)
+        Ref.current = id;
+    }
+
+    const getDeadTime = () => {
+        let deadline = new Date();
+        deadline.setSeconds(deadline.getSeconds() + 10);
+        return deadline;
+    }
 
     return (
         <div className="register">
@@ -252,26 +329,48 @@ const Register = () => {
 
             </div>
 
-            <DialogCustom />
+            {/* -----------------------dialog custom--------------------- */}
+
+            <Dialog open={openDialog} onClose={handleCloseDialog}>
+                <DialogTitle sx={{ color: '#040C18' }}>Xác nhận email</DialogTitle>
+                <DialogContent>
+                    <DialogContentText>
+                        Shinema vừa gửi mã xác nhận đến email của bạn. Vui lòng kiểm tra và điền mã xác nhận bên dưới.
+                    </DialogContentText>
+                    <TextField
+                        autoFocus
+                        margin="dense"
+                        id="name"
+                        label="Mã xác nhận"
+                        type="email"
+                        fullWidth
+                        variant="standard"
+                    />
+                </DialogContent>
+
+                <DialogActions>
+                    <p>{timer}</p>
+
+                    <Button onClick={handleCloseDialog}>Hủy</Button>
+                    {timer == '00:00' ?
+                        <Button onClick={handleCloseDialog}>Gửi lại</Button>
+                        :
+                        <Button onClick={handleCloseDialog} disabled>Gửi lại</Button>
+                    }
+
+                    {timer == '00:00' ?
+                        <Button onClick={handleCloseDialog} disabled >Xác nhận</Button>
+                        :
+                        <Button onClick={handleCloseDialog} >Xác nhận</Button>
+                    }
+                </DialogActions>
+            </Dialog>
+
+
         </div>
     )
 }
-const DialogCustom = () => {
-    const [open, setOpen] = useState(false);
-    const handleClickOpen = () => {
-        setOpen(true);
-    };
 
-    const handleClose = () => {
-        setOpen(false);
-    };
-
-    return (
-        <div className="register__dialog__container">
-
-        </div>
-    )
-}
 const Message = props => {
     const mess = props.message;
     const type = props.type
@@ -284,5 +383,6 @@ const Message = props => {
     )
 
 }
+
 
 export default Register
