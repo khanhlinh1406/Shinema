@@ -13,18 +13,17 @@ import tmdbApi from "../../api/tmdbApi";
 import { movieType } from '../../api/tmdbApi'
 import apiConfig from "../../api/apiConfig";
 
-import { FaAngleLeft, FaAngleRight } from 'react-icons/fa'
-import { RiInformationFill } from 'react-icons/ri';
-
 import {createSearchParams } from 'react-router-dom'
 
-import { useSelector, useDispatch } from 'react-redux'
-import { add, update, remove } from "../../redux/actions/movieAction"
-import { MovieReducer } from './../../redux/reducers/movieReducer';
+ import { useSelector, useDispatch } from 'react-redux'
+// import { add, update, remove } from "../../redux/actions/movieAction"
+// import { MovieReducer } from '../../redux/slices/movieSlice';
 
 import { useNavigate } from "react-router";
 
 import { movieSelector } from "../../redux/selector";
+
+import { movieSlice } from "../../redux/slices/movieSlice";
 
 
 const FilmSlider = ({ typeFilm }) => {
@@ -150,7 +149,9 @@ const SlideItem = props => {
 
     const navigate = useNavigate();
     const GoToDetails = () => {
-      ///  dispatch(add({name: 'abc', old: 'xyz'}))
+        dispatch(
+            movieSlice.actions.addMovie({name: 'ok'})
+        )
 
         const params = {category: 'movie', id: props.item.id}
         navigate({
