@@ -34,5 +34,8 @@ mongoose.connect(process.env.MONGODB_URI)
         console.log('err', err)
     })
 
-var accountRouter = require('./routers/AccountRouter')
+var accountRouter = require('./routers/accountRouter')
 app.use('/api/account/', accountRouter)
+
+var emailRouter = require('./routers/emailRouter')
+app.use('/api/sendMail', emailRouter)

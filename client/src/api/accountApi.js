@@ -24,7 +24,12 @@ const AccountApi = {
     getAll: async() => {
         const res = await ApiDatabase.get('/account');
         return res.data
-    }
+    },
+    checkEmail: async(email) => {
+        const res = await ApiDatabase.post('/account/checkEmail/' + email);
+        return res.data
+    },
+
 }
 
 export default AccountApi

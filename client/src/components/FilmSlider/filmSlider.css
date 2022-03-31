@@ -1,19 +1,18 @@
-
-.typeOfFilm__container{
+.typeOfFilm__container {
     width: 100%;
-    display: block; 
+    display: block;
     padding-top: 3rem;
     padding-left: 1rem;
     padding-right: 1rem;
     height: auto;
 }
 
-.typeOfFilm__container__header{
+.typeOfFilm__container__header {
     width: 100%;
     margin-bottom: 1rem;
 }
 
-.typeOfFilm__container__header__title{
+.typeOfFilm__container__header__title {
     color: #fff;
     /* text-transform: uppercase; */
     display: inline;
@@ -23,10 +22,9 @@
     width: 200px;
     font-size: 2rem;
     font-family: var(--font-family);
-    
 }
 
-.typeOfFilm__container__header__viewMore{
+.typeOfFilm__container__header__viewMore {
     padding: 0.5rem 4rem;
     color: #FFF;
     background-color: rgba(255, 255, 255, 0.014);
@@ -39,18 +37,18 @@
     cursor: pointer;
     border-radius: 20px;
     transition: background-color 0.2 ease;
-    position:absolute;
+    position: absolute;
     right: 0;
     margin-right: 50px;
     padding: 8px 35px;
 }
 
-.typeOfFilm__container__header__viewMore:hover{
+.typeOfFilm__container__header__viewMore:hover {
     background-color: #fff;
-    color: black;    
+    color: black;
 }
 
-.typeOfFilm__container__content{
+.typeOfFilm__container__content {
     position: relative;
 }
 
@@ -58,6 +56,8 @@
     width: 100%;
     height: 100%;
 }
+
+
 /* .typeOfFilm__container__content__prev, .typeOfFilm__container__content__next { 
      width: 30px;
     height: 55px;
@@ -79,23 +79,22 @@
     right: 5px; 
  } */
 
-.typeOfFilm__item__container{
+.typeOfFilm__item__container {
     width: 230px;
     height: 400px;
     background-color: transparent;
     position: relative;
-} 
-
-.typeOfFilm__item__container:hover .typeOfFilm__item__container__hoverItem{
-    display: block;
 }
 
-.typeOfFilm__item__container:hover .typeOfFilm__item__container__title{
+.typeOfFilm__item__container:hover .typeOfFilm__item__container__hoverItem {
+    opacity: 100%;
+}
+
+.typeOfFilm__item__container:hover .typeOfFilm__item__container__title {
     font-weight: bold;
 }
 
-
-.typeOfFilm__item__container__hoverItem{
+.typeOfFilm__item__container__hoverItem {
     position: absolute;
     top: 0;
     height: 80%;
@@ -104,19 +103,19 @@
     padding: 10px;
     background-image: linear-gradient(transparent, black 70%);
     text-align: center;
-    display: none;
+    display: block;
+    opacity: 0;
+    transition: opacity 0.5 ease;
 }
 
-.typeOfFilm__item__container__hoverItem__buyTicketBtn{
+.typeOfFilm__item__container__hoverItem__buyTicketBtn {
     color: #fff;
     font-family: var(--font-family);
     text-transform: uppercase;
     font-weight: bold;
     font-size: 15px;
-
     background-color: #ff4820;
     border: 1px solid transparent;
-
     padding: 0px;
     position: absolute;
     top: 0;
@@ -124,21 +123,18 @@
     right: 0;
     left: 0;
     margin: auto;
-
     width: 70%;
     height: 15%;
     cursor: pointer;
     border-radius: 25px;
-    
     transition: background-color 0.2 ease;
 }
 
-.typeOfFilm__item__container__hoverItem__buyTicketBtn:hover{
+.typeOfFilm__item__container__hoverItem__buyTicketBtn:hover {
     box-shadow: 1px 1px 10px #FF4820;
 }
 
-
-.typeOfFilm__item__container__img{
+.typeOfFilm__item__container__img {
     height: 80%;
     width: 100%;
     background-position: center;
@@ -146,20 +142,16 @@
     border-radius: 25px;
 }
 
-.typeOfFilm__item__container__title{
+.typeOfFilm__item__container__title {
     color: white;
     padding: 10px;
     font-family: var(--font-family);
     align-items: center;
-    display:inline-block;
-    font-size:1.1rem;
+    display: inline-block;
+    font-size: 1.1rem;
     cursor: pointer;
 }
 
-.typeOfFilm__container__header__title:hover{
+.typeOfFilm__container__header__title:hover {
     font-weight: bold;
-    
 }
-
-
-

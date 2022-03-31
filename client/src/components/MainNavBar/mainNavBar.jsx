@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import './mainNavBar.css'
 import { Link } from 'react-router-dom'
+import { useNavigate } from 'react-router-dom';
 
 import { AiOutlineUser } from 'react-icons/ai'
 import { BsBell } from 'react-icons/bs'
@@ -14,10 +15,16 @@ import { AiFillCloseCircle } from 'react-icons/ai'
 import { GiFilmStrip } from 'react-icons/gi'
 
 import { CustomerMenu } from '../Menu/menu';
+
+import Button from '@mui/material/Button';
+import { createTheme, ThemeProvider } from '@mui/material/styles';
+import { red, grey } from "@mui/material/colors";
+
 const defaultColor = '#fff'
 const selectedColor = '#ff492094'
 
 const MainNavBar = () => {
+
 
     const [logged, setLogged] = useState(false);
     const [accountToggle, setAccountToggle] = useState(false)
@@ -29,7 +36,7 @@ const MainNavBar = () => {
         <div className='mainNavBar'>
             <div>
                 <div className='mainNavBar-links'>
-                    <p>Góc điện ảnh</p>
+                    <p>GÓC ĐIỆN ẢNH</p>
 
                     {logged &&
                         <div>
@@ -77,12 +84,28 @@ const MainNavBar = () => {
 
 }
 
+
 export const NotSignInMenu = () => {
+    const btnTheme = createTheme({
+        shape: {
+            borderRadius: 20
+        },
+        palette: {
+            primary: red
+        },
+    })
+
+    let navigate = useNavigate();
+
     return (
         <div className='mainNavBar__login'>
-            <p ><Link to="/login">Đăng nhập</Link></p>
-            <button className='mainNavBar__login__btn mainNavBar__login__btn--register'><p ><Link to="/register">Đăng ký</Link></p></button>
-        </div>
+            <p ><Link to="/login">ĐĂNG NHẬP</Link></p>
+
+            <ThemeProvider theme={btnTheme} >
+                <Button sx={{ paddingX: 5, paddingY: 0.8 }} variant="contained" onClick={() => navigate('/register')}>Đăng ký</Button>
+            </ThemeProvider>
+            {/* <button className='mainNavBar__login__btn mainNavBar__login__btn--register'><p ><Link to="/register">Đăng ký</Link></p></button> */}
+        </div >
     )
 }
 
