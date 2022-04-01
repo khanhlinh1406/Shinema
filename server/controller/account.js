@@ -1,8 +1,11 @@
 const AccountModel = require('../models/account')
 const mFunction = require('../../client/src/function')
+const { decode } = require('base-64');
+const { encode } = require('base-64');
 const jwt = require('jsonwebtoken')
 const dotenv = require('dotenv')
 dotenv.config()
+
 
 const accountController = {
     getAll: (req, res) => {
@@ -33,20 +36,37 @@ const accountController = {
             })
             .then(data => {
                 if (data) {
+
                     res.send('Email already exists')
-                } else if (!mFunction.validatePhoneNumber(req.body.phoneNumber)) {
-                    res.send('Contact consist of numeric and 10 characters')
+
                     return
+                    // } else if (!mFunction.validatePhoneNumber(req.body.phoneNumber)) {
+                    //     res.send('Contact consist of numeric and 10 characters')
+                    //     return
                 } else if (!mFunction.validatePassword(req.body.password)) {
+
                     res.send('Password has more than 6 charactor')
                     return
                 } else {
-                    const newAccount = req.body;
+                    const newAccount = {
+                        name: req.body.email,
+                        contact: req.body.contact,
+                        identifyNumber: req.body.identifyNumber,
+                        address: req.body.address,
+                        birthday: req.body.birthday,
+                        email: req.body.email,
+                        password: encode(req.body.password),
+                        rank: req.body.rank,
+                        score: req.body.score,
+                        listTicketId: req.body.listTicketId,
+                        listReview: req.body.listReview
+                    }
+
                     return AccountModel.create(newAccount)
                 }
             })
             .then(data => {
-                res.json("Successful")
+                res.send("Successful")
             })
             .catch(err => {
                 res.status(500).json({ Err: err })

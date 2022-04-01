@@ -26,10 +26,15 @@ import DialogContent from '@mui/material/DialogContent';
 import DialogContentText from '@mui/material/DialogContentText';
 import DialogTitle from '@mui/material/DialogTitle';
 
+import CircularProgress from '@mui/material/CircularProgress';
+
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import { red, grey } from "@mui/material/colors";
 
+import { useNavigate } from 'react-router-dom';
+
 const Register = () => {
+    let navigate = useNavigate();
 
     const [emailErrVisible, setEmailErrVisible] = useState(false)
     const [emailWarningVisible, setEmailWarningVisible] = useState(false)
@@ -38,11 +43,27 @@ const Register = () => {
 
     const [confirmPasswordErrVisible, setConfirmPasswordErrVisible] = useState(false)
 
+    const [verifyCode, setVerifyCode] = useState('')
+
+    const [values, setValues] = useState({
+        email: '',
+        password: '',
+        showPassword: false,
+        confirmPassword: '',
+        showConfirmPassword: false,
+        confirmVerify: '',
+        isLoading: false,
+        correctVerify: true
+    });
+
+
     const registerHandle = async () => {
-        if (checkInfo()) {
-            sendMail();
-            handleClickOpenDialog()
-        }
+        checkInfo()
+            .then(res => {
+                console.log(res)
+                if (res) sendMail()
+            })
+
     }
 
     const checkInfo = async () => {
@@ -81,34 +102,53 @@ const Register = () => {
         if (!errEmail && !errPassword && !errConfirmPassword) {
             await AccountApi.checkEmail(values.email)
                 .then(res => {
-                    console.log(res)
                     if (res != 'Email already exists') {
                         setEmailWarningVisible(false)
-                        return true
                     }
                     else {
                         setEmailWarningVisible(true)
-                        return false
                     }
                 })
                 .catch(err => {
                     console.log(err)
                 })
+
+
+            return emailWarningVisible
         }
+        else {
+            return false
+        }
+
     }
 
     const sendMail = () => {
+        setValues({
+            ...values,
+            isLoading: true
+        })
+
+        let verifyCode = mFunction.makeId(6);
+
+        setVerifyCode(verifyCode);
+
         var mailOptions = {
             to: values.email,
             subject: 'Xác nhận tài khoản',
-            text: 'Cảm ơn bạn đã sử dụng dịch vụ của Shinema, mã xác nhận của bạn là: ' + mFunction.makeId(6)
+            text: 'Cảm ơn bạn đã sử dụng dịch vụ của Shinema, mã xác nhận của bạn là: ' + verifyCode
         };
 
         EmailApi.sendVerify(mailOptions)
             .then(res => {
-                console.log(res)
+                setValues({
+                    ...values,
+                    isLoading: false
+                })
+                handleClickOpenDialog()
             })
-            .catch(err => console.log(err))
+            .catch(err => {
+                console.log(err)
+            })
     }
 
     const btnTheme = createTheme({
@@ -129,15 +169,6 @@ const Register = () => {
         },
         text: grey
     })
-
-    const [values, setValues] = useState({
-        email: '',
-        password: '',
-        showPassword: false,
-        confirmPassword: '',
-        showConfirmPassword: false,
-        verify: ''
-    });
 
     const handleChange = (prop) => (event) => {
         setValues({ ...values, [prop]: event.target.value });
@@ -162,7 +193,13 @@ const Register = () => {
     };
 
     const [openDialog, setOpenDialog] = useState(false)
+
     const handleClickOpenDialog = () => {
+        setValues({
+            ...values,
+            correctVerify: true
+        })
+
         setOpenDialog(true);
         clearTimer(getDeadTime());
     };
@@ -170,6 +207,42 @@ const Register = () => {
     const handleCloseDialog = () => {
         setOpenDialog(false);
     };
+
+    const handleResendMail = () => {
+        sendMail()
+    }
+
+    const handleConfirmDialog = () => {
+        if (verifyCode == values.confirmVerify) {
+            setValues({ ...values, correctVerify: true })
+            setOpenDialog(false);
+            createAccount();
+        }
+        else {
+            setValues({ ...values, correctVerify: false })
+        }
+    };
+
+    const createAccount = () => {
+        const account = {
+            name: values.email,
+            contact: '',
+            identifyNumber: '',
+            address: '',
+            birthday: '',
+            email: values.email,
+            password: values.password,
+            rank: 'Customer',
+            score: 0,
+            listTicketId: [],
+            listReview: []
+        }
+        AccountApi.create(account)
+            .then(res => {
+                navigate('/login')
+            })
+            .catch(err => console.log(err))
+    }
 
     //--------------------countdown--------------------//
     const Ref = useRef(null);
@@ -198,7 +271,7 @@ const Register = () => {
     }
 
     const clearTimer = (e) => {
-        setTimer('00:10');
+        setTimer('01:00');
         if (Ref.current) clearInterval(Ref.current);
         const id = setInterval(() => {
             startTimer(e);
@@ -208,7 +281,7 @@ const Register = () => {
 
     const getDeadTime = () => {
         let deadline = new Date();
-        deadline.setSeconds(deadline.getSeconds() + 10);
+        deadline.setSeconds(deadline.getSeconds() + 60);
         return deadline;
     }
 
@@ -256,7 +329,7 @@ const Register = () => {
                         variant="filled">
                         <InputLabel sx={{ color: 'rgb(153, 153, 153)', marginLeft: 1 }} htmlFor="filled-adornment-password">Mật khẩu</InputLabel>
                         <FilledInput
-                            id="filled-adornment-password"
+                            //id="filled-adornment-password"
                             type={values.showPassword ? 'text' : 'password'}
                             value={values.password}
                             onChange={handleChange('password')}
@@ -291,7 +364,7 @@ const Register = () => {
                         variant="filled">
                         <InputLabel sx={{ color: 'rgb(153, 153, 153)', marginLeft: 1 }} htmlFor="filled-adornment-password">Xác nhận mật khẩu</InputLabel>
                         <FilledInput
-                            id="filled-adornment-password"
+                            //id="filled-adornment-password"
                             type={values.showConfirmPassword ? 'text' : 'password'}
                             value={values.confirmPassword}
                             onChange={handleChange('confirmPassword')}
@@ -337,34 +410,59 @@ const Register = () => {
                     <DialogContentText>
                         Shinema vừa gửi mã xác nhận đến email của bạn. Vui lòng kiểm tra và điền mã xác nhận bên dưới.
                     </DialogContentText>
-                    <TextField
-                        autoFocus
-                        margin="dense"
-                        id="name"
-                        label="Mã xác nhận"
-                        type="email"
-                        fullWidth
-                        variant="standard"
-                    />
+                    {values.correctVerify ?
+                        <TextField
+                            autoFocus
+                            margin="dense"
+                            id="name"
+                            label="Mã xác nhận"
+                            type="text"
+                            fullWidth
+                            variant="standard"
+                            value={values.confirmVerify}
+                            onChange={handleChange('confirmVerify')}
+                        />
+                        :
+                        <TextField
+                            autoFocus
+                            margin="dense"
+                            id="name"
+                            label="Mã xác nhận"
+                            type="text"
+                            fullWidth
+                            variant="standard"
+                            value={values.confirmVerify}
+                            onChange={handleChange('confirmVerify')}
+                            error
+                        />}
+
                 </DialogContent>
 
                 <DialogActions>
+
                     <p>{timer}</p>
 
                     <Button onClick={handleCloseDialog}>Hủy</Button>
                     {timer == '00:00' ?
-                        <Button onClick={handleCloseDialog}>Gửi lại</Button>
+                        <Button onClick={handleResendMail}>Gửi lại</Button>
                         :
-                        <Button onClick={handleCloseDialog} disabled>Gửi lại</Button>
+                        <Button disabled>Gửi lại</Button>
                     }
 
                     {timer == '00:00' ?
-                        <Button onClick={handleCloseDialog} disabled >Xác nhận</Button>
+                        <Button disabled >Xác nhận</Button>
                         :
-                        <Button onClick={handleCloseDialog} >Xác nhận</Button>
+                        <Button onClick={handleConfirmDialog} >Xác nhận</Button>
                     }
                 </DialogActions>
             </Dialog>
+
+            {
+                values.isLoading &&
+                <div style={{ backgroundColor: 'rgba(255, 255, 255, 0.1)', position: 'absolute', display: 'flex', alignItems: 'center', justifyContent: 'center', top: 0, left: 0, right: 0, bottom: 0 }} >
+                    <CircularProgress />
+                </div>
+            }
 
 
         </div>

@@ -1,3 +1,5 @@
+//
+
 const mFunction = {
     validateEmail: (email) => {
         let reg = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
@@ -32,7 +34,6 @@ const mFunction = {
         }
         return result;
     },
-
 
 }
 module.exports = mFunction;

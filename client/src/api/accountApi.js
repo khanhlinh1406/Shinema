@@ -29,6 +29,13 @@ const AccountApi = {
         const res = await ApiDatabase.post('/account/checkEmail/' + email);
         return res.data
     },
+    create: async(account) => {
+        console.log(account)
+        const res = await ApiDatabase.post('/account',
+            account
+        )
+        return res
+    }
 
 }
 
