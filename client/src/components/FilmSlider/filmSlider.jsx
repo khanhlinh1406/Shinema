@@ -26,11 +26,11 @@ import { movieSelector } from "../../redux/selector";
 import { movieSlice } from "../../redux/slices/movieSlice";
 
 
-const FilmSlider = ({ typeFilm }) => {
+const FilmSlider = props=> {
     const movie = useSelector(movieSelector)
 
-    const prev = "typeOfFilm__container__content__prev__" + typeFilm;
-    const next = "typeOfFilm__container__content__next__" + typeFilm;
+    const prev = "typeOfFilm__container__content__prev__" + props.typeFilm;
+    const next = "typeOfFilm__container__content__next__" + props.typeFilm;
 
     const [movieItems, setMovieItems] = useState([]);
     const [movieTypes, setMovieTypes] = useState("");
@@ -41,8 +41,14 @@ const FilmSlider = ({ typeFilm }) => {
                 page: 1,
             }
             try {
-                const response = await tmdbApi.getMoviesList(typeFilm, { params: params });
+                if (props.typeFilm !== 'similar'){
+                const response = await tmdbApi.getMoviesList(props.typeFilm, { params: params });
                 setMovieItems(response.results.slice(0, 15))
+                }
+                else {
+                    const response = await tmdbApi.similar(props.category, props.id);
+                    setMovieItems(response.results.slice(0,15))
+                }
             } catch {
                 console.log("Film slider error")
             }
@@ -51,20 +57,23 @@ const FilmSlider = ({ typeFilm }) => {
         getMovies();
 
         const getTypes = () => {
-            if (typeFilm === movieType.popular)
+            if (props.typeFilm === movieType.popular)
                 setMovieTypes('Phổ biến');
-            if (typeFilm === movieType.upcoming)
+            if (props.typeFilm === movieType.upcoming)
                 setMovieTypes('Sắp chiếu');;
-            if (typeFilm === movieType.top_rated)
+            if (props.typeFilm === movieType.top_rated)
                 setMovieTypes('Đánh giá cao');
+            if (props.typeFilm == 'similar'){
+                setMovieTypes('Tương tự')
+            }
         }
 
         getTypes();
     }, []);
 
-    useEffect(() => {console.log(movie)}, [movie]);
+   /// useEffect(() => {console.log(movie)}, [movie]);
     return (
-        <div className="typeOfFilm__container" id={typeFilm}>
+        <div className="typeOfFilm__container" id={props.typeFilm}>
 
             <div className="typeOfFilm__container__header">
                 <h3 className="typeOfFilm__container__header__title">
@@ -149,9 +158,9 @@ const SlideItem = props => {
 
     const navigate = useNavigate();
     const GoToDetails = () => {
-        dispatch(
-            movieSlice.actions.addMovie({name: 'ok'})
-        )
+        // dispatch(
+        //     movieSlice.actions.addMovie({name: 'ok'})
+        // )
 
         const params = {category: 'movie', id: props.item.id}
         navigate({
