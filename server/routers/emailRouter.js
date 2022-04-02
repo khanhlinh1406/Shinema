@@ -8,7 +8,7 @@ router.post('/verify', (req, res) => {
         service: 'gmail',
         auth: {
             user: 'shinemaapplication@gmail.com',
-            pass: 'ThucLinh123'
+            pass: 'Shinema_123'
         }
     });
 

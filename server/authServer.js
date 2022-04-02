@@ -5,8 +5,6 @@ const mongoose = require('mongoose');
 const dotenv = require('dotenv')
 dotenv.config()
 
-
-
 const app = express()
 const PORT = process.env.URL_AUTHEN
 
@@ -40,4 +38,4 @@ mongoose.connect(process.env.MONGODB_URI)
     })
 
 var jwtRouter = require('./routers/jwtRouter')
-app.use('/auth/', jwtRouter)
+app.use('/auth', jwtRouter)

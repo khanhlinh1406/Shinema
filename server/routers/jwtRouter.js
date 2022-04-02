@@ -1,6 +1,7 @@
 const express = require('express')
 var router = express.Router()
 const jwt = require('jsonwebtoken')
+const { encode } = require('base-64');
 
 const JWTModel = require('../models/JWTRefToken')
 const AccountModel = require('../models/account')
@@ -13,7 +14,6 @@ router.post('/refreshToken', (req, res) => {
         res.sendStatus(401);
         return;
     }
-
 
     JWTModel.find({
             refreshToken: refreshToken
@@ -41,14 +41,16 @@ router.post('/refreshToken', (req, res) => {
 
 router.post('/login', (req, res) => {
     const email = req.body.email
-    const password = req.body.password
-
+    const password = encode(req.body.password)
     console.log(email)
+    console.log(password)
+
 
     AccountModel.findOne({
             email: email
         })
         .then(data => {
+            console.log(data)
             if (data) {
                 if (data.password == password) {
 
@@ -83,10 +85,10 @@ router.post('/login', (req, res) => {
                         })
 
                 } else {
-                    res.status(400).json("Password incorrect")
+                    res.json("Password incorrect")
                 }
             } else {
-                res.status(400).json("Email not exist")
+                res.json("Email not exist")
             }
 
         })

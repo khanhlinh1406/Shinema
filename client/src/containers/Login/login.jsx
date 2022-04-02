@@ -4,35 +4,124 @@ import './login.css'
 import background_login from '../../assets/background_login.jpg'
 import logo_png from '../../assets/logo_png.png'
 
-import { AiOutlineEye, AiOutlineEyeInvisible, AiOutlineGoogle } from 'react-icons/ai'
-import { MdOutlineEmail } from 'react-icons/md'
+import { AiOutlineGoogle } from 'react-icons/ai'
 import { FaFacebookF } from 'react-icons/fa'
 import { BiError } from 'react-icons/bi'
 
+import Button from '@mui/material/Button';
+import InputLabel from '@mui/material/InputLabel';
+import TextField from '@mui/material/TextField';
+import IconButton from '@mui/material/IconButton';
+import FilledInput from '@mui/material/FilledInput';
+import VisibilityOutlined from '@mui/icons-material/VisibilityOutlined';
+import VisibilityOffOutlined from '@mui/icons-material/VisibilityOffOutlined';
+import InputAdornment from '@mui/material/InputAdornment';
+import FormControl from '@mui/material/FormControl';
+
+import { createTheme, ThemeProvider } from '@mui/material/styles';
+import { red, grey } from "@mui/material/colors";
+
+import { useNavigate } from 'react-router-dom';
+
 import AccountApi from "../../api/accountApi";
+import mFunction from "../../function";
 
 const Login = () => {
-    const [email, setEmail] = useState()
-    const [password, setPassword] = useState()
-    const [passwordVisible, setPasswordVisible] = useState(false)
+    const txtFieldThem = createTheme({
+        shape: {
+            borderRadius: 20
+        },
+        palette: {
+            primary: grey
+        },
+        text: grey
+    })
+
+    const btnTheme = createTheme({
+        shape: {
+            borderRadius: 20
+        },
+        palette: {
+            primary: red
+        },
+    })
+
+    const [values, setValues] = useState({
+        email: '',
+        password: '',
+        showPassword: false,
+        isLoading: false,
+    });
 
     const [emailErrVisible, setEmailErrVisible] = useState(false)
     const [emailWarningVisible, setEmailWarningVisible] = useState(false)
-    const [passwordErr, setPasswordErr] = useState(false)
+    const [passwordErrVisible, setPasswordErrVisible] = useState(false)
+
+    const handleChange = (prop) => (event) => {
+        setValues({ ...values, [prop]: event.target.value });
+    };
+
+    const handleClickShowPassword = () => {
+        setValues({
+            ...values,
+            showPassword: !values.showPassword,
+        });
+    };
+
+    const handleMouseDownPassword = (event) => {
+        event.preventDefault();
+    };
 
     const loginHandle = async () => {
-        console.log('dang nhap')
-        await AccountApi.login('trithuc', '123456').then(
+        await AccountApi.login('trithuc23232@gmail.com', '123456').then(
             res => console.log(res)
         )
-
     }
 
-    const getAccounts = async () => {
-        console.log('get accounts')
-        await AccountApi.getAll().then(
-            res => console.log(res)
-        )
+    const checkInfo = async () => {
+
+        let errEmail = false;
+        let errPassword = false;
+
+        if (!mFunction.validateEmail(values.email)) {
+            setEmailErrVisible(true)
+            errEmail = true
+        }
+        else {
+            setEmailErrVisible(false)
+            errEmail = false
+        }
+
+        if (!mFunction.validatePassword(values.password)) {
+            setPasswordErrVisible(true)
+            errPassword = true
+        }
+        else {
+            setPasswordErrVisible(false)
+            errPassword = false
+        }
+
+        if (!errEmail && !errPassword) {
+            await AccountApi.login(values.email, values.password)
+                .then(res => {
+                    if (res != 'Email already exists') {
+                        setEmailWarningVisible(false)
+                    }
+                    else {
+                        setEmailWarningVisible(true)
+                    }
+                })
+                .catch(err => {
+                    console.log(err)
+                })
+
+
+            return emailWarningVisible
+        }
+        else {
+            return false
+        }
+
     }
 
     return (
@@ -48,24 +137,62 @@ const Login = () => {
                     <h2>ĐĂNG NHẬP</h2>
                 </div>
 
-                <div className="login__form__ip__container">
-                    <input className="login__form__ip" type="email" placeholder="Email" />
-                    <MdOutlineEmail size={25} color="#9C9C9C" />
-                </div>
+                <ThemeProvider theme={txtFieldThem}>
+                    <TextField
+                        id="filled-basic"
+                        label="Email"
+                        variant="filled"
+                        color="primary"
+                        text='primary'
+                        sx={{
+                            marginTop: 1,
+                            backgroundColor: 'rgb(9, 24, 48)',
+                            borderRadius: 0.5,
+                            input: { color: 'white', marginLeft: 1, marginX: 0.4 },
+                            label: { color: 'rgb(153, 153, 153)', marginLeft: 1, marginX: 0.4 }
+                        }}
+                        value={values.email}
+                        onChange={handleChange('email')} />
+                </ThemeProvider>
 
                 {emailErrVisible && <Message message="Email không hợp lệ" type="err" />}
                 {emailWarningVisible && <Message message="Email chưa được đăng kí" type="warning" />}
 
-                <div className="login__form__ip__container">
-                    <input className="login__form__ip" type={passwordVisible ? "text" : "password"} placeholder="Mật khẩu" />
-                    {passwordVisible ?
-                        <AiOutlineEye size={25} color="#9C9C9C" cursor='pointer' onClick={() => { setPasswordVisible(false) }} />
-                        :
-                        <AiOutlineEyeInvisible size={25} color="#9C9C9C" cursor='pointer' onClick={() => { setPasswordVisible(true) }} />
-                    }
-                </div>
 
-                {passwordErr && <Message message="Mật khẩu không chính xác" type="err" />}
+                <ThemeProvider theme={txtFieldThem}>
+                    <FormControl
+                        sx={{
+                            marginY: 2,
+                            backgroundColor: 'rgb(9, 24, 48)',
+                            borderRadius: 0.5,
+                        }}
+                        variant="filled">
+                        <InputLabel sx={{ color: 'rgb(153, 153, 153)', marginLeft: 1 }} htmlFor="filled-adornment-password">Mật khẩu</InputLabel>
+                        <FilledInput
+                            //id="filled-adornment-password"
+                            type={values.showPassword ? 'text' : 'password'}
+                            value={values.password}
+                            onChange={handleChange('password')}
+                            sx={{ color: '#fff', marginLeft: 1, fontSize: 15 }}
+                            endAdornment={
+                                <InputAdornment position="end">
+                                    <IconButton
+                                        aria-label="toggle password visibility"
+                                        onClick={handleClickShowPassword}
+                                        onMouseDown={handleMouseDownPassword}
+                                        edge="end"
+                                        sx={{ color: "rgb(153, 153, 153)", marginRight: 0.3 }}
+
+                                    >
+                                        {values.showPassword ? <VisibilityOutlined /> : <VisibilityOffOutlined />}
+                                    </IconButton>
+                                </InputAdornment>
+                            }
+                        />
+                    </FormControl>
+                </ThemeProvider>
+
+                {passwordErrVisible && <Message message="Mật khẩu không chính xác" type="err" />}
 
                 <div className="login__form__remember__container">
                     <a>Quên  mật khẩu?</a>
@@ -76,11 +203,13 @@ const Login = () => {
                     </div>
                 </div>
 
-                <button className="login__form__btn login__form__btn--login" onClick={loginHandle}>Đăng nhập</button>
+                <ThemeProvider theme={btnTheme} >
+                    <Button sx={{ padding: 1, marginTop: 3 }} variant="contained" onClick={loginHandle}>Đăng nhập</Button>
+                </ThemeProvider>
 
-                <hr style={{ marginBottom: 60 }} />
+                <hr style={{ marginBottom: 60, marginTop: 20 }} />
 
-                <div className="login__form__socialMedia" onClick={getAccounts}>
+                <div className="login__form__socialMedia" >
                     <AiOutlineGoogle size={23} />
                     <p>Đăng nhập với Google</p>
                 </div>

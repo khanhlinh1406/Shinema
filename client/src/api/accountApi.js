@@ -8,18 +8,23 @@ const AccountApi = {
             password: password
         });
 
+        if (res.data == 'Password incorrect' || res.data == 'Email not exist') {
+            return res
+        }
+
+
         try {
-            await window.localStorage.setItem('accessToken', res.data.accessToken);
+            localStorage.setItem('accessToken', res.data.accessToken);
         } catch (e) {
             console.log('AsyncStorage Error');
         }
         try {
-            await window.localStorage.setItem('refreshToken', res.data.refreshToken);
+            localStorage.setItem('refreshToken', res.data.refreshToken);
         } catch (e) {
             console.log('AsyncStorage Error');
         }
 
-        return res.data
+        return res
     },
     getAll: async() => {
         const res = await ApiDatabase.get('/account');

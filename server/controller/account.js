@@ -38,7 +38,6 @@ const accountController = {
                 if (data) {
 
                     res.send('Email already exists')
-
                     return
                     // } else if (!mFunction.validatePhoneNumber(req.body.phoneNumber)) {
                     //     res.send('Contact consist of numeric and 10 characters')

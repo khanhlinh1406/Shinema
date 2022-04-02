@@ -63,7 +63,6 @@ const Register = () => {
                 console.log(res)
                 if (res) sendMail()
             })
-
     }
 
     const checkInfo = async () => {
@@ -102,6 +101,7 @@ const Register = () => {
         if (!errEmail && !errPassword && !errConfirmPassword) {
             await AccountApi.checkEmail(values.email)
                 .then(res => {
+                    console.log(res)
                     if (res != 'Email already exists') {
                         setEmailWarningVisible(false)
                     }
@@ -114,7 +114,7 @@ const Register = () => {
                 })
 
 
-            return emailWarningVisible
+            return !emailWarningVisible
         }
         else {
             return false
