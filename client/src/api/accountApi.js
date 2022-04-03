@@ -12,7 +12,6 @@ const AccountApi = {
             return res
         }
 
-
         try {
             localStorage.setItem('accessToken', res.data.accessToken);
         } catch (e) {

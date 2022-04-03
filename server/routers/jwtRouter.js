@@ -42,9 +42,6 @@ router.post('/refreshToken', (req, res) => {
 router.post('/login', (req, res) => {
     const email = req.body.email
     const password = encode(req.body.password)
-    console.log(email)
-    console.log(password)
-
 
     AccountModel.findOne({
             email: email
