@@ -4,18 +4,14 @@ import './index.css';
 import App from './App';
 import { BrowserRouter } from 'react-router-dom'
 
-import { createStore } from 'redux';
 import { Provider } from 'react-redux';
 
-
-import allReducers from "./redux/reducers/index";
-
-const store = createStore(allReducers);
+import Store from './redux/store';
 
 ReactDOM.render(
   <React.StrictMode>
     <BrowserRouter>
-      <Provider store={store}>
+      <Provider store={Store}>
         <App />
       </Provider>
     </BrowserRouter>

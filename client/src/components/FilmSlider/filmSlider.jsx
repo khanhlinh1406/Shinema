@@ -13,21 +13,24 @@ import tmdbApi from "../../api/tmdbApi";
 import { movieType } from '../../api/tmdbApi'
 import apiConfig from "../../api/apiConfig";
 
-import { FaAngleLeft, FaAngleRight } from 'react-icons/fa'
-import { RiInformationFill } from 'react-icons/ri';
+import {createSearchParams } from 'react-router-dom'
+
+ import { useSelector, useDispatch } from 'react-redux'
+// import { add, update, remove } from "../../redux/actions/movieAction"
+// import { MovieReducer } from '../../redux/slices/movieSlice';
+
+import { useNavigate } from "react-router";
+
+import { movieSelector } from "../../redux/selector";
+
+import { movieSlice } from "../../redux/slices/movieSlice";
 
 
-import { useSelector, useDispatch } from 'react-redux'
-import { add, update, remove } from "../../redux/actions/movieAction"
-import { MovieReducer } from './../../redux/reducers/movieReducer';
+const FilmSlider = props=> {
+    const movie = useSelector(movieSelector)
 
-
-const FilmSlider = ({ typeFilm }) => {
-    const movie = useSelector(state => state.MovieReducer)
-    const dispatch = useDispatch()
-
-    const prev = "typeOfFilm__container__content__prev__" + typeFilm;
-    const next = "typeOfFilm__container__content__next__" + typeFilm;
+    const prev = "typeOfFilm__container__content__prev__" + props.typeFilm;
+    const next = "typeOfFilm__container__content__next__" + props.typeFilm;
 
     const [movieItems, setMovieItems] = useState([]);
     const [movieTypes, setMovieTypes] = useState("");
@@ -38,8 +41,14 @@ const FilmSlider = ({ typeFilm }) => {
                 page: 1,
             }
             try {
-                const response = await tmdbApi.getMoviesList(typeFilm, { params: params });
+                if (props.typeFilm !== 'similar'){
+                const response = await tmdbApi.getMoviesList(props.typeFilm, { params: params });
                 setMovieItems(response.results.slice(0, 15))
+                }
+                else {
+                    const response = await tmdbApi.similar(props.category, props.id);
+                    setMovieItems(response.results.slice(0,15))
+                }
             } catch {
                 console.log("Film slider error")
             }
@@ -48,24 +57,23 @@ const FilmSlider = ({ typeFilm }) => {
         getMovies();
 
         const getTypes = () => {
-            if (typeFilm === movieType.popular)
+            if (props.typeFilm === movieType.popular)
                 setMovieTypes('Phổ biến');
-            if (typeFilm === movieType.upcoming)
+            if (props.typeFilm === movieType.upcoming)
                 setMovieTypes('Sắp chiếu');;
-            if (typeFilm === movieType.top_rated)
+            if (props.typeFilm === movieType.top_rated)
                 setMovieTypes('Đánh giá cao');
+            if (props.typeFilm == 'similar'){
+                setMovieTypes('Tương tự')
+            }
         }
 
         getTypes();
     }, []);
 
-    useEffect(() => {
-        //// console.log(movie)
-    }, [movie])
-
-
+   /// useEffect(() => {console.log(movie)}, [movie]);
     return (
-        <div className="typeOfFilm__container" id={typeFilm}>
+        <div className="typeOfFilm__container" id={props.typeFilm}>
 
             <div className="typeOfFilm__container__header">
                 <h3 className="typeOfFilm__container__header__title">
@@ -111,7 +119,11 @@ const FilmSlider = ({ typeFilm }) => {
                     {
                         movieItems.map((item, i) => (
                             <SwiperSlide key={i}>
-                                <SlideItem item={item} />
+                                <SlideItem item={item}
+
+
+
+                                />
                             </SwiperSlide>
                         ))
                     }
@@ -141,9 +153,22 @@ const FilmSlider = ({ typeFilm }) => {
 const SlideItem = props => {
     const item = props.item;
     const background = apiConfig.originalImage(item.poster_path)
+    const dispatch = useDispatch();
 
+    const navigate = useNavigate();
+    const GoToDetails = () => {
+        // dispatch(
+        //     movieSlice.actions.addMovie({name: 'ok'})
+        // )
+
+        const params = {category: 'movie', id: props.item.id}
+        navigate({
+            pathname: '/filmDetails',
+            search:`?${createSearchParams(params)}`
+        });
+    }
     return (
-        <div className="typeOfFilm__item__container">
+        <div className="typeOfFilm__item__container" onClick={GoToDetails}>
             <div className="typeOfFilm__item__container__hoverItem">
                 <button className="typeOfFilm__item__container__hoverItem__buyTicketBtn">Đặt vé</button>
 
