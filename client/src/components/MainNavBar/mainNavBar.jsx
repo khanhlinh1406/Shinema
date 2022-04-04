@@ -1,17 +1,11 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import './mainNavBar.css'
 import { Link } from 'react-router-dom'
 import { useNavigate } from 'react-router-dom';
 
-import { AiOutlineUser } from 'react-icons/ai'
+import { AiOutlineUser, AiOutlineMenu } from 'react-icons/ai'
 import { BsBell } from 'react-icons/bs'
 
-import { VscHistory } from 'react-icons/vsc'
-import { IoIosInformationCircleOutline } from 'react-icons/io'
-import { IoIosLogOut } from 'react-icons/io'
-
-import { AiOutlineMenu } from "react-icons/ai";
-import { AiFillCloseCircle } from 'react-icons/ai'
 import { GiFilmStrip } from 'react-icons/gi'
 
 import { CustomerMenu } from '../Menu/menu';
@@ -26,11 +20,17 @@ const selectedColor = '#ff492094'
 
 const MainNavBar = () => {
 
-
-    const [logged, setLogged] = useState(false);
+    const [logged, setLogged] = useState(true);
     const [accountToggle, setAccountToggle] = useState(false)
 
     const [menuToggle, setMenuToggle] = useState(false)
+
+    const checkLogged = () => {
+        setLogged(localStorage.getItem('logged'))
+
+    }
+
+    useEffect((checkLogged), [])
 
     return (
 
@@ -82,9 +82,7 @@ const MainNavBar = () => {
             </div>
         </div>
     )
-
 }
-
 
 export const NotSignInMenu = () => {
     const btnTheme = createTheme({
