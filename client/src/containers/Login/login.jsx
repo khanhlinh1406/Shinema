@@ -1,5 +1,8 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import './login.css'
+
+import { decode } from 'base-64'
+import { encode } from 'base-64'
 
 import background_login from '../../assets/background_login.jpg'
 import logo_png from '../../assets/logo_png.png'
@@ -17,6 +20,7 @@ import VisibilityOutlined from '@mui/icons-material/VisibilityOutlined';
 import VisibilityOffOutlined from '@mui/icons-material/VisibilityOffOutlined';
 import InputAdornment from '@mui/material/InputAdornment';
 import FormControl from '@mui/material/FormControl';
+import CircularProgress from '@mui/material/CircularProgress';
 
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import { red, grey } from "@mui/material/colors";
@@ -27,6 +31,8 @@ import AccountApi from "../../api/accountApi";
 import mFunction from "../../function";
 
 const Login = () => {
+    let navigate = useNavigate();
+
     const txtFieldThem = createTheme({
         shape: {
             borderRadius: 20
@@ -51,6 +57,7 @@ const Login = () => {
         password: '',
         showPassword: false,
         isLoading: false,
+        rememberAccount: false
     });
 
     const [emailErrVisible, setEmailErrVisible] = useState(false)
@@ -61,6 +68,9 @@ const Login = () => {
         setValues({ ...values, [prop]: event.target.value });
     };
 
+    const checkBoxChange = (prop) => (event) => {
+        setValues({ ...values, [prop]: event.target.checked });
+    }
     const handleClickShowPassword = () => {
         setValues({
             ...values,
@@ -73,57 +83,88 @@ const Login = () => {
     };
 
     const loginHandle = async () => {
-        await AccountApi.login('trithuc23232@gmail.com', '123456').then(
-            res => console.log(res)
-        )
+        checkInfo().then(res => {
+            if (res) {
+                setValues({ ...values, isLoading: true })
+                AccountApi.login(values.email, values.password)
+                    .then(res => {
+                        setValues({ ...values, isLoading: false })
+                        if (res == "Email not exist") {
+                            setEmailWarningVisible(true)
+                            setPasswordErrVisible(false)
+                            return
+                        }
+                        else if (res == "Password incorrect") {
+                            setEmailWarningVisible(false)
+                            setPasswordErrVisible(true)
+                            return
+                        }
+                        else {
+                            setEmailWarningVisible(false)
+                            setPasswordErrVisible(false)
+
+                            localStorage.setItem("logged", true)
+                            if (!values.rememberAccount) {
+                                localStorage.setItem("rememberAccount", false)
+                            }
+                            else {
+                                localStorage.setItem("rememberAccount", true)
+                                localStorage.setItem(encode("rememberEmail"), encode(values.email))
+                                localStorage.setItem(encode("rememberPassword"), encode(values.password))
+                            }
+                            navigate('/')
+                            return
+                        }
+                    }).catch(err => console.log(err))
+            }
+        })
+
     }
 
     const checkInfo = async () => {
 
-        let errEmail = false;
-        let errPassword = false;
-
         if (!mFunction.validateEmail(values.email)) {
             setEmailErrVisible(true)
-            errEmail = true
+            return false
         }
         else {
             setEmailErrVisible(false)
-            errEmail = false
         }
 
         if (!mFunction.validatePassword(values.password)) {
             setPasswordErrVisible(true)
-            errPassword = true
+            return false
+
         }
         else {
             setPasswordErrVisible(false)
-            errPassword = false
         }
 
-        if (!errEmail && !errPassword) {
-            await AccountApi.login(values.email, values.password)
-                .then(res => {
-                    if (res != 'Email already exists') {
-                        setEmailWarningVisible(false)
-                    }
-                    else {
-                        setEmailWarningVisible(true)
-                    }
-                })
-                .catch(err => {
-                    console.log(err)
-                })
-
-
-            return emailWarningVisible
-        }
-        else {
-            return false
-        }
+        return true
 
     }
 
+    const getAccount = () => {
+
+        if (localStorage.getItem('rememberAccount') == 'true') {
+            setValues({
+                ...values,
+                rememberAccount: true,
+                email: decode(localStorage.getItem(encode('rememberEmail'))),
+                password: decode(localStorage.getItem(encode('rememberPassword')))
+            })
+        }
+        else {
+            setValues({
+                ...values,
+                rememberAccount: false,
+                email: '',
+                password: ''
+            })
+
+        }
+    }
+    useEffect(getAccount, [])
     return (
         <div className="login">
             <div className="login__background">
@@ -199,7 +240,7 @@ const Login = () => {
 
                     <div className="login__form__remember">
                         <p>Ghi nhớ</p>
-                        <input type='checkbox' />
+                        <input type='checkbox' checked={values.rememberAccount} onChange={checkBoxChange('rememberAccount')} />
                     </div>
                 </div>
 
@@ -225,6 +266,14 @@ const Login = () => {
                 </div>
 
             </div>
+
+            {
+                values.isLoading &&
+                <div style={{ backgroundColor: 'rgba(255, 255, 255, 0.1)', position: 'absolute', display: 'flex', alignItems: 'center', justifyContent: 'center', top: 0, left: 0, right: 0, bottom: 0 }} >
+                    <CircularProgress />
+                </div>
+            }
+
         </div>
     )
 }

@@ -47,7 +47,6 @@ router.post('/login', (req, res) => {
             email: email
         })
         .then(data => {
-            console.log(data)
             if (data) {
                 if (data.password == password) {
 
