@@ -5,8 +5,8 @@ import  {userSlice}  from './slices/userSlice';
 
 const Store = configureStore({
     reducer: {
-        movies: movieSlice.reducer,
-        users: userSlice.reducer
+        movie: movieSlice.reducer,
+        user: userSlice.reducer
     },
 });
 

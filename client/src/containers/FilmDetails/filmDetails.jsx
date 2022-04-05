@@ -3,6 +3,8 @@ import './filmDetails.css'
 
 import { useLocation } from "react-router-dom";
 
+import { Helmet } from 'react-helmet';
+
 
 import { useState, useEffect } from "react";
 
@@ -32,6 +34,13 @@ const FilmDetails = () => {
     }
 
     getMovie();
+
+    // const setTitle=()=>{
+    //   console.log("aaaaaaaaaa")
+    //   document.title = film.title || film.name
+    // }
+
+    // setTitle();
     
   })
 
@@ -40,6 +49,10 @@ const FilmDetails = () => {
       {
         film && (
           <>
+          <Helmet>
+            <title>{film.title || film.name}</title>
+          </Helmet>
+
           <div className="banner" style = {{
              backgroundImage: `url(${apiConfig.originalImage(film.backdrop_path || film.poster_path)})`
            /// backgroundColor: 'white'
@@ -68,7 +81,7 @@ const FilmDetails = () => {
 
                 <div className="movie-content__info__cast">
                   <div className="movie-content__info__cast__section-header">
-                    <h2>Cast</h2>
+                    <h2>Diễn viên</h2>
                   </div>
                    <CastList id = {film.id} category = {category.movie}></CastList> 
                 </div>
