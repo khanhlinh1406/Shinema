@@ -30,11 +30,9 @@ const AccountSchema = new Schema({
     },
     listTicketId: Array,
     listReview: Array,
-},
-    { timestamps: true },
-    {
-        collection: 'account'
-    });
+}, { timestamps: true }, {
+    collection: 'account'
+});
 
 const AccountModel = mongoose.model('account', AccountSchema)
 

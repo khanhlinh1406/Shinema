@@ -40,6 +40,10 @@ const MainNavBar = () => {
         let remember = localStorage.getItem('rememberAccount')
 
         setLogged(logged)
+        console.log(remember == 'true')
+        console.log(logged)
+        console.log(user == '')
+
 
         if (remember == 'true' && logged && user == '') {
             let email = decode(localStorage.getItem(encode("rememberEmail")))

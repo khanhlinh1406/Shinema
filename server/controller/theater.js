@@ -1,0 +1,69 @@
+const TheaterModel = require('../models/theater')
+const mFunction = require('../../client/src/function')
+
+const theaterController = {
+    getAll: (req, res) => {
+        TheaterModel.find({})
+            .then(data => {
+                res.json(data)
+            })
+            .catch(err => {
+                res.status(500).json({ Err: err })
+            })
+    },
+
+    getById: (req, res) => {
+        TheaterModel.findOne({
+                id: req.params.id
+            })
+            .then(data => {
+                res.json(data)
+            })
+            .catch(err => {
+                res.status(500).json({ Err: err })
+            })
+    },
+
+    create: (req, res) => {
+        const newTheater = {
+            name: req.body.name,
+            address: req.body.address,
+            contact: req.body.contact,
+            managerId: req.body.managerId,
+            listRoom: req.body.listRoom
+        }
+        TheaterModel.create(newTheater)
+            .then(data => {
+                res.send("Successful")
+            })
+            .catch(err => {
+                res.status(500).json({ Err: err })
+            })
+    },
+
+    update: (req, res) => {
+        const newTheater = req.body;
+        TheaterModel.updateOne({ id: req.params.id }, { newTheater }, { new: 'true' })
+            .then(data => {
+                res.json("Update successful")
+            })
+            .catch(err => {
+                res.status(500).json({ Err: err })
+            })
+    },
+
+    deleteById: (req, res) => {
+        TheaterModel.deleteOne({
+                id: req.params.id
+            })
+            .then(data => {
+                res.json("Delete successful")
+            })
+            .catch(err => {
+                res.status(500).json("Delete error")
+            })
+    },
+
+
+}
+module.exports = theaterController

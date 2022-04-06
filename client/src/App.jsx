@@ -34,9 +34,16 @@ function App() {
             <Review />
           </div>} />
 
+        <Route path="/manager" element={
+          <div>
+            <MainNavBar />
+            <Manager />
+          </div>} />
+
+
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
-        <Route path="/filmDetails" element={<FilmDetails/>} />
+        <Route path="/filmDetails" element={<FilmDetails />} />
       </Routes>
     </div>
   );

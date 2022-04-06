@@ -74,7 +74,8 @@ router.post('/login', (req, res) => {
 
                     JWTModel.create(_JWTRefTokens)
                         .then(data => {
-                            res.send(account);
+                            res.send({ accessToken, refreshToken });
+                            return
                         })
                         .catch(err => {
                             res.status(500).json({ Err_token: err })
@@ -82,9 +83,11 @@ router.post('/login', (req, res) => {
 
                 } else {
                     res.json("Password incorrect")
+                    return
                 }
             } else {
                 res.json("Email not exist")
+                return
             }
 
         })

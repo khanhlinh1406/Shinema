@@ -2,9 +2,6 @@ const AccountModel = require('../models/account')
 const mFunction = require('../../client/src/function')
 const { decode } = require('base-64');
 const { encode } = require('base-64');
-const jwt = require('jsonwebtoken')
-const dotenv = require('dotenv')
-dotenv.config()
 
 
 const accountController = {

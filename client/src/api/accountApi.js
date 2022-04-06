@@ -23,7 +23,8 @@ const AccountApi = {
             console.log('AsyncStorage Error');
         }
 
-        return res
+        const account = await ApiDatabase.get('/account/' + email)
+        return account
     },
     getAll: async() => {
         const res = await ApiDatabase.get('/account');

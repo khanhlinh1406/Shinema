@@ -84,7 +84,6 @@ ApiDatabase.interceptors.response.use(
                     originalConfig._retry = true;
                     try {
                         const rs = await refreshToken();
-                        console.log('res token', rs)
                         window.localStorage.setItem('accessToken', rs.data.accessToken)
                         return ApiDatabase(originalConfig);
                     } catch (_error) {
