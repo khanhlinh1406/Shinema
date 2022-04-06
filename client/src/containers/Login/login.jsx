@@ -20,18 +20,21 @@ import VisibilityOutlined from '@mui/icons-material/VisibilityOutlined';
 import VisibilityOffOutlined from '@mui/icons-material/VisibilityOffOutlined';
 import InputAdornment from '@mui/material/InputAdornment';
 import FormControl from '@mui/material/FormControl';
-import CircularProgress from '@mui/material/CircularProgress';
 
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import { red, grey } from "@mui/material/colors";
 
 import { useNavigate } from 'react-router-dom';
+import { useSelector, useDispatch } from 'react-redux';
+import { userSlice } from './../../redux/slices/userSlice';
 
 import AccountApi from "../../api/accountApi";
 import mFunction from "../../function";
+import Loading from '../../components/Loading/loading'
 
 const Login = () => {
     let navigate = useNavigate();
+    const dispatch = useDispatch()
 
     const txtFieldThem = createTheme({
         shape: {
@@ -106,12 +109,15 @@ const Login = () => {
                             localStorage.setItem("logged", true)
                             if (!values.rememberAccount) {
                                 localStorage.setItem("rememberAccount", false)
+                                localStorage.setItem(encode("rememberEmail"), encode(values.email))
                             }
                             else {
                                 localStorage.setItem("rememberAccount", true)
                                 localStorage.setItem(encode("rememberEmail"), encode(values.email))
                                 localStorage.setItem(encode("rememberPassword"), encode(values.password))
                             }
+
+                            dispatch(userSlice.actions.update(res.data))
                             navigate('/')
                             return
                         }
@@ -145,6 +151,10 @@ const Login = () => {
     }
 
     const getAccount = () => {
+        if (localStorage.getItem('logged') == 'true') {
+            navigate('/')
+            return
+        }
 
         if (localStorage.getItem('rememberAccount') == 'true') {
             setValues({
@@ -267,12 +277,13 @@ const Login = () => {
 
             </div>
 
-            {
+            {/* {
                 values.isLoading &&
                 <div style={{ backgroundColor: 'rgba(255, 255, 255, 0.1)', position: 'absolute', display: 'flex', alignItems: 'center', justifyContent: 'center', top: 0, left: 0, right: 0, bottom: 0 }} >
                     <CircularProgress />
                 </div>
-            }
+            } */}
+            <Loading status={values.isLoading} />
 
         </div>
     )

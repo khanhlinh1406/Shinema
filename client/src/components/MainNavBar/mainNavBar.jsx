@@ -3,31 +3,53 @@ import './mainNavBar.css'
 import { Link } from 'react-router-dom'
 import { useNavigate } from 'react-router-dom';
 
+import { decode } from 'base-64'
+import { encode } from 'base-64'
+
 import { AiOutlineUser, AiOutlineMenu } from 'react-icons/ai'
 import { BsBell } from 'react-icons/bs'
 
 import { GiFilmStrip } from 'react-icons/gi'
-
 import { CustomerMenu } from '../Menu/menu';
 
 import Button from '@mui/material/Button';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import { red, grey } from "@mui/material/colors";
 
+import AccountApi from './../../api/accountApi';
+import { useSelector, useDispatch } from 'react-redux';
+import { userSlice } from './../../redux/slices/userSlice';
+
 const defaultColor = '#fff'
 const selectedColor = '#ff492094'
 
 
 const MainNavBar = () => {
+    let navigate = useNavigate();
+    const dispatch = useDispatch()
 
-    const [logged, setLogged] = useState(true);
+    const [logged, setLogged] = useState(false);
     const [accountToggle, setAccountToggle] = useState(false)
 
     const [menuToggle, setMenuToggle] = useState(false)
 
-    const checkLogged = () => {
-        setLogged(localStorage.getItem('logged'))
+    const user = useSelector(state => state.users.instance)
 
+    const checkLogged = () => {
+        let logged = localStorage.getItem('logged')
+        let remember = localStorage.getItem('rememberAccount')
+
+        setLogged(logged)
+
+        if (remember == 'true' && logged && user == '') {
+            let email = decode(localStorage.getItem(encode("rememberEmail")))
+            AccountApi.getByEmail(email)
+                .then(res => {
+                    dispatch(userSlice.actions.update(res.data))
+                })
+                .catch(err => console.log(err))
+
+        }
     }
 
     useEffect((checkLogged), [])
@@ -39,16 +61,16 @@ const MainNavBar = () => {
                 <div className='mainNavBar-links'>
                     <p>GÓC ĐIỆN ẢNH</p>
 
-                    {logged &&
+                    {logged == 'true' ?
                         <div>
                             <BsBell className='mainNavBar__icon' color='#fff' size={27} />
                             {!accountToggle && <AiOutlineUser className='mainNavBar__icon' color='#fff' size={27} onClick={() => setAccountToggle(true)} />}
                             {accountToggle && <AiOutlineUser className='mainNavBar__icon' color='#ff492094' size={27} onClick={() => setAccountToggle(false)} />}
 
                         </div>
+                        :
+                        <NotSignInMenu />
                     }
-
-                    {!logged && <NotSignInMenu />}
 
                 </div>
 

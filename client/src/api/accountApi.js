@@ -39,6 +39,10 @@ const AccountApi = {
             account
         )
         return res
+    },
+    getByEmail: async(email) => {
+        const res = await ApiDatabase.get('/account/' + email)
+        return res
     }
 
 }

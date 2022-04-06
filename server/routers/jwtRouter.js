@@ -49,7 +49,7 @@ router.post('/login', (req, res) => {
         .then(data => {
             if (data) {
                 if (data.password == password) {
-
+                    const account = data;
                     const payload = {
                         email: email
                     }
@@ -74,7 +74,7 @@ router.post('/login', (req, res) => {
 
                     JWTModel.create(_JWTRefTokens)
                         .then(data => {
-                            res.json({ accessToken, refreshToken });
+                            res.send(account);
                         })
                         .catch(err => {
                             res.status(500).json({ Err_token: err })
