@@ -31,40 +31,47 @@ import { createTheme, ThemeProvider } from '@mui/material/styles';
 import { blue } from "@mui/material/colors";
 
 
-const NUM_FILM_LOADING = 5;
+const NUM_FILM_LOADING = 8;
 
 const FilmSlider = props => {
     const movie = useSelector(movieSelector)
 
-    const prev = "typeOfFilm__container__content__prev__" + props.typeFilm;
-    const next = "typeOfFilm__container__content__next__" + props.typeFilm;
-
     const [loadMore, setLoadMore] = useState(false);
     const [movieItems, setMovieItems] = useState([]);
     const [movieTypes, setMovieTypes] = useState("");
-    const [page, setPage] = useState(5);
+    const [page, setPage] = useState(1);
     const [totalPages, setTotalPages] = useState();
 
-    const openMoreHandler = () => {
+    const openMoreHandler = async () => {
         setLoadMore(true);
 
         const getMovies = async () => {
-            const params = {}
 
-            if (page + NUM_FILM_LOADING > totalPages) {
+            // console.log("total page " + totalPages)
+            // console.log('page now ' + page)
+
+            if (page + 1 > totalPages) {
                 setPage(totalPages)
             } else
-                setPage(page + NUM_FILM_LOADING);
-                
+                setPage(page + 1);
+
+            const params = { page: page }
+
             try {
                 if (props.typeFilm !== 'similar') {
                     const response = await tmdbApi.getMoviesList(props.typeFilm, { params: params });
-                    setMovieItems(response.results.slice(0, page))
+                    ///setMovieItems(response.results.slice(0, page))
+                    /// setMovieItems(response.results)
+                    ///const updateMovieItems = [...movieItems, ...response.results];
 
+                    setMovieItems([...movieItems, ...response.results])
+
+                    console.log(movieItems)
                 }
                 else {
                     const response = await tmdbApi.similar(props.category, props.id);
-                    setMovieItems(response.results.slice(0, page))
+                    ///setMovieItems(response.results.slice(0, page))
+                    ///setMovieItems([...movieItems, ...response.results])
 
                 }
             } catch {
@@ -73,23 +80,26 @@ const FilmSlider = props => {
         }
 
         if (page < totalPages)
-            getMovies();
+            await getMovies();
+
+
 
     }
 
     useEffect(() => {
         const getMovies = async () => {
             const params = {
+                page: page
             }
             try {
                 if (props.typeFilm !== 'similar') {
                     const response = await tmdbApi.getMoviesList(props.typeFilm, { params: params });
-                    setMovieItems(response.results.slice(0, page))
+                    setMovieItems(response.results.slice(0, NUM_FILM_LOADING))
                     setTotalPages(response.total_pages)
                 }
                 else {
                     const response = await tmdbApi.similar(props.category, props.id);
-                    setMovieItems(response.results.slice(0, page))
+                    setMovieItems(response.results.slice(0, NUM_FILM_LOADING))
                     setTotalPages(response.total_pages)
                 }
             } catch {
@@ -112,11 +122,8 @@ const FilmSlider = props => {
         }
 
         getTypes();
-    }, [props, page]);
+    }, [props]);
 
-
-
-    /// useEffect(() => {console.log(movie)}, [movie]);
     return (
         <div className="typeOfFilm__container" id={props.typeFilm}>
 
@@ -128,55 +135,37 @@ const FilmSlider = props => {
 
             </div>
 
-            {!loadMore ? (
-                <div className="typeOfFilm__container__content">
-                    {/* <button className="typeOfFilm__container__content__viewMore">Xem thêm</button> */}
 
-                    <ViewMoreButton onClick={openMoreHandler}></ViewMoreButton>
-                    <Swiper className="typeOfFilm__container__content__swiper"
-                        slidesPerView={5}
-                        centeredSlides={true}
-                        // pagination={{
-                        //     clickable: true,
-                        // }}
-                        loop
-                        freeMode
-                        // navigation={{
-                        //     nextEl: {next},
-                        //     prevEl: {prev}
-                        // }}
+            <div className="typeOfFilm__container__content">
+                <ViewMoreButton typeFilm={props.typeFilm}></ViewMoreButton>
+                <Swiper className="typeOfFilm__container__content__swiper"
+                    slidesPerView={5}
+                    centeredSlides={true}
+                    // pagination={{
+                    //     clickable: true,
+                    // }}
+                    loop
+                    freeMode
+                    // navigation={{
+                    //     nextEl: {next},
+                    //     prevEl: {prev}
+                    // }}
 
-                        // navigation
-                        modules={[Pagination, Navigation, FreeMode]}
-                    >
-                        {
-                            movieItems.map((item, i) => (
-                                <SwiperSlide key={i}>
-                                    <SlideItem item={item}
-                                    />
-                                </SwiperSlide>
-                            ))
-                        }
-                    </Swiper>
+                    // navigation
+                    modules={[Pagination, Navigation, FreeMode]}
+                >
+                    {
+                        movieItems.map((item, i) => (
+                            <SwiperSlide key={i}>
+                                <SlideItem item={item}
+                                />
+                            </SwiperSlide>
+                        ))
+                    }
+                </Swiper>
 
-                </div>)
-                :
-                (
-                    <div className="typeOfFilm__container__view-more-content">
-                        <div className="typeOfFilm__container__view-more-content-list">
-                            {
-                                movieItems.map((item, i) => (
-                                    <SlideItem item={item} key={i} />
-                                ))
-                            }
-                        </div>
-                        {page < totalPages ? (
-                            <ViewMoreButton2 onClick={openMoreHandler}></ViewMoreButton2>
-                        ) : (<></>)
-                        }
-                    </div>
-                )
-            }
+            </div>
+            )
 
         </div>
     );
@@ -184,7 +173,7 @@ const FilmSlider = props => {
 
 const SlideItem = props => {
     const item = props.item;
-    const background = apiConfig.originalImage(item.poster_path)
+    const background = apiConfig.originalImage(item.backdrop_path ? item.poster_path : item.backdrop_path)
     // const dispatch = useDispatch();
     // const data = useSelector(movieSelector)
     const navigate = useNavigate();
@@ -229,35 +218,45 @@ export const ViewMoreButton = (props) => {
         },
     })
 
+    const navigate = useNavigate();
+
+    const onClick = () => {
+        const params = { category: 'movie', type: props.typeFilm };
+        navigate({
+            pathname: '/movie/more',
+            search: `?${createSearchParams(params)}`
+        });
+    }
+
     return (
         <div className='typeOfFilm__container__content__viewMore'>
             <ThemeProvider theme={btnTheme} >
-                <Button sx={{ paddingX: 5, paddingY: 0.8 }} variant="outlined" onClick={props.onClick} >Xem thêm</Button>
+                <Button sx={{ paddingX: 5, paddingY: 0.8 }} variant="outlined" onClick={onClick} >Xem thêm</Button>
             </ThemeProvider>
         </div >
     )
 }
 
-export const ViewMoreButton2 = (props) => {
-    const btnTheme = createTheme({
-        shape: {
-            borderRadius: 20
-        },
-        palette: {
-            primary: {
-                main: '#fff',
-                outline: '#fff',
-            }
-        },
-    })
+// export const ViewMoreButton2 = (props) => {
+//     const btnTheme = createTheme({
+//         shape: {
+//             borderRadius: 20
+//         },
+//         palette: {
+//             primary: {
+//                 main: '#fff',
+//                 outline: '#fff',
+//             }
+//         },
+//     })
 
-    return (
-        <div className='typeOfFilm__container__content__viewMore2'>
-            <ThemeProvider theme={btnTheme} >
-                <Button sx={{ paddingX: 5, paddingY: 0.8 }} variant="outlined" onClick={props.onClick} >Xem thêm</Button>
-            </ThemeProvider>
-        </div >
-    )
-}
+//     return (
+//         <div className='typeOfFilm__container__content__viewMore2'>
+//             <ThemeProvider theme={btnTheme} >
+//                 <Button sx={{ paddingX: 5, paddingY: 0.8 }} variant="outlined" onClick={props.onClick} >Xem thêm</Button>
+//             </ThemeProvider>
+//         </div >
+//     )
+// }
 
 export default FilmSlider

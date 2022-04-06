@@ -1,7 +1,7 @@
 import './App.css';
 import { Routes, Route } from 'react-router-dom';
 
-import { Actor, Censor, Genre, Home, Manager, Review, UserInfor, Login, Register, FilmDetails } from './containers'
+import { Actor, Censor, Genre, Home, Manager, Review, UserInfor, Login, Register, FilmDetails, MoreFilm } from './containers'
 import { MainNavBar } from './components';
 
 function App() {
@@ -37,6 +37,7 @@ function App() {
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
         <Route path="/filmDetails" element={<FilmDetails/>} />
+        <Route path="/movie/more" element={<MoreFilm/>}/>
       </Routes>
     </div>
   );

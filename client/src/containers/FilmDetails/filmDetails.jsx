@@ -14,7 +14,9 @@ import apiConfig from "../../api/apiConfig";
 
 import CastList from "../../components/CastList/castList";
 import VideoList from "../../components/VideoList/videoList";
-import  FilmSlider  from "../../components/FilmSlider/filmSlider";
+import FilmSlider from "../../components/FilmSlider/filmSlider";
+import MainNavBar from "../../components/MainNavBar/mainNavBar";
+
 const FilmDetails = () => {
   const url = new URLSearchParams(window.location.search);
   const filmId = url.get("id");
@@ -28,39 +30,32 @@ const FilmDetails = () => {
       try {
         const response = await tmdbApi.detail(category.movie, filmId, { params: params });
         setFilm(response)
-      } catch (err){
+      } catch (err) {
         console.log(err)
       }
     }
 
     getMovie();
-
-    // const setTitle=()=>{
-    //   console.log("aaaaaaaaaa")
-    //   document.title = film.title || film.name
-    // }
-
-    // setTitle();
-    
   })
 
   return (
-    <div className = "film-details">
+    <div className="film-details">
       {
         film && (
           <>
-          <Helmet>
-            <title>{film.title || film.name}</title>
-          </Helmet>
+            <Helmet>
+              <title>{film.title || film.name}</title>
+            </Helmet>
 
-          <div className="banner" style = {{
-             backgroundImage: `url(${apiConfig.originalImage(film.backdrop_path || film.poster_path)})`
-           /// backgroundColor: 'white'
-          }}> </div>
+            <MainNavBar/>
+            <div className="banner" style={{
+              backgroundImage: `url(${apiConfig.originalImage(film.backdrop_path || film.poster_path)})`
+              /// backgroundColor: 'white'
+            }}> </div>
 
-          <div className="movie-content">
+            <div className="movie-content">
               <div className="movie-content__poster">
-                <div className="movie-content__poster__img" style={{backgroundImage: `url(${apiConfig.originalImage( film.poster_path)})`}}>
+                <div className="movie-content__poster__img" style={{ backgroundImage: `url(${apiConfig.originalImage(film.poster_path)})` }}>
 
                 </div>
               </div>
@@ -69,7 +64,7 @@ const FilmDetails = () => {
                 <div className="movie-content__info__title">{film.name || film.title}</div>
                 <div className="movie-content__info__genres">
                   {
-                    film.genres && film.genres.slice(0,5).map((genre, i)=>(
+                    film.genres && film.genres.slice(0, 5).map((genre, i) => (
                       <span key={i} className="movie-content__info__genres__item">
                         {genre.name}
                       </span>
@@ -83,26 +78,26 @@ const FilmDetails = () => {
                   <div className="movie-content__info__cast__section-header">
                     <h2>Diễn viên</h2>
                   </div>
-                   <CastList id = {film.id} category = {category.movie}></CastList> 
+                  <CastList id={film.id} category={category.movie}></CastList>
                 </div>
               </div>
-          </div>
-          <div className="container">
-            <div className="section mb-3">
-              <VideoList id = {film.id} category = {category.movie}/>
             </div>
+            <div className="container">
+              <div className="section mb-3">
+                <VideoList id={film.id} category={category.movie} />
+              </div>
 
-            <div className="section mb-3">
-              <div className="section__header mb-2">
-                <FilmSlider category={category.movie} typeFilm = 'similar' id = {film.id} ></FilmSlider>
+              <div className="section mb-3">
+                <div className="section__header mb-2">
+                  <FilmSlider category={category.movie} typeFilm='similar' id={film.id} ></FilmSlider>
+                </div>
               </div>
             </div>
-          </div>
           </>
         )
       }
     </div>
-      
+
 
   )
 }
