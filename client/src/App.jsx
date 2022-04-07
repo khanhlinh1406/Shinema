@@ -37,7 +37,9 @@ function App() {
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
         <Route path="/filmDetails" element={<FilmDetails/>} />
-        <Route path="/movie/more" element={<MoreFilm/>}/>
+        <Route path="/:category/:type" element={<MoreFilm/>}/>
+        <Route path="/:category/search/:keyword" element = {<MoreFilm/>}/>
+      
       </Routes>
     </div>
   );

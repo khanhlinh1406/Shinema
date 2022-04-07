@@ -221,11 +221,8 @@ export const ViewMoreButton = (props) => {
     const navigate = useNavigate();
 
     const onClick = () => {
-        const params = { category: 'movie', type: props.typeFilm };
-        navigate({
-            pathname: '/movie/more',
-            search: `?${createSearchParams(params)}`
-        });
+        
+        navigate(`/movie/${props.typeFilm}`);
     }
 
     return (

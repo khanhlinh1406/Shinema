@@ -41,7 +41,7 @@
     height: 230px;
     background-color: transparent;
     position: relative;
-    margin-bottom: 5pxs;
+    margin-bottom: 10px;
 }
 
 .film__item__container:hover .film__item__container__title {
@@ -53,7 +53,7 @@
     top: 0;
     height: 80%;
     width: 100%;
-    border-radius: 25px;
+    border-radius: 15px;
     padding: 10px;
     background-image: linear-gradient(transparent, black 70%);
     text-align: center;
@@ -123,13 +123,29 @@
 }
 
 .film__container__content__viewMore {
-    margin-top: -30px;
+    margin-top: 20px;
     text-align: center;
     margin-bottom: 30px;
 }
 
 .filter{
-    width:30%;
-    background: green ;
-    display: inline-block;
+    width:28%;
+    float: left;
+    margin-left: 15px;
+    line-height: 100%;
+    margin-top: 8rem;
+    height: 200px;
+}
+
+.search-bar{
+    background: var(--color-bg);
+    display: flex;
+    justify-self: flex-start;
+}
+
+.filter-type{
+    display: flex;
+    justify-self: flex-start;
+    background-color: var(--color-bg);
+    margin-top: 30px;
 }

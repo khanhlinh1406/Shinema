@@ -147,7 +147,7 @@ const Login = () => {
                         sx={{
                             marginTop: 1,
                             backgroundColor: 'rgb(9, 24, 48)',
-                            borderRadius: 0.5,
+                            borderRadius: 0.2,
                             input: { color: 'white', marginLeft: 1, marginX: 0.4 },
                             label: { color: 'rgb(153, 153, 153)', marginLeft: 1, marginX: 0.4 }
                         }}
