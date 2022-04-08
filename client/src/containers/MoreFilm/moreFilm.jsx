@@ -18,12 +18,16 @@ import apiConfig from "../../api/apiConfig";
 import TextField from '@mui/material/TextField';
 import IconButton from '@mui/material/IconButton';
 import Autocomplete from '@mui/material/Autocomplete';
+import Box from '@mui/material/Box';
+import InputLabel from '@mui/material/InputLabel';
+import MenuItem from '@mui/material/MenuItem';
+import FormControl from '@mui/material/FormControl';
+import Select from '@mui/material/Select';
 import Button from '@mui/material/Button';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import { grey } from "@mui/material/colors";
 import InputAdornment from '@mui/material/InputAdornment';
 import SearchIcon from '@mui/icons-material/Search';
-import Box from '@mui/material/Box';
 
 
 
@@ -35,7 +39,7 @@ const MoreFilm = () => {
 
     const movieSearch = useSelector(movieCornerSelector)
     const { keyword } = useParams();
-    const {type} = useParams();
+    const { type } = useParams();
 
     const [movieItems, setMovieItems] = useState([]);
     const [loadMore, setLoadMore] = useState(false);
@@ -308,6 +312,12 @@ const TypeFilter = () => {
     const movieSearch = useSelector(movieCornerSelector)
     const navigate = useNavigate();
 
+    const customTheme = createTheme({
+        palette: {
+            primary: grey
+        }
+    })
+
     const options = [
         { label: "Phổ biến", value: movieType.popular },
         { label: "Đang chiếu", value: movieType.now_playing },
@@ -317,29 +327,83 @@ const TypeFilter = () => {
 
     const [value, setValue] = useState(options[movieSearch.chooseTypeIndex])
 
+
     const goToSearch = useCallback(
         () => {
+            dispatch(movieCornerSlice.actions.chooseType(value.value))
             navigate(`/movie/${value.value}`);
         }, [navigate, value]);
 
+    const onChangeHandler = (event) => {
+        const updateValue = event.target.value;
+        console.log("uuu"+updateValue)
+        dispatch(movieCornerSlice.actions.chooseType(updateValue))
+        setValue(options[movieSearch.chosenTypeIndex])
+      //  setValue(updateValue);
+        console.log(value)
+        goToSearch();
+    }
+
     return (
         <div className="filter-type">
-            <Autocomplete
-                disablePortal
-                id="combo-box-type"
-                onChange={(event, newValue) => {
-                    setValue(newValue);
-                    console.log(value);
-                    goToSearch();
-                }}
+            <ThemeProvider theme={customTheme}>
+                <Autocomplete
+                    disablePortal
+                    id="combo-box-type"
+                    onChange={(event, newValue) => {
+                        setValue(newValue);
+                        console.log(value);
+                        goToSearch();
+                    }}
+                    options={options}
+                    sx={{
+                        width: 350,
+                        backgroundColor: 'rgb(9, 24, 48)'
+                    }}
 
-                options={options}
-                sx={{ width: 350, color: 'white' }}
-                renderInput={(params) =>
-                    <TextField {...params} label="Phân loại" sx={{ color: 'white' }} />
-                }
-            />
-        </div>
+                    renderInput={(params) =>
+                        <TextField {...params} label="Phân loại" sx={{
+                            label: {
+                                color: '#fcfcfc',
+                            }
+                        }} />
+
+                    }
+                />
+            </ThemeProvider>
+
+            {/* <Box sx={{ width: 350 }}>
+                <FormControl fullWidth>
+                    <ThemeProvider theme={customTheme}>
+                        <InputLabel id="demo-simple-select-label"
+                            sx={{ color: '#fcfcfc' }}
+                        >Phân loại</InputLabel>
+                    </ThemeProvider>
+                    <ThemeProvider theme={customTheme}>
+                        <Select
+                            labelId="demo-simple-select-label"
+                            id="demo-simple-select"
+                            value={value}
+                            ///defaultValue = {options[movieSearch.chosenTypeIndex].value}
+                            label="Phân loại"
+                            onChange={onChangeHandler}
+                            sx={{
+                                backgroundColor: 'rgb(9, 24, 48)'
+
+                            }}
+                        >
+                            {
+                                options.map((item, i) => (
+                                    <MenuItem item={item} key={i} value={item.value} sx={{ color: '#000000' }}>
+                                        {item.label}
+                                    </MenuItem>
+                                ))
+                            }
+                        </Select>
+                    </ThemeProvider>
+                </FormControl>
+            </Box> */}
+        </div >
     );
 
 
