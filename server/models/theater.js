@@ -13,6 +13,9 @@ const theaterSchema = new mongoose.Schema({
     managerId: {
         type: String,
     },
+    price: {
+        type: String,
+    },
     listRoom: Array
 
 }, { timestamps: true }, {

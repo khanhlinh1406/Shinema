@@ -30,6 +30,7 @@ const theaterController = {
             address: req.body.address,
             contact: req.body.contact,
             managerId: req.body.managerId,
+            price: req.body.price,
             listRoom: req.body.listRoom
         }
         TheaterModel.create(newTheater)
@@ -42,8 +43,15 @@ const theaterController = {
     },
 
     update: (req, res) => {
-        const newTheater = req.body;
-        TheaterModel.updateOne({ id: req.params.id }, { newTheater }, { new: 'true' })
+
+        TheaterModel.updateOne({ id: req.params.id }, {
+                name: req.body.name,
+                address: req.body.address,
+                contact: req.body.contact,
+                managerId: req.body.managerId,
+                price: req.body.price,
+                listRoom: req.body.listRoom
+            }, { new: 'true' })
             .then(data => {
                 res.json("Update successful")
             })
@@ -63,7 +71,5 @@ const theaterController = {
                 res.status(500).json("Delete error")
             })
     },
-
-
 }
 module.exports = theaterController

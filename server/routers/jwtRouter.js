@@ -9,7 +9,6 @@ const AccountModel = require('../models/account')
 router.post('/refreshToken', (req, res) => {
     //const refreshToken = req.cookies.refresh_token;
     const refreshToken = req.body.token
-
     if (!refreshToken) {
         res.sendStatus(401);
         return;
@@ -29,7 +28,6 @@ router.post('/refreshToken', (req, res) => {
                     const accessToken = jwt.sign({ username: data.username },
                         process.env.ACCESS_TOKEN_SECRET, { expiresIn: '30s' }
                     );
-
                     res.json({ accessToken });
                 })
             } else {

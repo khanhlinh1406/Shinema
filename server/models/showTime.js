@@ -9,10 +9,6 @@ const showTimeSchema = new mongoose.Schema({
         type: String,
         required: true
     },
-    price: {
-        type: String,
-        required: true
-    },
     listDateTime: Array
 
 }, { timestamps: true }, {

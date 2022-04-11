@@ -35,24 +35,28 @@ const MainNavBar = () => {
 
     const user = useSelector(state => state.users.instance)
 
+    const accountToggleHandle = () => {
+        setAccountToggle(!accountToggle)
+    }
     const checkLogged = () => {
         let logged = localStorage.getItem('logged')
         let remember = localStorage.getItem('rememberAccount')
 
         setLogged(logged)
-        console.log(remember == 'true')
-        console.log(logged)
-        console.log(user == '')
-
 
         if (remember == 'true' && logged && user == '') {
             let email = decode(localStorage.getItem(encode("rememberEmail")))
-            AccountApi.getByEmail(email)
+            let password = decode(localStorage.getItem(encode("rememberPassword")))
+
+            AccountApi.login(email, password)
                 .then(res => {
-                    dispatch(userSlice.actions.update(res.data))
+                    if (res != "Email not exist" && res != "Password incorrect") {
+                        AccountApi.getByEmail(email).then(res => {
+                            dispatch(userSlice.actions.update(res.data))
+                        }).catch(err => console.log(err))
+                    }
                 })
                 .catch(err => console.log(err))
-
         }
     }
 
@@ -103,7 +107,7 @@ const MainNavBar = () => {
                         </div>
                     )}
                 </div>
-                {accountToggle && <CustomerMenu />}
+                {accountToggle && <CustomerMenu accountToggleHandle={accountToggleHandle} />}
 
             </div>
         </div>

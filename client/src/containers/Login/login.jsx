@@ -283,7 +283,9 @@ const Login = () => {
                     <CircularProgress />
                 </div>
             } */}
-            <Loading status={values.isLoading} />
+
+            {values.isLoading && <Loading />}
+
 
         </div>
     )

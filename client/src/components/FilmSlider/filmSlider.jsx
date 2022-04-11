@@ -13,9 +13,9 @@ import tmdbApi from "../../api/tmdbApi";
 import { movieType } from '../../api/tmdbApi'
 import apiConfig from "../../api/apiConfig";
 
-import {createSearchParams } from 'react-router-dom'
+import { createSearchParams } from 'react-router-dom'
 
- import { useSelector, useDispatch } from 'react-redux'
+import { useSelector, useDispatch } from 'react-redux'
 // import { add, update, remove } from "../../redux/actions/movieAction"
 // import { MovieReducer } from '../../redux/slices/movieSlice';
 
@@ -26,7 +26,7 @@ import { movieSelector } from "../../redux/selector";
 import { movieSlice } from "../../redux/slices/movieSlice";
 
 
-const FilmSlider = props=> {
+const FilmSlider = props => {
     const movie = useSelector(movieSelector)
 
     const prev = "typeOfFilm__container__content__prev__" + props.typeFilm;
@@ -41,13 +41,13 @@ const FilmSlider = props=> {
                 page: 1,
             }
             try {
-                if (props.typeFilm !== 'similar'){
-                const response = await tmdbApi.getMoviesList(props.typeFilm, { params: params });
-                setMovieItems(response.results.slice(0, 15))
+                if (props.typeFilm !== 'similar') {
+                    const response = await tmdbApi.getMoviesList(props.typeFilm, { params: params });
+                    setMovieItems(response.results.slice(0, 15))
                 }
                 else {
                     const response = await tmdbApi.similar(props.category, props.id);
-                    setMovieItems(response.results.slice(0,15))
+                    setMovieItems(response.results.slice(0, 15))
                 }
             } catch {
                 console.log("Film slider error")
@@ -63,7 +63,7 @@ const FilmSlider = props=> {
                 setMovieTypes('Sắp chiếu');;
             if (props.typeFilm === movieType.top_rated)
                 setMovieTypes('Đánh giá cao');
-            if (props.typeFilm == 'similar'){
+            if (props.typeFilm == 'similar') {
                 setMovieTypes('Tương tự')
             }
         }
@@ -71,7 +71,7 @@ const FilmSlider = props=> {
         getTypes();
     }, []);
 
-   /// useEffect(() => {console.log(movie)}, [movie]);
+    /// useEffect(() => {console.log(movie)}, [movie]);
     return (
         <div className="typeOfFilm__container" id={props.typeFilm}>
 
@@ -119,11 +119,7 @@ const FilmSlider = props=> {
                     {
                         movieItems.map((item, i) => (
                             <SwiperSlide key={i}>
-                                <SlideItem item={item}
-
-
-
-                                />
+                                <SlideItem item={item} />
                             </SwiperSlide>
                         ))
                     }
@@ -161,10 +157,10 @@ const SlideItem = props => {
         //     movieSlice.actions.addMovie({name: 'ok'})
         // )
 
-        const params = {category: 'movie', id: props.item.id}
+        const params = { category: 'movie', id: props.item.id }
         navigate({
             pathname: '/filmDetails',
-            search:`?${createSearchParams(params)}`
+            search: `?${createSearchParams(params)}`
         });
     }
     return (

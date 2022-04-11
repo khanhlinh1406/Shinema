@@ -14,20 +14,22 @@ import { userSlice } from './../../redux/slices/userSlice';
 
 const defaultColor = '#fff'
 
-export const CustomerMenu = () => {
+export const CustomerMenu = ({ accountToggleHandle }) => {
     let navigate = useNavigate();
     const dispatch = useDispatch()
+
     const user = useSelector(state => state.users.instance)
-    console.log(user)
+
     const logoutHandle = () => {
         localStorage.setItem('logged', false)
         dispatch(userSlice.actions.update(''))
-        navigate('./login')
+        navigate('/login')
     }
+
     return (
         <div className='menu' >
             <div className='menu__item'>
-                <p> <Link to="/userInfor">Thông tin cá nhân</Link></p>
+                <p onClick={() => { navigate('/userInfor') }}>Thông tin cá nhân</p>
                 <AiOutlineUser className='menu__item__icon' color={defaultColor} size={25} />
             </div>
 
@@ -35,7 +37,7 @@ export const CustomerMenu = () => {
                 user.rank == "Customer"
                 &&
                 <div className='menu__item'>
-                    <p> <Link to="/manager">Bình luận phim</Link></p>
+                    <p onClick={() => { accountToggleHandle(); navigate('/manager') }}>Bình luận phim</p>
                     <BiCommentDetail className='menu__item__icon' color={defaultColor} size={25} />
                 </div>
             }
@@ -44,7 +46,7 @@ export const CustomerMenu = () => {
                 user.rank == "Customer"
                 &&
                 <div className='menu__item'>
-                    <p> <Link to="/manager">Lịch sử giao dịch</Link></p>
+                    <p onClick={() => { accountToggleHandle(); navigate('/manager') }}>Lịch sử giao dịch</p>
                     <VscHistory className='menu__item__icon' color={defaultColor} size={23} />
                 </div>
             }
@@ -53,7 +55,7 @@ export const CustomerMenu = () => {
                 (user.rank == "Manager" || user.rank == "Admin")
                 &&
                 <div className='menu__item'>
-                    <p> <Link to="/manager">Quản lí dữ liệu</Link></p>
+                    <p onClick={() => { accountToggleHandle(); navigate('/manager') }}>Quản lí dữ liệu</p>
                     <BsHddStack className='menu__item__icon' color={defaultColor} size={23} />
                 </div>
             }
@@ -62,7 +64,7 @@ export const CustomerMenu = () => {
                 user.rank == "Censor"
                 &&
                 <div className='menu__item'>
-                    <p> <Link to="/manager">Kiểm duyệt</Link></p>
+                    <p onClick={() => { accountToggleHandle(); navigate('/manager') }}>Kiểm duyệt</p>
                     <IoIosInformationCircleOutline className='menu__item__icon' color={defaultColor} size={25} />
                 </div>
             }

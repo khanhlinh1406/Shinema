@@ -1,2 +1,49 @@
+import { createSelector } from '@reduxjs/toolkit'
+
 export const movieSelector = (state) => state.movie
-export const userSelector = (state) => state.user
+export const userSelector = (state) => state.users.instance
+
+export const showTimeSelector = (state) => state.showTimes.data
+export const showTimeDateFilterSelector = (state) => state.showTimes.filter.date
+
+export const showTimeRemainingSelector = createSelector(
+    showTimeSelector,
+    showTimeDateFilterSelector,
+    (showTimeList, date) => {
+        let result = []
+        showTimeList.forEach(showTime => {
+            let tempListDateTime = showTime.listDateTime.filter(dateTime => {
+                return dateTime.date == date
+            })
+            if (tempListDateTime.length != 0) {
+                let tempShowTime = {...showTime, listDateTime: tempListDateTime }
+                result = [...result, tempShowTime]
+            }
+        });
+        return result
+    })
+
+
+
+
+export const theaterSelector = (state) => state.theaters.data
+export const theaterFilterSelector = (state) => state.theaters.filter.id
+
+export const theaterSelectSelector = createSelector(
+    theaterSelector,
+    (theaterList) => {
+        let result = []
+        theaterList.forEach(theater => {
+            result = [...result, { _id: theater._id, name: theater.name }]
+        })
+        return result
+    })
+
+export const theaterRemainingSelector = createSelector(
+    theaterSelector,
+    theaterFilterSelector,
+    (theaterList, theaterId) => {
+        return theaterList.filter(theater => {
+            return theater._id == theaterId
+        })
+    })

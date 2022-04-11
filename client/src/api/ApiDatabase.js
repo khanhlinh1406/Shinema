@@ -42,26 +42,16 @@ const ApiDatabase = axios.create({
 //     return Promise.reject(error)
 // })
 
-function getLocalToken() {
-    const token = window.localStorage.getItem('accessToken')
-    return token
-}
-
-//get token o refreshToken
-function getLocalRefreshToken() {
-    const token = window.localStorage.getItem('refreshToken')
-    return token
-}
 
 function refreshToken() {
     return ApiAuthen.post('/refreshToken', {
-        token: getLocalRefreshToken()
+        token: window.localStorage.getItem('refreshToken')
     })
 }
 
 ApiDatabase.interceptors.request.use(
         async(config) => {
-            let token = getLocalToken()
+            const token = window.localStorage.getItem('accessToken')
             if (token) {
                 config.headers["x-access-token"] = token;
             }
@@ -80,15 +70,28 @@ ApiDatabase.interceptors.response.use(
         if (err.response) {
             const originalConfig = err.config;
             if (err.response) {
-                if (err.response.status === 401 && !originalConfig._retry) {
-                    originalConfig._retry = true;
-                    try {
-                        const rs = await refreshToken();
-                        window.localStorage.setItem('accessToken', rs.data.accessToken)
-                        return ApiDatabase(originalConfig);
-                    } catch (_error) {
-                        return Promise.reject(_error);
-                    }
+                if (err.response.status === 401) {
+
+                    refreshToken().then(rs => {
+                            window.localStorage.setItem('accessToken', rs.data.accessToken)
+                            console.log(rs.data.accessToken)
+                            originalConfig.headers['x-access-token'] = rs.data.accessToken
+
+                            console.log('config')
+                            return ApiDatabase(originalConfig);
+                        }).catch(_error => {
+                            return Promise.reject(_error);
+                        })
+                        // try {
+                        //     const rs = await refreshToken();
+
+                    //     window.localStorage.setItem('accessToken', rs.data.accessToken)
+                    //     originalConfig.baseURL = URL_SERVER
+                    //     originalConfig.headers['x-access-token'] = rs.data.accessToken
+                    //     return ApiDatabase(originalConfig);
+                    // } catch (_error) {
+                    //     return Promise.reject(_error);
+                    // }
                 }
             }
         }

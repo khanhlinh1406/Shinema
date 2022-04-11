@@ -8,14 +8,15 @@ import Typography from '@mui/material/Typography';
 import Box from '@mui/material/Box';
 
 import { createTheme, ThemeProvider } from '@mui/material/styles';
-import { red } from "@mui/material/colors";
+import { red, grey } from "@mui/material/colors";
 
-import { ShowTime } from '../../components'
+import { ShowTimeManager, TheaterManager, Statistics } from '../../components'
 
 const Manager = () => {
+    const color = "#c44242";
     const tabTheme = createTheme({
         palette: {
-            primary: red
+            primary: red,
         },
     })
 
@@ -27,28 +28,26 @@ const Manager = () => {
 
     return (
         <ThemeProvider theme={tabTheme}>
-            <p style={{ color: '#fff', fontSize: 20, margin: 50 }}>QUẢN LÍ DỮ LIỆU</p>
+            <Typography sx={{ color: '#fff', fontSize: 20, margin: 7 }}>QUẢN LÍ DỮ LIỆU</Typography>
             <Box sx={{ width: '100%' }}>
                 <Box sx={{ borderBottom: 1, borderColor: 'divider', marginTop: 5, marginLeft: 5 }}>
                     <Tabs value={value} onChange={handleChange} aria-label="basic tabs example" >
-                        <Tab label="Rạp" {...a11yProps(0)} sx={{ color: '#fff' }} />
-                        <Tab label="Suất chiếu" {...a11yProps(1)} sx={{ color: '#fff' }} />
-                        <Tab label="Thống kê" {...a11yProps(2)} sx={{ color: '#fff' }} />
-                        <Tab label="Kiểm duyệt" {...a11yProps(3)} sx={{ color: '#fff' }} />
+                        <Tab label="Suất chiếu" {...a11yProps(0)} sx={{ color: '#fff' }} />
+                        <Tab label="Thống kê" {...a11yProps(1)} sx={{ color: '#fff' }} />
+                        <Tab label="Rạp" {...a11yProps(2)} sx={{ color: '#fff' }} />
                     </Tabs>
                 </Box>
+
                 <TabPanel value={value} index={0}>
-                    Item One
+                    <ShowTimeManager />
                 </TabPanel>
                 <TabPanel value={value} index={1}>
-                    <ShowTime />
+                    <Statistics />
                 </TabPanel>
                 <TabPanel value={value} index={2}>
-                    Item Three
+                    <TheaterManager />
                 </TabPanel>
-                <TabPanel value={value} index={3}>
-                    Item Three
-                </TabPanel>
+
             </Box>
         </ThemeProvider>
     );
@@ -67,7 +66,7 @@ function TabPanel(props) {
         >
             {value === index && (
                 <Box sx={{ p: 3 }}>
-                    <Typography>{children}</Typography>
+                    {children}
                 </Box>
             )}
         </div>

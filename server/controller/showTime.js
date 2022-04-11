@@ -24,11 +24,22 @@ const showTimeController = {
             })
     },
 
+    getByFilmId: (req, res) => {
+        ShowTimeModel.findOne({
+                filmId: req.params.filmId
+            })
+            .then(data => {
+                res.json(data)
+            })
+            .catch(err => {
+                res.status(500).json({ Err: err })
+            })
+    },
+
     create: (req, res) => {
         const newShowTime = {
             filmId: req.body.filmId,
             theaterId: req.body.theaterId,
-            price: req.body.price,
             listDateTime: req.body.listDateTime
         }
         ShowTimeModel.create(newShowTime)
@@ -41,14 +52,12 @@ const showTimeController = {
     },
 
     update: (req, res) => {
-        const newShowTime = {
-            filmId: req.body.filmId,
-            theaterId: req.body.theaterId,
-            price: req.body.price,
-            listDateTime: req.body.listDateTime
-        }
 
-        ShowTimeModel.updateOne({ id: req.params.id }, { newShowTime }, { new: 'true' })
+        ShowTimeModel.updateOne({ id: req.body.id }, {
+                filmId: req.body.filmId,
+                theaterId: req.body.theaterId,
+                listDateTime: req.body.listDateTime
+            }, { new: 'true' })
             .then(data => {
                 res.json("Update successful")
             })
@@ -57,10 +66,23 @@ const showTimeController = {
             })
     },
 
-    deleteById: (req, res) => {
-        ShowTimeModel.deleteOne({
-                id: req.params.id
+    updateByFilmId: (req, res) => {
+
+        ShowTimeModel.findOneAndUpdate({ filmId: req.body.filmId }, {
+                filmId: req.body.filmId,
+                theaterId: req.body.theaterId,
+                listDateTime: req.body.listDateTime
+            }, { new: 'true' })
+            .then(data => {
+                res.json("Update successful")
             })
+            .catch(err => {
+                res.status(500).json({ Err: err })
+            })
+    },
+
+    delete: (req, res) => {
+        ShowTimeModel.findByIdAndRemove(req.params.id)
             .then(data => {
                 res.json("Delete successful")
             })
@@ -68,7 +90,6 @@ const showTimeController = {
                 res.status(500).json("Delete error")
             })
     },
-
 
 }
 module.exports = showTimeController
