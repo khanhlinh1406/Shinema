@@ -8,6 +8,7 @@ export const movieCornerSlice = createSlice({
         search: String,
         type: movieType,
         chosenTypeIndex: "0",
+        chosenType: 'popular',
         genres: {},
         chooseGenres: []
     }, 
@@ -20,6 +21,7 @@ export const movieCornerSlice = createSlice({
             switch (action.payload){
                 case "popular":
                     state.chooseTypeIndex = "0";
+                    
                     break;
                 case "now_playing":
                     state.chosenTypeIndex = "1";
@@ -34,6 +36,8 @@ export const movieCornerSlice = createSlice({
                     state.chooseTypeIndex = "0"
                     break;
             }
+
+            state.chosenType = action.payload;
         },
 
         chooseGenres: (state, action)=>{

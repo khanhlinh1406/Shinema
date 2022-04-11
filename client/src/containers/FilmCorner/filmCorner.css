@@ -3,13 +3,13 @@
 }
 
 .film__container {
-    width: 50%;
+    width: 70%;
     display: inline-block;
-    padding-top: 3rem;
+    padding-top: 1rem;
     padding-left: 1rem;
     padding-right: 1rem;
     height: auto;
-    margin-top: 4rem;
+    margin-top: 2rem;
 }
 
 .film__container__header {
@@ -28,9 +28,6 @@
     font-family: var(--font-family);
 }
 
-.film__container {
-    width: 70%;
-}
 
 .film__container__content {
 
@@ -133,7 +130,7 @@
     float: left;
     margin-left: 15px;
     line-height: 100%;
-    margin-top: 8rem;
+    margin-top: 2rem;
     height: 200px;
 }
 

@@ -25,20 +25,24 @@ const selectedColor = '#ff492094'
 
 
 const MainNavBar = () => {
-
+    const navigate = useNavigate();
 
     const [logged, setLogged] = useState(false);
     const [accountToggle, setAccountToggle] = useState(false)
 
     const [menuToggle, setMenuToggle] = useState(false)
 
+    const goToCorner = ()=>{
+        navigate(`/corner/movie/popular`);
+    }
+
     return (
 
         <div className='mainNavBar'>
             <div>
                 <div className='mainNavBar-links'>
-                    <p>GÓC ĐIỆN ẢNH</p>
-
+                    {/* <p> <Link to = "/corner/movie/popular">GÓC ĐIỆN ẢNH </Link></p> */}
+                    <p onClick={goToCorner}>GÓC ĐIỆN ẢNH</p>
                     {logged &&
                         <div>
                             <BsBell className='mainNavBar__icon' color='#fff' size={27} />
@@ -71,7 +75,7 @@ const MainNavBar = () => {
                             </div>
 
                             <div className='mainNavbar-menu__item'>
-                                <p> <Link to="/userInfor">Góc điện ảnh</Link></p>
+                                <p> <Link to="/corner/movie/popular">Góc điện ảnh</Link></p>
                                 <GiFilmStrip className='menu__item__icon' color={defaultColor} size={23} />
                             </div>
                         </div>

@@ -222,7 +222,7 @@ export const ViewMoreButton = (props) => {
 
     const onClick = () => {
         
-        navigate(`/movie/${props.typeFilm}`);
+        navigate(`/corner/movie/${props.typeFilm}`);
     }
 
     return (

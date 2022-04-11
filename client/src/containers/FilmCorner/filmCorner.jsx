@@ -1,5 +1,5 @@
 import React from "react";
-import './moreFilm.css'
+import './filmCorner.css'
 import { useState, useEffect, useCallback } from "react";
 
 import { createSearchParams } from 'react-router-dom'
@@ -29,13 +29,7 @@ import { grey } from "@mui/material/colors";
 import InputAdornment from '@mui/material/InputAdornment';
 import SearchIcon from '@mui/icons-material/Search';
 
-
-
-
-// const url = new URLSearchParams(window.location.search);
-// const type = url.get("type");
-
-const MoreFilm = () => {
+const FilmCorner = () => {
 
     const movieSearch = useSelector(movieCornerSelector)
     const { keyword } = useParams();
@@ -95,11 +89,15 @@ const MoreFilm = () => {
 
         const getMovies = async () => {
             const params = {
-                page: page
+                page: 1
             }
             try {
-                if (keyword !== undefined) {
-                    console.log('iiiii')
+                if (keyword === undefined && type === undefined) { 
+                    const response = await tmdbApi.getMoviesList(movieType.popular, { params: params });
+                        setMovieItems(response.results)
+                        setTotalPages(response.total_pages)
+                }
+                else if (keyword !== undefined) {
                     const params = {
                         query: keyword,
                         page: 1
@@ -108,13 +106,11 @@ const MoreFilm = () => {
                     console.log(response.results)
                     setMovieItems(response.results)
                     setTotalPages(response.total_pages)
-                } else
-                    if (type !== 'similar' && type !== 'underfined') {
+                } else if (type !== 'similar' && type !== 'underfined') {
                         const response = await tmdbApi.getMoviesList(type, { params: params });
                         setMovieItems(response.results)
                         setTotalPages(response.total_pages)
                     }
-
             } catch (err) {
                 console.log(err)
             }
@@ -129,6 +125,8 @@ const MoreFilm = () => {
                 setMovieTypes('Sắp chiếu');;
             if (type === movieType.top_rated)
                 setMovieTypes('Đánh giá cao');
+            if (type == movieType.now_playing)
+                setMovieTypes('Đang chiếu')
             if (type === 'similar') {
                 setMovieTypes('Tương tự')
             }
@@ -139,7 +137,7 @@ const MoreFilm = () => {
 
     return (
         <div className="container">
-            <MainNavBar />
+            {/* <MainNavBar /> */}
             <div className="filter">
                 <SearchBar category="movie" keyword={keyword} />
                 <TypeFilter />
@@ -249,7 +247,7 @@ export const SearchBar = props => {
         () => {
             if (keyword.trim().length > 0) {
                 dispatch(movieCornerSlice.actions.searchMovie(keyword))
-                navigate(`/movie/search/${keyword}`)
+                navigate(`/corner/movie/search/${keyword}`)
 
             }
         }, [keyword, navigate, props.category]
@@ -331,7 +329,7 @@ const TypeFilter = () => {
     const goToSearch = useCallback(
         () => {
             dispatch(movieCornerSlice.actions.chooseType(value.value))
-            navigate(`/movie/${value.value}`);
+            navigate(`/corner/movie/${value.value}`);
         }, [navigate, value]);
 
     const onChangeHandler = (event) => {
@@ -410,4 +408,4 @@ const TypeFilter = () => {
 }
 
 
-export default MoreFilm
+export default FilmCorner
