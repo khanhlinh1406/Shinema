@@ -47,6 +47,17 @@ const tmdbApi = {
         const url = category[cate] + '/' + id + '/similar';
         return axiosClient.get(url, { params: {} });
     },
+
+
+    //people
+    getPopularPeople: (params) => {
+        const url = '/person/popular';
+        return axiosClient.get(url, params);
+    },
+    searchPeople: (params) => {
+        const url = '/search/person';
+        return axiosClient.get(url, params);
+    }
 }
 
 export default tmdbApi;

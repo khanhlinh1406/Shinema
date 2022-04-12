@@ -46,7 +46,8 @@ function App() {
         <Route path="/corner/movie/:type" element = {<Corner/>}/>
 
         {/* Góc diễn viên */}
-        <Route path="/corner/cast" element = {<Corner/>}/>
+        <Route path="/corner/people" element = {<Corner/>}/>
+        <Route path="/corner/people/search/:keyword" element = {<Corner/>}/>
       
       </Routes>
     </div>

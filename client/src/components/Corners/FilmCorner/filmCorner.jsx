@@ -6,14 +6,14 @@ import { createSearchParams } from 'react-router-dom'
 import { useSelector, useDispatch } from 'react-redux'
 import { useNavigate, useParams } from "react-router";
 
-import { movieCornerSelector } from "../../redux/selector";
-import { movieCornerSlice } from "../../redux/slices/movieCornerSlice";
+import { movieCornerSelector } from "../../../redux/selector";
+import { movieCornerSlice } from "../../../redux/slices/movieCornerSlice";
 
-import MainNavBar from "../../components/MainNavBar/mainNavBar"
+import MainNavBar from "../../MainNavBar/mainNavBar"
 
-import tmdbApi from "../../api/tmdbApi";
-import { movieType } from '../../api/tmdbApi'
-import apiConfig from "../../api/apiConfig";
+import tmdbApi from "../../../api/tmdbApi";
+import { movieType } from '../../../api/tmdbApi'
+import apiConfig from "../../../api/apiConfig";
 
 import TextField from '@mui/material/TextField';
 import IconButton from '@mui/material/IconButton';
@@ -194,10 +194,6 @@ const SlideItem = props => {
     }
     return (
         <div className="film__item__container" onClick={GoToDetails}>
-            <div className="film__item__container__hoverItem">
-                <button className="film__item__container__hoverItem__buyTicketBtn">Đặt vé</button>
-
-            </div>
             <img className="film__item__container__img" src={background} alt={item.title} />
             <label className="film__item__container__title">{item.title}</label>
         </div>

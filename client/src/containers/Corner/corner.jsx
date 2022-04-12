@@ -6,8 +6,8 @@ import { useNavigate, useParams } from "react-router";
 import { Route, BrowserRouter, Routes, Link } from "react-router-dom"
 
 import MainNavBar from "../../components/MainNavBar/mainNavBar"
-import FilmCorner from './../FilmCorner/filmCorner';
-import CastCorner from './../CastCorner/castCorner'
+import FilmCorner from '../../components/Corners/FilmCorner/filmCorner';
+import CastCorner from '../../components/Corners/PeopleCorner/castCorner'
 
 import Box from '@mui/material/Box';
 import Tab from '@mui/material/Tab';
@@ -56,7 +56,7 @@ const Corner = () => {
                             <Tab label="DIỄN VIÊN"
                                 value={1}
                                 component={Link}
-                                to={'/corner/cast'}
+                                to={'/corner/people'}
                                 sx={{ color: '#fff' }} />
                         </TabList>
                     </Box>
