@@ -19,15 +19,15 @@ router.post('/refreshToken', (req, res) => {
         })
         .then(data => {
             if (data.length != 0) {
-                jwt.verify(refreshToken, process.env.REFRESH_TOKEN_SECRET, (err, data) => {
+                jwt.verify(refreshToken, process.env.REFRESH_TOKEN_SECRET, (err, daa) => {
                     if (err) {
                         res.sendStatus(401);
                         return;
                     }
-
-                    const accessToken = jwt.sign({ username: data.username },
+                    const accessToken = jwt.sign({ email: daa.email },
                         process.env.ACCESS_TOKEN_SECRET, { expiresIn: '30s' }
                     );
+                    console.log('refresh: ' + accessToken)
                     res.json({ accessToken });
                 })
             } else {
@@ -47,7 +47,6 @@ router.post('/login', (req, res) => {
         .then(data => {
             if (data) {
                 if (data.password == password) {
-                    const account = data;
                     const payload = {
                         email: email
                     }

@@ -14,9 +14,13 @@ import TextField from '@mui/material/TextField';
 import AdapterDateFns from '@mui/lab/AdapterDateFns';
 import LocalizationProvider from '@mui/lab/LocalizationProvider';
 import DatePicker from '@mui/lab/DatePicker';
-import Container from '@mui/material/Container';
 import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
+import Button from '@mui/material/Button';
+import { createTheme, ThemeProvider } from '@mui/material/styles';
+import AddRoundedIcon from '@mui/icons-material/AddRounded';
+import { red, grey } from "@mui/material/colors";
+
 import ShowTimeManagerItem from '../ShowTimeManagerItem/showTimeManagerItem';
 
 import Loading from '../Loading/loading'
@@ -46,8 +50,8 @@ const ShowTimeManager = () => {
     // }, [listShowTimes])
 
     const getShowTimes = async () => {
-
-        ShowTimeApi.getAll().then(data => {
+        await ShowTimeApi.getAll().then(data => {
+            dispatch(showTimeSlice.actions.updateAll([]))
             const params = {
             }
             data.forEach(element => {
@@ -59,7 +63,6 @@ const ShowTimeManager = () => {
                     })
                     .catch(err => console.log(err))
             });
-
 
         })
             .catch(err => console.log(err))
@@ -78,29 +81,45 @@ const ShowTimeManager = () => {
     useEffect(() => {
         forceRerender()
     }, [data])
+
+    const btnTheme = createTheme({
+        shape: {
+            borderRadius: 20
+        },
+        palette: {
+            primary: red
+        },
+    })
+
     return (
         <Box sx={{ width: '100%' }}>
-            <LocalizationProvider dateAdapter={AdapterDateFns} locale={viLocale}  >
-                <DatePicker
-                    label="Ngày"
-                    value={value}
-                    onChange={(newValue) => {
-                        setValue(newValue)
-                        const dateFormat = format(newValue, "dd/MM/yyyy");
-                        dispatch(showTimeSlice.actions.setFilter(dateFormat))
-                    }}
-                    renderInput={(params) =>
-                        <TextField
-                            {...params}
-                            sx={{
-                                svg: { color: '#fff' },
-                                input: { color: '#fff' },
-                                label: { color: '#fff' },
-                            }}
-                        />}
-                />
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'self-start' }}>
+                <LocalizationProvider dateAdapter={AdapterDateFns} locale={viLocale}  >
+                    <DatePicker
+                        label="Ngày"
+                        value={value}
+                        onChange={(newValue) => {
+                            setValue(newValue)
+                            const dateFormat = format(newValue, "dd/MM/yyyy");
+                            dispatch(showTimeSlice.actions.setFilter(dateFormat))
+                        }}
+                        renderInput={(params) =>
+                            <TextField
+                                {...params}
+                                sx={{
+                                    svg: { color: '#fff' },
+                                    input: { color: '#fff' },
+                                    label: { color: '#fff' },
+                                }}
+                            />}
+                    />
+                </LocalizationProvider>
 
-            </LocalizationProvider>
+                <ThemeProvider theme={btnTheme} >
+                    <Button sx={{ paddingX: 3, paddingY: 1 }} variant="contained" endIcon={<AddRoundedIcon />}>Thêm mới</Button>
+                </ThemeProvider>
+            </div>
+
 
 
             {data ?

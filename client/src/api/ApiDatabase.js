@@ -7,7 +7,6 @@ const ApiDatabase = axios.create({
     headers: {
         'Content-Type': 'application/json',
     },
-    //withCredentials: true,
 });
 
 // ApiDatabase.interceptors.request.use(
@@ -43,15 +42,15 @@ const ApiDatabase = axios.create({
 // })
 
 
-function refreshToken() {
-    return ApiAuthen.post('/refreshToken', {
-        token: window.localStorage.getItem('refreshToken')
+async function refreshToken() {
+    return await ApiAuthen.post('/refreshToken', {
+        token: localStorage.getItem('refreshToken')
     })
 }
 
 ApiDatabase.interceptors.request.use(
         async(config) => {
-            const token = window.localStorage.getItem('accessToken')
+            let token = await localStorage.getItem('accessToken')
             if (token) {
                 config.headers["x-access-token"] = token;
             }
@@ -62,38 +61,36 @@ ApiDatabase.interceptors.request.use(
         }
     )
     // response parse
-ApiDatabase.interceptors.response.use(
+const interceptor = ApiDatabase.interceptors.response.use(
     res => {
         return res;
     },
     async err => {
-        if (err.response) {
-            const originalConfig = err.config;
-            if (err.response) {
-                if (err.response.status === 401) {
+        if (err.response.status !== 401) {
+            return Promise.reject(err);
+        }
+        axios.interceptors.response.eject(interceptor);
 
-                    refreshToken().then(rs => {
-                            window.localStorage.setItem('accessToken', rs.data.accessToken)
-                            console.log(rs.data.accessToken)
-                            originalConfig.headers['x-access-token'] = rs.data.accessToken
+        const originalConfig = err.config;
+        if (err.response.status === 401 && !originalConfig._retry) {
+            originalConfig._retry = true;
+            return ApiAuthen.post('/refreshToken', {
+                    token: localStorage.getItem('refreshToken')
+                }).then(rs => {
+                    localStorage.setItem('accessToken', rs.data.accessToken)
+                        // originalConfig.headers['x-access-token'] = rs.data.accessToken                                
+                    return ApiDatabase(originalConfig);
+                })
+                // try {
+                //     const rs = await refreshToken();
 
-                            console.log('config')
-                            return ApiDatabase(originalConfig);
-                        }).catch(_error => {
-                            return Promise.reject(_error);
-                        })
-                        // try {
-                        //     const rs = await refreshToken();
-
-                    //     window.localStorage.setItem('accessToken', rs.data.accessToken)
-                    //     originalConfig.baseURL = URL_SERVER
-                    //     originalConfig.headers['x-access-token'] = rs.data.accessToken
-                    //     return ApiDatabase(originalConfig);
-                    // } catch (_error) {
-                    //     return Promise.reject(_error);
-                    // }
-                }
-            }
+            //     window.localStorage.setItem('accessToken', rs.data.accessToken)
+            //     originalConfig.baseURL = URL_SERVER
+            //     originalConfig.headers['x-access-token'] = rs.data.accessToken
+            //     return ApiDatabase(originalConfig);
+            // } catch (_error) {
+            //     return Promise.reject(_error);
+            // }
         }
         return Promise.reject(err);
     })

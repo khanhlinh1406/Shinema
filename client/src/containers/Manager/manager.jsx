@@ -1,4 +1,8 @@
 import styles from './styles'
+import { useSelector } from 'react-redux';
+import { userSelector } from '../../redux/selector'
+import { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 import * as React from 'react';
 import PropTypes from 'prop-types';
@@ -13,6 +17,19 @@ import { red, grey } from "@mui/material/colors";
 import { ShowTimeManager, TheaterManager, Statistics } from '../../components'
 
 const Manager = () => {
+
+    const user = useSelector(userSelector)
+    let navigate = useNavigate();
+
+    useEffect(() => {
+        const checkAuth = () => {
+            if (user.rank != "Manager" && user.rank != "Admin") {
+                navigate('/')
+            }
+        }
+        checkAuth()
+    }, [])
+
     const color = "#c44242";
     const tabTheme = createTheme({
         palette: {
