@@ -186,10 +186,7 @@ const SlideItem = props => {
         // console.log(data.movie)
 
         const params = { category: 'movie', id: props.item.id }
-        navigate({
-            pathname: '/filmDetails',
-            search: `?${createSearchParams(params)}`
-        });
+        navigate(`/filmDetails/${props.item.id}`);
     }
     return (
         <div className="typeOfFilm__item__container" onClick={GoToDetails}>

@@ -56,18 +56,20 @@ const FilmCorner = () => {
             } else
                 setPage(page + 1);
 
-            const params = { page: page }
-
             try {
-                if (type !== 'similar') {
+                if (type !== 'similar' && keyword === undefined) {
+                    const params = { page: page }
                     const response = await tmdbApi.getMoviesList(type, { params: params });
-                    ///setMovieItems(response.results.slice(0, page))
-                    /// setMovieItems(response.results)
-                    ///const updateMovieItems = [...movieItems, ...response.results];
+                    setMovieItems([...movieItems, ...response.results])
+                }
 
+                if (keyword !== undefined) {
+                    console.log('uuuuuuuuuuuu')
+                    const params = { page: page , query: keyword}
+                    const response = await tmdbApi.search('movie', { params: params });
                     setMovieItems([...movieItems, ...response.results])
 
-                    console.log(movieItems)
+                    
                 }
                 // else {
                 //     const response = await tmdbApi.similar(category, props.id);
@@ -187,10 +189,7 @@ const SlideItem = props => {
         // console.log(data.movie)
 
         const params = { category: 'movie', id: props.item.id }
-        navigate({
-            pathname: '/filmDetails',
-            search: `?${createSearchParams(params)}`
-        });
+        navigate(`/filmDetails/${props.item.id}`);
     }
     return (
         <div className="film__item__container" onClick={GoToDetails}>

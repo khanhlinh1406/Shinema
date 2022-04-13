@@ -21,6 +21,8 @@ import { movieCornerSelector } from "../../redux/selector";
 import { movieCornerSlice } from "../../redux/slices/movieCornerSlice";
 import { useSelector, useDispatch } from 'react-redux'
 
+import { Helmet } from 'react-helmet';
+
 const Corner = () => {
 
     const { category } = useParams()
@@ -41,6 +43,9 @@ const Corner = () => {
     // }, [value])
     return (
         <div className="box-container">
+            <Helmet>
+                <title>Góc điện ảnh</title>
+            </Helmet>
             <MainNavBar/>
             <Box sx={{ width: '100%', typography: 'body1' }}
             >

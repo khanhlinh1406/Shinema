@@ -57,6 +57,14 @@ const tmdbApi = {
     searchPeople: (params) => {
         const url = '/search/person';
         return axiosClient.get(url, params);
+    },
+    getDetailPerson: (id) => {
+        const url = '/person/' + id;
+        return axiosClient.get(url, { params: {} });
+    },
+    getMovieCredits: (person_id) => {
+        const url = '/person/' + person_id + '/movie_credits';
+        return axiosClient.get(url, {params: {}});
     }
 }
 

@@ -4,8 +4,7 @@ import './filmDetails.css'
 import { useLocation } from "react-router-dom";
 
 import { Helmet } from 'react-helmet';
-
-
+import { useParams } from "react-router";
 import { useState, useEffect } from "react";
 
 import tmdbApi from "../../api/tmdbApi";
@@ -18,8 +17,8 @@ import FilmSlider from "../../components/FilmSlider/filmSlider";
 import MainNavBar from "../../components/MainNavBar/mainNavBar";
 
 const FilmDetails = () => {
-  const url = new URLSearchParams(window.location.search);
-  const filmId = url.get("id");
+
+  const {id} = useParams();
   const [film, setFilm] = useState();
 
   useEffect(() => {
@@ -28,7 +27,7 @@ const FilmDetails = () => {
       }
 
       try {
-        const response = await tmdbApi.detail(category.movie, filmId, { params: params });
+        const response = await tmdbApi.detail(category.movie, id, { params: params });
         setFilm(response)
       } catch (err) {
         console.log(err)

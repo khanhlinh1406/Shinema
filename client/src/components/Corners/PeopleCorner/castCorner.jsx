@@ -50,13 +50,18 @@ const CastCorner = () => {
             } else
                 setPage(page + 1);
 
-            const params = { page: page }
-
-            const response = await tmdbApi.getPopularPeople({ params: params });
-            console.log(response.results)
-            setPeopleItems([...peopleItems, ...response.results])
-            setTotalPages(response.total_pages)
-
+            if (keyword === undefined) {
+                const params = { page: page }
+                const response = await tmdbApi.getPopularPeople({ params: params });
+                console.log(response.results)
+                setPeopleItems([...peopleItems, ...response.results])
+                setTotalPages(response.total_pages)
+            } else if (keyword !== undefined){
+                const params = { page: page, query: keyword }
+                const response = await tmdbApi.searchPeople({ params: params });
+                setPeopleItems([...peopleItems, ...response.results])
+                setTotalPages(response.total_pages)
+            }
         }
 
         if (page < totalPages)
@@ -83,11 +88,11 @@ const CastCorner = () => {
 
             getPeople()
         }
-        else if (keyword !== undefined){
+        else if (keyword !== undefined) {
             const getPeople = async () => {
                 try {
                     const params = {
-                        page: 1, 
+                        page: 1,
                         query: keyword
                     }
                     const response = await tmdbApi.searchPeople({ params: params });
@@ -100,7 +105,6 @@ const CastCorner = () => {
                 }
 
             }
-
             getPeople()
         }
     }, [keyword]);
@@ -110,9 +114,8 @@ const CastCorner = () => {
         <div className="people-container">
             <div className="people-filter">
                 <SearchBar
-                 keyword={keyword}
+                    keyword={keyword}
                 />
-                {/* <TypeFilter /> */}
             </div>
 
             <div className="people__container">
@@ -197,7 +200,7 @@ export const SearchBar = props => {
                         label: { color: 'rgb(153, 153, 153)', marginLeft: 10, marginX: 2, fontSize: 15 }
                     }}
 
-                    onChange={(e) => {setKeyword(e.target.value); }}
+                    onChange={(e) => { setKeyword(e.target.value); }}
                     InputProps={{
                         endAdornment: (
                             <InputAdornment position="end">
@@ -247,12 +250,7 @@ const SlideItem = props => {
     const navigate = useNavigate();
 
     const GoToDetails = () => {
-
-        // const params = { category: 'movie', id: props.item.id }
-        // navigate({
-        //     pathname: '/filmDetails',
-        //     search: `?${createSearchParams(params)}`
-        // });
+        navigate(`/peopleDetails/${props.item.id}`)
     }
     return (
         <div className="people__item__container" onClick={GoToDetails}>
