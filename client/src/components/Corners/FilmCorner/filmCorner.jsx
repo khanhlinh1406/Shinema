@@ -65,11 +65,11 @@ const FilmCorner = () => {
 
                 if (keyword !== undefined) {
                     console.log('uuuuuuuuuuuu')
-                    const params = { page: page , query: keyword}
+                    const params = { page: page, query: keyword }
                     const response = await tmdbApi.search('movie', { params: params });
                     setMovieItems([...movieItems, ...response.results])
 
-                    
+
                 }
                 // else {
                 //     const response = await tmdbApi.similar(category, props.id);
@@ -94,10 +94,10 @@ const FilmCorner = () => {
                 page: 1
             }
             try {
-                if (keyword === undefined && type === undefined) { 
+                if (keyword === undefined && type === undefined) {
                     const response = await tmdbApi.getMoviesList(movieType.popular, { params: params });
-                        setMovieItems(response.results)
-                        setTotalPages(response.total_pages)
+                    setMovieItems(response.results)
+                    setTotalPages(response.total_pages)
                 }
                 else if (keyword !== undefined) {
                     const params = {
@@ -109,10 +109,10 @@ const FilmCorner = () => {
                     setMovieItems(response.results)
                     setTotalPages(response.total_pages)
                 } else if (type !== 'similar' && type !== 'underfined') {
-                        const response = await tmdbApi.getMoviesList(type, { params: params });
-                        setMovieItems(response.results)
-                        setTotalPages(response.total_pages)
-                    }
+                    const response = await tmdbApi.getMoviesList(type, { params: params });
+                    setMovieItems(response.results)
+                    setTotalPages(response.total_pages)
+                }
             } catch (err) {
                 console.log(err)
             }
@@ -329,10 +329,10 @@ const TypeFilter = () => {
 
     const onChangeHandler = (event) => {
         const updateValue = event.target.value;
-        console.log("uuu"+updateValue)
+        console.log("uuu" + updateValue)
         dispatch(movieCornerSlice.actions.chooseType(updateValue))
         setValue(options[movieSearch.chosenTypeIndex])
-      //  setValue(updateValue);
+        //  setValue(updateValue);
         console.log(value)
         goToSearch();
     }
@@ -351,7 +351,10 @@ const TypeFilter = () => {
                     options={options}
                     sx={{
                         width: 350,
-                        backgroundColor: 'rgb(9, 24, 48)'
+                        backgroundColor: 'rgb(9, 24, 48)',
+                        svg: { color: '#fff' },
+                        input: { color: '#fff' },
+                        label: { color: '#fff' },
                     }}
 
                     renderInput={(params) =>

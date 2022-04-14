@@ -55,6 +55,7 @@ const PeopleDetails = () => {
             }
         }
         getMovie();
+        console.log('iiiiiii');
         console.log(movies.cast)
     })
 
@@ -122,11 +123,11 @@ const PeopleDetails = () => {
 
                             <TabPanel value={1}>
                                 <div className="movies-list">
-                                {
+                                {/* {
                                     movies.map((item, i)=>(
                                         <SlideItem item={item} key={i}/>
                                     ))
-                                }
+                                } */}
                                 </div>
                             </TabPanel>
                         </TabContext>
@@ -139,28 +140,28 @@ const PeopleDetails = () => {
 }
 
 const SlideItem = props => {
-    const item = props.item;
-    const background = apiConfig.originalImage(item.backdrop_path ? item.poster_path : item.backdrop_path)
-    // const dispatch = useDispatch();
-    // const data = useSelector(movieSelector)
-    const navigate = useNavigate();
+    // const item = props.item;
+    // const background = apiConfig.originalImage(item.backdrop_path ? item.poster_path : item.backdrop_path)
+    // // const dispatch = useDispatch();
+    // // const data = useSelector(movieSelector)
+    // const navigate = useNavigate();
 
-    const GoToDetails = () => {
-        // dispatch(
-        //     movieSlice.actions.addMovie({name: 'ccccccc'})
-        // )
+    // const GoToDetails = () => {
+    //     // dispatch(
+    //     //     movieSlice.actions.addMovie({name: 'ccccccc'})
+    //     // )
 
-        // console.log(data.movie)
+    //     // console.log(data.movie)
 
-        const params = { category: 'movie', id: props.item.id }
-        navigate(`/filmDetails/${props.item.id}`);
-    }
-    return (
-        <div className="item__container" onClick={GoToDetails}>
-            <img className="item__container__img" src={background} alt={item.title} />
-            <label className="item__container__title">{item.title}</label>
-        </div>
-    )
+    //     const params = { category: 'movie', id: props.item.id }
+    //     navigate(`/filmDetails/${props.item.id}`);
+    // }
+    // return (
+    //     <div className="item__container" onClick={GoToDetails}>
+    //         <img className="item__container__img" src={background} alt={item.title} />
+    //         <label className="item__container__title">{item.title}</label>
+    //     </div>
+    // )
 }
 
 export default PeopleDetails
