@@ -62,12 +62,16 @@ const MainNavBar = () => {
 
     useEffect((checkLogged), [])
 
+    const goToCorner = () => {
+        navigate(`/corner/movie/popular`);
+    }
+
     return (
 
         <div className='mainNavBar'>
             <div>
                 <div className='mainNavBar-links'>
-                    <p>GÓC ĐIỆN ẢNH</p>
+                    <p onClick={goToCorner}>GÓC ĐIỆN ẢNH</p>
 
                     {logged == 'true' ?
                         <div>
@@ -101,7 +105,7 @@ const MainNavBar = () => {
                             </div>
 
                             <div className='mainNavbar-menu__item'>
-                                <p> <Link to="/userInfor">Góc điện ảnh</Link></p>
+                                <p> <Link to="/corner/movie/popular">Góc điện ảnh</Link></p>
                                 <GiFilmStrip className='menu__item__icon' color={defaultColor} size={23} />
                             </div>
                         </div>
