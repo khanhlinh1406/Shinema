@@ -23,12 +23,14 @@ const Manager = () => {
 
     useEffect(() => {
         const checkAuth = () => {
-            if (user.rank != "Manager" && user.rank != "Admin") {
-                navigate('/')
+            if (user ){
+                if (user.rank != "Manager" && user.rank != "Admin") {
+                    navigate('/')
+                }
             }
         }
         checkAuth()
-    }, [])
+    }, [user])
 
     const color = "#c44242";
     const tabTheme = createTheme({
