@@ -1,31 +1,40 @@
 import { createSlice } from "@reduxjs/toolkit";
 
 export const movieSlice = createSlice({
-    name: 'movie', 
+    name: 'movie',
     initialState: {
         data: [],
+        upcoming: [],
         movie: {}
-    }, 
+    },
     reducers: {
-        addMovie: (state, action)=>{
+        addMovie: (state, action) => {
             state.data.push(action.payload)
-        },/// type: movie/addMovie
+        }, /// type: movie/addMovie
 
-        updateMovie: (state, action)=>{
+        updateMovie: (state, action) => {
             let updateData = state.data;
-                updateData = updateData.map(movie => {
-                    if (movie.id == action.payload.id)
-                        return action.payload
-                    else return movie
-                })
-            
+            updateData = updateData.map(movie => {
+                if (movie.id == action.payload.id)
+                    return action.payload
+                else return movie
+            })
+
             state.data = updateData
-        },/// type: movie/updateMovie
-        
-        removeMovie: (state, action)=>{
+        }, /// type: movie/updateMovie
+
+        removeMovie: (state, action) => {
             let removeMovie = state.data;
-                removeMovie.movie = removeMovie.filter(movie => movie.id != action.payload.id)
+            removeMovie.movie = removeMovie.filter(movie => movie.id != action.payload.id)
             state.data = removeMovie
-        }
+        },
+
+        updateAllUpcoming: (state, action) => {
+            state.upcoming = action.payload
+        },
+
+        addUpcoming: (state, action) => {
+            state.upcoming.push(action.payload)
+        },
     }
 })
