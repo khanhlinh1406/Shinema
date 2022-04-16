@@ -185,7 +185,7 @@ export const SearchBar = props => {
             <ThemeProvider theme={txtFieldTheme}>
                 <TextField
                     id="filled-search"
-                    label="Tìm kiếm người..."
+                    label="Find a person..."
                     type="search"
                     variant="filled"
                     text="primary"

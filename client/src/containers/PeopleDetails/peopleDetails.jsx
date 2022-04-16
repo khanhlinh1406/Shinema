@@ -50,7 +50,9 @@ const PeopleDetails = () => {
         const getMovie = async () => {
             try {
                 const response = await tmdbApi.getMovieCredits(id);
-                setMovies(response)
+                setMovies(response.cast.filter(item =>
+                    (item.backdrop_path != null || item.poster_path != null))
+                )
             }
             catch (err) {
                 console.log(err)
@@ -58,8 +60,8 @@ const PeopleDetails = () => {
         }
         getMovie();
         console.log('iiiiiii');
-        console.log(movies.cast)
-    })
+        console.log(movies)
+    }, [id])
 
     const tabTheme = createTheme({
         palette: {
@@ -131,13 +133,21 @@ const PeopleDetails = () => {
                                 </TabPanel>
 
                                 <TabPanel value={1}>
-                                    <div className="movies-list">
-                                        {/* {
-                                    movies.map((item, i)=>(
-                                        <SlideItem item={item} key={i}/>
-                                    ))
-                                } */}
-                                    </div>
+                                    {movies.length != 0 ?
+                                        (
+                                            <div className="movies-list">
+                                                {
+                                                    movies.map((item, i) => (
+                                                        <SlideItem item={item} key={i} />
+                                                    ))
+                                                }
+                                            </div>
+                                        )
+                                        :
+                                        (
+                                            <div className='movies-list__updating'>Updating...</div>
+                                        )
+                                    }
                                 </TabPanel>
                             </TabContext>
                         </Box>
@@ -150,7 +160,7 @@ const PeopleDetails = () => {
 
 const SlideItem = props => {
     const item = props.item;
-    const background = apiConfig.originalImage(item.backdrop_path ? item.poster_path : item.backdrop_path)
+    const background = apiConfig.originalImage(item.backdrop_path ? item.backdrop_path : item.poster_path)
     // const dispatch = useDispatch();
     // const data = useSelector(movieSelector)
     const navigate = useNavigate();
@@ -167,8 +177,9 @@ const SlideItem = props => {
     }
     return (
         <div className="item__container" onClick={GoToDetails}>
-            <img className="item__container__img" src={background} alt={item.original_title} />
+            <img className="item__container__img"  src={background} alt={item.original_title} />
             <label className="item__container__title">{item.original_title}</label>
+            <br />
             <label className='item__container__character'>{item.character}</label>
         </div>
     )
