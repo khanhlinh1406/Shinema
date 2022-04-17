@@ -300,7 +300,6 @@ const Register = () => {
 
                 <ThemeProvider theme={txtFieldThem}>
                     <TextField
-                        id="filled-basic"
                         label="Email"
                         variant="filled"
                         color="primary"
@@ -329,7 +328,6 @@ const Register = () => {
                         variant="filled">
                         <InputLabel sx={{ color: 'rgb(153, 153, 153)', marginLeft: 1 }} htmlFor="filled-adornment-password">Mật khẩu</InputLabel>
                         <FilledInput
-                            //id="filled-adornment-password"
                             type={values.showPassword ? 'text' : 'password'}
                             value={values.password}
                             onChange={handleChange('password')}
@@ -364,7 +362,6 @@ const Register = () => {
                         variant="filled">
                         <InputLabel sx={{ color: 'rgb(153, 153, 153)', marginLeft: 1 }} htmlFor="filled-adornment-password">Xác nhận mật khẩu</InputLabel>
                         <FilledInput
-                            //id="filled-adornment-password"
                             type={values.showConfirmPassword ? 'text' : 'password'}
                             value={values.confirmPassword}
                             onChange={handleChange('confirmPassword')}
@@ -414,7 +411,6 @@ const Register = () => {
                         <TextField
                             autoFocus
                             margin="dense"
-                            id="name"
                             label="Mã xác nhận"
                             type="text"
                             fullWidth
@@ -426,7 +422,6 @@ const Register = () => {
                         <TextField
                             autoFocus
                             margin="dense"
-                            id="name"
                             label="Mã xác nhận"
                             type="text"
                             fullWidth
