@@ -165,8 +165,6 @@ const FilmSlider = props => {
                 </Swiper>
 
             </div>
-            )
-
         </div>
     );
 }
@@ -218,7 +216,7 @@ export const ViewMoreButton = (props) => {
     const navigate = useNavigate();
 
     const onClick = () => {
-        
+
         navigate(`/corner/movie/${props.typeFilm}`);
     }
 

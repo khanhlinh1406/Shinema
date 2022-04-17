@@ -1,6 +1,7 @@
 import * as React from 'react'
 import styles from './styles'
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
+import { Error } from '../Alert/alert';
 
 import tmdbApi from "../../api/tmdbApi";
 import { movieType } from '../../api/tmdbApi'
@@ -8,14 +9,45 @@ import apiConfig from "../../api/apiConfig";
 
 import { useSelector, useDispatch } from 'react-redux'
 import { movieSlice } from './../../redux/slices/movieSlice';
+import { theaterSlice } from './../../redux/slices/theaterSlice';
+import { theaterSelector } from '../../redux/selector'
+
+import TheaterApi from '../../api/theaterApi'
 
 import TextField from '@mui/material/TextField';
 import Autocomplete from '@mui/material/Autocomplete';
+import AdapterDateFns from '@mui/lab/AdapterDateFns';
+import LocalizationProvider from '@mui/lab/LocalizationProvider';
+import DatePicker from '@mui/lab/DatePicker';
+import Button from '@mui/material/Button';
+import { createTheme, ThemeProvider } from '@mui/material/styles';
+import { red } from "@mui/material/colors";
+import IconButton from '@mui/material/IconButton';
+import InputAdornment from '@mui/material/InputAdornment';
+import InputLabel from '@mui/material/InputLabel';
+import FormControl from '@mui/material/FormControl';
+import Input from '@mui/material/Input';
+
+import AddCircleOutlineOutlinedIcon from '@mui/icons-material/AddCircleOutlineOutlined';
+import VideoLabelOutlinedIcon from '@mui/icons-material/VideoLabelOutlined';
+import CloseRoundedIcon from '@mui/icons-material/CloseRounded';
+
+import viLocale from "date-fns/locale/vi"
+import format from 'date-fns/format'
 
 const NewShowTimeForm = () => {
     const dispatch = useDispatch()
     const [, forceRender] = useState()
-    const upcomingMovie = useSelector(state => state.movies.upcoming)
+
+    const [currentFilm, setCurrentFilm] = useState()
+    const [currentTheater, setCurrentTheater] = useState()
+    const [listDateTime, setListDateTime] = useState([])
+    const [dateSelected, setDateSelected] = useState()
+
+    const [errorVisible, setErrorVisible] = useState(false)
+
+    const upcomingMovies = useSelector(state => state.movies.upcoming)
+    const theaters = useSelector(theaterSelector)
 
     useEffect(() => {
         const getMovies = async () => {
@@ -30,14 +62,27 @@ const NewShowTimeForm = () => {
             }
         }
 
+        const getTheaters = () => {
+            TheaterApi.getAll().then(res => {
+                if (res) {
+                    setCurrentTheater(res[0])
+                    dispatch(theaterSlice.actions.updateAll(res))
+                }
+
+            })
+                .catch(err => console.log(err))
+        }
+
+        setDateSelected(new Date())
         getMovies();
+        getTheaters();
     }, []);
 
     useEffect(() => {
         forceRender()
-    }, [upcomingMovie])
+    }, [upcomingMovies, theaters])
 
-    const options = upcomingMovie.map((option) => {
+    const movieOptions = upcomingMovies.map((option) => {
         const firstLetter = option.title[0].toUpperCase();
         return {
             firstLetter: /[0-9]/.test(firstLetter) ? '0-9' : firstLetter,
@@ -45,20 +90,178 @@ const NewShowTimeForm = () => {
         };
     });
 
+    const addDateHandle = () => {
+        const dateFormat = format(dateSelected, "dd/MM/yyyy");
+        const today = new Date()
+
+        if (
+            dateSelected.getFullYear() >= today.getFullYear() &&
+            dateSelected.getMonth() >= today.getMonth() &&
+            dateSelected.getDate() >= today.getDate()
+        ) {
+            if (listDateTime.length != 0 && listDateTime.find(e => e.date == dateFormat)) return
+
+            setListDateTime([...listDateTime, { date: dateFormat }])
+        }
+        else {
+            setErrorVisible(true)
+        }
+
+    }
+
+    const deleteDateHandle = (item) => {
+        let temp = listDateTime.filter(e => e.date !== item.date)
+        setListDateTime(temp)
+    }
+
+    const onChangeTimeHandle = (item) => {
+        let temp = listDateTime.map(e => e.date !== item.date ? e : item);
+        setListDateTime(temp)
+    }
+
+    const btnTheme = createTheme({
+        shape: {
+            borderRadius: 5
+        },
+        palette: {
+            primary: red
+        },
+    })
+
     return (
         <div style={styles.container} >
+            <div>
+                <Autocomplete
+                    onChange={(event, value) => setCurrentFilm(value)}
+                    options={movieOptions.sort((a, b) => -b.firstLetter.localeCompare(a.firstLetter))}
+                    groupBy={(option) => option.firstLetter}
+                    getOptionLabel={(option) => option.title}
+                    isOptionEqualToValue={(option, value) => option.id === value.id}
+                    sx={{ width: 300 }}
+                    renderInput={(params) => <TextField {...params} label="Chọn phim" />}
+                />
 
-            <Autocomplete
-                id="grouped-demo"
-                options={options.sort((a, b) => -b.firstLetter.localeCompare(a.firstLetter))}
-                groupBy={(option) => option.firstLetter}
-                getOptionLabel={(option) => option.title}
-                sx={{ width: 300 }}
-                renderInput={(params) => <TextField {...params} label="Chọn phim" />}
-            />
+                {currentFilm && <CurrentFilm currentFilm={currentFilm} />}
+            </div>
+
+            <div style={{ display: 'flex', flexDirection: 'column', marginLeft: 30, width: '100%' }}>
+
+                <div style={{ display: 'flex', flexDirection: 'row', width: '100%', justifyContent: 'space-between', alignItems: 'flex-start' }}>
+                    <Autocomplete
+                        onChange={(event, value) => setCurrentTheater(value)}
+                        options={theaters}
+                        getOptionLabel={(option) => option.name}
+                        isOptionEqualToValue={(option, value) => option.id === value.id}
+                        sx={{ width: 300 }}
+                        renderInput={(params) => <TextField {...params} label="Chọn rạp" />}
+                    />
+                    <ThemeProvider theme={btnTheme} >
+                        <Button sx={{ paddingX: 2.5, paddingY: 1.5 }} variant="contained" endIcon={<VideoLabelOutlinedIcon />} >Thêm suất chiếu</Button>
+                    </ThemeProvider>
+                </div>
+
+                <div style={{ width: '100%', marginTop: 20 }}>
+                    <div style={{ display: 'flex', flexDirection: 'row', width: '100%', justifyContent: 'space-between', alignItems: 'flex-start' }}>
+                        <p style={{ color: 'rgb(9, 24, 48)', fontSize: 20, marginTop: 5 }}>Suất chiếu</p>
+
+                        <div>
+                            <IconButton size='large' onClick={addDateHandle}>
+                                <AddCircleOutlineOutlinedIcon fontSize="inherit" />
+                            </IconButton>
+
+                            <LocalizationProvider dateAdapter={AdapterDateFns} locale={viLocale}  >
+                                <DatePicker
+                                    label="Ngày"
+                                    value={dateSelected}
+                                    onChange={(newValue) => {
+                                        setDateSelected(newValue)
+                                        setErrorVisible(false)
+                                    }}
+                                    renderInput={(params) =>
+                                        <TextField
+                                            {...params}
+                                        />}
+                                />
+                            </LocalizationProvider>
+                        </div>
+
+                    </div>
+
+                    {listDateTime.length != 0 &&
+                        <div style={{ border: '1px solid #cfcfcf', width: '100%', borderRadius: 5, marginTop: 10 }}>
+                            {listDateTime.map((item, index) => (
+                                <DateTimeItem key={index} item={item} deleteDateHandle={deleteDateHandle} onChangeTimeHandle={onChangeTimeHandle} />
+                            ))}
+                        </div>}
+                </div>
+
+            </div >
+
+            <Error message={'Vui lòng lên lịch trước 1 ngày so với thời gian diễn ra'} status={errorVisible} />
+        </div >
+    )
+}
+
+const CurrentFilm = ({ currentFilm }) => {
+    const poster = apiConfig.originalImage(currentFilm.backdrop_path ? currentFilm.poster_path : currentFilm.backdrop_path)
+
+    return (
+        <div style={{ maxWidth: 400 }}>
+            <div style={{
+                backgroundImage: `url(${poster})`,
+                display: 'flex',
+                height: 400,
+                width: 280,
+                backgroundPosition: 'center',
+                backgroundSize: 'cover',
+                backgroundRepeat: 'no-repeat',
+                borderRadius: 20,
+                boxShadow: 5,
+                marginTop: 10
+            }} />
+
+            {/* <h1 style={{ color: 'rgb(9, 24, 48)', fontSize: 35, }}>{currentFilm.title}</h1> */}
 
         </div>
     )
 }
 
+const DateTimeItem = ({ item, deleteDateHandle, onChangeTimeHandle }) => {
+    const [value, setValue] = useState()
+    const handleChange = () => (event) => {
+        setValue(event.target.value)
+        onChangeTimeHandle({ date: item.date, times: value })
+    };
+    const deleteHandle = () => {
+        deleteDateHandle(item)
+    }
+
+    return (
+        <div style={{ display: 'flex', alignItems: 'stretch', flexDirection: 'column', padding: 15 }}>
+            <p style={{ color: 'rgb(9, 24, 48)' }}>{item.date}</p>
+
+            <FormControl sx={{ m: 1 }} variant="standard">
+                <InputLabel htmlFor="standard-adornment-password">Giờ. Vd: 8:30 10:30 ... </InputLabel>
+                <Input
+                    id="standard-adornment-password"
+                    type='text'
+                    value={value}
+                    onChange={handleChange()}
+                    endAdornment={
+                        <InputAdornment position="end">
+                            <IconButton
+                                aria-label="toggle password visibility"
+                                onClick={deleteHandle}
+                                onMouseDown={event => event.preventDefault()}
+                            >
+                                <CloseRoundedIcon />
+                            </IconButton>
+                        </InputAdornment>
+                    }
+                />
+            </FormControl>
+        </div>
+
+    )
+}
 export default NewShowTimeForm

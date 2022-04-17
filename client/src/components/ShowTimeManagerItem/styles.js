@@ -15,7 +15,6 @@ const styles = {
         backgroundColor: 'rgb(9, 24, 48)',
         display: 'flex',
         alignItem: 'center',
-
         borderRadius: 13,
         alignItem: 'end',
         flexDirection: 'column',

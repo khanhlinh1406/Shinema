@@ -3,12 +3,11 @@ const styles = {
         backgroundColor: '#fff',
         position: 'absolute',
         display: 'flex',
-        alignItems: 'center',
-        top: 0,
         left: 100,
         right: 100,
-        bottom: 0,
-        borderRadius: 10
+        borderRadius: 10,
+        padding: 30,
+        top: -30,
     },
 
 }

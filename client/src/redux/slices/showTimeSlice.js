@@ -6,7 +6,8 @@ export const showTimeSlice = createSlice({
         data: [],
         filter: {
             date: ''
-        }
+        },
+        newShowTime: {}
     },
     reducers: {
         updateAll: (state, action) => {
@@ -17,6 +18,9 @@ export const showTimeSlice = createSlice({
         },
         setFilter: (state, action) => {
             state.filter.date = action.payload
+        },
+        updateNewShowtime: (state, action) => {
+            state.newShowTime = action.payload
         }
     }
 })
