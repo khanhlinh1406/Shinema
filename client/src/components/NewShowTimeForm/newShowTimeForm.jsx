@@ -31,6 +31,7 @@ import Input from '@mui/material/Input';
 import AddCircleOutlineOutlinedIcon from '@mui/icons-material/AddCircleOutlineOutlined';
 import VideoLabelOutlinedIcon from '@mui/icons-material/VideoLabelOutlined';
 import CloseRoundedIcon from '@mui/icons-material/CloseRounded';
+import ErrorOutlineIcon from '@mui/icons-material/ErrorOutline';
 
 import viLocale from "date-fns/locale/vi"
 import format from 'date-fns/format'
@@ -44,7 +45,8 @@ const NewShowTimeForm = () => {
     const [listDateTime, setListDateTime] = useState([])
     const [dateSelected, setDateSelected] = useState()
 
-    const [errorVisible, setErrorVisible] = useState(false)
+    const [errorDateVisible, setErrorDateVisible] = useState(false)
+    const [errorFilmTheaterVisible, setErrorFilmTheaterVisible] = useState(false)
 
     const upcomingMovies = useSelector(state => state.movies.upcoming)
     const theaters = useSelector(theaterSelector)
@@ -104,9 +106,8 @@ const NewShowTimeForm = () => {
             setListDateTime([...listDateTime, { date: dateFormat }])
         }
         else {
-            setErrorVisible(true)
+            setErrorDateVisible(true)
         }
-
     }
 
     const deleteDateHandle = (item) => {
@@ -128,11 +129,24 @@ const NewShowTimeForm = () => {
         },
     })
 
+    const addShowTimeHandle = () => {
+        checkShowTime()
+    }
+
+    const checkShowTime = () => {
+        if (currentFilm == null || currentTheater == null) {
+            setErrorFilmTheaterVisible(true)
+            return false
+        }
+
+        return true
+    }
+
     return (
         <div style={styles.container} >
             <div>
                 <Autocomplete
-                    onChange={(event, value) => setCurrentFilm(value)}
+                    onChange={(event, value) => { setCurrentFilm(value); setErrorFilmTheaterVisible(false) }}
                     options={movieOptions.sort((a, b) => -b.firstLetter.localeCompare(a.firstLetter))}
                     groupBy={(option) => option.firstLetter}
                     getOptionLabel={(option) => option.title}
@@ -148,7 +162,7 @@ const NewShowTimeForm = () => {
 
                 <div style={{ display: 'flex', flexDirection: 'row', width: '100%', justifyContent: 'space-between', alignItems: 'flex-start' }}>
                     <Autocomplete
-                        onChange={(event, value) => setCurrentTheater(value)}
+                        onChange={(event, value) => { setCurrentTheater(value); setErrorFilmTheaterVisible(false) }}
                         options={theaters}
                         getOptionLabel={(option) => option.name}
                         isOptionEqualToValue={(option, value) => option.id === value.id}
@@ -156,7 +170,7 @@ const NewShowTimeForm = () => {
                         renderInput={(params) => <TextField {...params} label="Chọn rạp" />}
                     />
                     <ThemeProvider theme={btnTheme} >
-                        <Button sx={{ paddingX: 2.5, paddingY: 1.5 }} variant="contained" endIcon={<VideoLabelOutlinedIcon />} >Thêm suất chiếu</Button>
+                        <Button sx={{ paddingX: 2.5, paddingY: 1.5 }} variant="contained" endIcon={<VideoLabelOutlinedIcon />} onClick={addShowTimeHandle} >Thêm suất chiếu</Button>
                     </ThemeProvider>
                 </div>
 
@@ -175,7 +189,7 @@ const NewShowTimeForm = () => {
                                     value={dateSelected}
                                     onChange={(newValue) => {
                                         setDateSelected(newValue)
-                                        setErrorVisible(false)
+                                        setErrorDateVisible(false)
                                     }}
                                     renderInput={(params) =>
                                         <TextField
@@ -197,7 +211,8 @@ const NewShowTimeForm = () => {
 
             </div >
 
-            <Error message={'Vui lòng lên lịch trước 1 ngày so với thời gian diễn ra'} status={errorVisible} />
+            <Error message={'Vui lòng lên lịch trước 1 ngày so với thời gian diễn ra'} status={errorDateVisible} />
+            <Error message={'Vui lòng chọn phim và rạp'} status={errorFilmTheaterVisible} />
         </div >
     )
 }
@@ -231,11 +246,21 @@ const DateTimeItem = ({ item, deleteDateHandle, onChangeTimeHandle }) => {
     const handleChange = () => (event) => {
         setValue(event.target.value)
         onChangeTimeHandle({ date: item.date, times: value })
+
+        checkTimeFormat(event.target.value)
     };
     const deleteHandle = () => {
         deleteDateHandle(item)
     }
 
+    const [errorTimeVisible, setErrorTimeVisible] = useState(false)
+    const checkTimeFormat = (timeArray) => {
+        let result = timeArray.trim();
+
+        var timeFormat = /^\(?([0-2]{1})\)?[:]?([0-5]{1})$/;
+        console.log(result.match(timeFormat))
+
+    }
     return (
         <div style={{ display: 'flex', alignItems: 'stretch', flexDirection: 'column', padding: 15 }}>
             <p style={{ color: 'rgb(9, 24, 48)' }}>{item.date}</p>
@@ -260,6 +285,11 @@ const DateTimeItem = ({ item, deleteDateHandle, onChangeTimeHandle }) => {
                     }
                 />
             </FormControl>
+
+            <div style={{ padding: 8, backgroundColor: '#fdeded', display: 'flex', alignItems: 'center', borderRadius: 3 }}>
+                <ErrorOutlineIcon sx={{ color: '#f16663' }} />
+                {errorTimeVisible && <p style={{ color: '#8d4a4a', fontFamily: 'sans-serif', marginLeft: 10 }}>Danh sách thời gian chưa đúng định dạng</p>}
+            </div>
         </div>
 
     )

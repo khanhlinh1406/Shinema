@@ -92,12 +92,12 @@ const Login = () => {
                 AccountApi.login(values.email, values.password)
                     .then(res => {
                         setValues({ ...values, isLoading: false })
-                        if (res == "Email not exist") {
+                        if (res.data == "Email not exist") {
                             setEmailWarningVisible(true)
                             setPasswordErrVisible(false)
                             return
                         }
-                        else if (res == "Password incorrect") {
+                        else if (res.data == "Password incorrect") {
                             setEmailWarningVisible(false)
                             setPasswordErrVisible(true)
                             return
