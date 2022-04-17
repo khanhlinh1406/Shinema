@@ -15,11 +15,14 @@ import mFunction from "../../function";
 import Box from '@mui/material/Box';
 import TextField from '@mui/material/TextField';
 import Button from '@mui/material/Button';
+import CircularProgress from '@mui/material/CircularProgress';
 
 import { BiError } from 'react-icons/bi'
 
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import { red, grey } from "@mui/material/colors";
+
+import { encode } from 'base-64'
 
 const Profile = () => {
   const [editMode, setEditMode] = useState(false);
@@ -46,7 +49,7 @@ const Profile = () => {
   })
 
   useEffect(() => {
-    ///console.log(currentUser)
+    console.log(currentUser)
   }, [])
 
   //#region INFORMATION NOTE
@@ -55,7 +58,7 @@ const Profile = () => {
     type: '',
     message: ''
   })
-  
+
   const [contactNote, setContactNote] = useState({
     visible: false,
     type: '',
@@ -88,12 +91,7 @@ const Profile = () => {
 
   //#endregion
 
-  const [isLoading, setIsLoading] = useState({
-    visible: false,
-    type: '',
-    message: ''
-  })
-
+  const [isLoading, setIsLoading] = useState(false)
 
   //#region PASSWORD NOTE
   const [oldPasswordNote, setOldPasswordNote] = useState({
@@ -120,10 +118,13 @@ const Profile = () => {
   const [values, setValues] = useState({
     name: currentUser.name,
     contact: currentUser.contact,
-    identify: currentUser.identifyNumber,
+    identifyNumber: currentUser.identifyNumber,
     address: currentUser.address,
     birthday: currentUser.birthday,
-    email: currentUser.email
+    email: currentUser.email,
+    password: currentUser.password,
+    rank: currentUser.rank,
+    score: currentUser.score
   })
 
   const [passwords, setPasswords] = useState({
@@ -150,20 +151,27 @@ const Profile = () => {
         visible: true
       })
       check = false;
+    } else if (encode(passwords.old) != currentUser.password){
+      setOldPasswordNote({
+        ...oldPasswordNote,
+        type: 'err',
+        message: 'Your input is different from your current password',
+        visible: true
+      })
+      check = false;
     }
 
     if (passwords.new == '' || passwords.new === undefined) {
-      setOldPasswordNote({
-        ...oldPasswordNote,
+      setNewPasswordNote({
+        ...newPasswordNote,
         type: 'warning',
         message: 'Please enter your new password',
         visible: true
       })
       check = false;
-    } else if (!mFunction.validatePassword(passwords.new))
-    {
-      setOldPasswordNote({
-        ...oldPasswordNote,
+    } else if (!mFunction.validatePassword(passwords.new)) {
+      setNewPasswordNote({
+        ...newPasswordNote,
         type: 'err',
         message: 'Password must have at least 6 characters',
         visible: true
@@ -171,16 +179,16 @@ const Profile = () => {
       check = false;
     }
 
+
     if (passwords.repeatNew == '' || passwords.repeatNew === undefined) {
-      setOldPasswordNote({
-        ...oldPasswordNote,
+      setRepeatNewPasswordNote({
+        ...repeatNewPasswordNote,
         type: 'warning',
         message: 'Please enter your new password again',
         visible: true
       })
       check = false;
-    } else if (!mFunction.validatePassword(passwords.repeatNew))
-    {
+    } else if (!mFunction.validatePassword(passwords.repeatNew)) {
       setRepeatNewPasswordNote({
         ...repeatNewPasswordNote,
         type: 'err',
@@ -190,7 +198,29 @@ const Profile = () => {
       check = false;
     }
 
+    if (passwords.old == passwords.new) {
+      setNewPasswordNote({
+        ...newPasswordNote,
+        type: 'err',
+        message: 'New password must be different from old password',
+        visible: true
+      })
 
+      check = false;
+    }
+
+    if (passwords.new != passwords.repeatNew){
+      setRepeatNewPasswordNote({
+        ...repeatNewPasswordNote,
+        type: 'err',
+        message: 'Repeat password must be same as new password',
+        visible: true
+      })
+
+      check = false;
+    }
+
+    return check;
   }
 
   const validateInformation = () => {
@@ -205,9 +235,6 @@ const Profile = () => {
 
       check = false;
     }
-
-    console.log(values.name)
-
 
     if (values.contact == '' || values.contact === undefined) {
       setContactNote({
@@ -258,17 +285,39 @@ const Profile = () => {
       })
       check = false;
     }
+
     // else if ()
     // {
     //   birthday lon hon current date
     //  check = false;
     // }
 
+    console.log(values.identifyNumber)
+
     return check
   }
 
+  const editProfile = async () => {
+    setIsLoading(true)
+    if (validateInformation()) {
+      console.log(values)
+      await AccountApi.update(values)
+        .then((res) => {
+          console.log(res)
+          if (res == "Update successful") {
+            dispatch(userSlice.actions.update(res.data))
+          }
+
+          setIsLoading(false)
+        })
+        .catch(err => {
+          console.log(err)
+        })
+    }
+  }
+
   return (
-    <div className="profile">
+    <div className="profile" style={{position: 'relative'}}>  
       <div className="profile-container">
         <div className="profile-information">
           <div className="profile-information__title">ACCOUNT INFORMATION</div>
@@ -331,8 +380,8 @@ const Profile = () => {
                   backgroundColor: 'rgb(9, 24, 48)',
                   // label: { color: 'rgb(153, 153, 153)', fontSize: 15 }
                 }}
-                defaultValue={currentUser.indentifyNumber}
-                onChange={handleChangeInformation('indentifyNumber')}
+                defaultValue={currentUser.identifyNumber}
+                onChange={handleChangeInformation('identifyNumber')}
               />
             </ThemeProvider>
             {IDNote.visible &&
@@ -370,6 +419,7 @@ const Profile = () => {
               <TextField className="profile-information__item__content"
                 variant="filled"
                 type="date"
+                format="yyyy-MM-dd"
                 sx={{
                   borderRadius: '0.5',
                   input: { color: 'white', marginLeft: 10, marginX: 0.4 },
@@ -421,7 +471,7 @@ const Profile = () => {
                   padding: 1,
                   marginTop: 3
                 }}
-                onClick={validateInformation}
+                onClick={editProfile}
               >SAVE CHANGES</Button>
             </ThemeProvider>
           </Box>
@@ -452,7 +502,6 @@ const Profile = () => {
           <div className="password-information__item__title">Old password</div>
           <ThemeProvider theme={TextFieldTheme}>
             <TextField className='password-information__item__txtfield'
-              id="outlined-password-input"
               type="password"
               variant='filled'
               autoComplete="current-password"
@@ -476,7 +525,6 @@ const Profile = () => {
           <div className="password-information__item__title">New password</div>
           <ThemeProvider theme={TextFieldTheme}>
             <TextField className='password-information__item__txtfield'
-              id="outlined-password-input"
               type="password"
               variant='filled'
               autoComplete="current-password"
@@ -500,7 +548,6 @@ const Profile = () => {
           <div className="password-information__item__title">Repeat new password</div>
           <ThemeProvider theme={TextFieldTheme}>
             <TextField className='password-information__item__txtfield'
-              id="outlined-password-input"
               type="password"
               variant='filled'
               autoComplete="current-password"
@@ -528,10 +575,13 @@ const Profile = () => {
                 padding: 1,
                 marginTop: 3
               }}
+              onClick={validatePassword}
             >CHANGE PASSWORD</Button>
           </ThemeProvider>
         </Box>
       </div>
+
+      {isLoading && <Loading/>}
     </div>
   )
 }
@@ -548,5 +598,13 @@ const Message = props => {
       <BiError size={15} />
       <p>{mess}</p>
     </div >
+  )
+}
+
+const Loading = () => {
+  return (
+    <div style={{ backgroundColor: 'rgba(255, 255, 255, 0.1)', position: 'absolute', display: 'flex', alignItems: 'center', justifyContent: 'center', top: 0, left: 0, right: 0, bottom: 0, height: '100%' }}> 
+      <CircularProgress />
+    </div>
   )
 }

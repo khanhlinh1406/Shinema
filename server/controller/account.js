@@ -70,8 +70,17 @@ const accountController = {
     },
 
     update: (req, res) => {
-        const newAccount = req.body;
-        AccountModel.updateOne({ email: req.params.email }, { newAccount }, { new: 'true' })
+        AccountModel.updateOne({ email: req.body.email }, {
+                address: req.body.address,
+                birthday: req.body.birthday,
+                contact: req.body.contact,
+                email: req.body.email,
+                identifyNumber: req.body.identifyNumber,
+                name: req.body.name,
+                password: req.body.password,
+                rank: req.body.rank,
+                score: req.body.score
+            }, { new: 'true' })
             .then(data => {
                 res.json("Update successful")
             })
