@@ -16,6 +16,8 @@ import AppBar from '@mui/material/AppBar';
 import TabContext from '@mui/lab/TabContext';
 import TabList from '@mui/lab/TabList';
 import TabPanel from '@mui/lab/TabPanel';
+import { createTheme, ThemeProvider } from '@mui/material/styles';
+import { red, grey } from "@mui/material/colors";
 
 import { movieCornerSelector } from "../../redux/selector";
 import { movieCornerSlice } from "../../redux/slices/movieCornerSlice";
@@ -41,40 +43,49 @@ const Corner = () => {
     //     }
 
     // }, [value])
+
+    const tabTheme = createTheme({
+        palette: {
+            primary: red,
+        },
+    })
+
     return (
         <div className="box-container">
             <Helmet>
-                <title>Góc điện ảnh</title>
+                <title>Cimena Corner</title>
             </Helmet>
-            <MainNavBar/>
-            <Box sx={{ width: '100%', typography: 'body1' }}
-            >
-                <TabContext value={value} >
-                    <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
-                        <TabList onChange={handleChange} aria-label="lab API tabs example" centered>
-                            <Tab label="PHIM ẢNH"
-                                value={0}
-                                component={Link}
-                                to={'/corner/movie/'+movieState.chosenType}
-                                sx={{ color: '#fff' }} />
+            <MainNavBar />
+            <ThemeProvider theme={tabTheme}>
+                <Box sx={{ width: '100%', typography: 'body1' }}
+                >
+                    <TabContext value={value} >
+                        <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
+                            <TabList onChange={handleChange} aria-label="lab API tabs example" centered>
+                                <Tab label="MOVIES"
+                                    value={0}
+                                    component={Link}
+                                    to={'/corner/movie/' + movieState.chosenType}
+                                    sx={{ color: '#fff' }} />
 
-                            <Tab label="DIỄN VIÊN"
-                                value={1}
-                                component={Link}
-                                to={'/corner/people'}
-                                sx={{ color: '#fff' }} />
-                        </TabList>
-                    </Box>
-                    
-                    <TabPanel value={0}>
-                        <FilmCorner />
-                    </TabPanel>
+                                <Tab label="PEOPLE"
+                                    value={1}
+                                    component={Link}
+                                    to={'/corner/people'}
+                                    sx={{ color: '#fff' }} />
+                            </TabList>
+                        </Box>
 
-                    <TabPanel value={1}>
-                        <CastCorner />
-                    </TabPanel>
-                </TabContext>
-            </Box>
+                        <TabPanel value={0}>
+                            <FilmCorner />
+                        </TabPanel>
+
+                        <TabPanel value={1}>
+                            <CastCorner />
+                        </TabPanel>
+                    </TabContext>
+                </Box>
+            </ThemeProvider>
         </div>
 
     )

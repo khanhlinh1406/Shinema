@@ -1,27 +1,27 @@
 import { createSlice } from "@reduxjs/toolkit";
-import {movieType} from '../../api/tmdbApi'
+import { movieType } from '../../api/tmdbApi'
 
 
 export const movieCornerSlice = createSlice({
-    name: 'corner__movie', 
+    name: 'corner__movie',
     initialState: {
-        search: String,
+        search: '',
         type: movieType,
         chosenTypeIndex: "0",
         chosenType: 'popular',
         genres: {},
         chooseGenres: []
-    }, 
+    },
     reducers: {
-        searchMovie: (state, action)=>{
+        searchMovie: (state, action) => {
             state.search = action.payload
-        },/// type:
+        }, /// type:
 
-        chooseType: (state, action)=>{
-            switch (action.payload){
+        chooseType: (state, action) => {
+            switch (action.payload) {
                 case "popular":
                     state.chooseTypeIndex = "0";
-                    
+
                     break;
                 case "now_playing":
                     state.chosenTypeIndex = "1";
@@ -40,10 +40,10 @@ export const movieCornerSlice = createSlice({
             state.chosenType = action.payload;
         },
 
-        chooseGenres: (state, action)=>{
+        chooseGenres: (state, action) => {
             state.chooseGenres = action.payload
         }
-       
+
     }
 })
 

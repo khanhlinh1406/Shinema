@@ -42,6 +42,8 @@ const FilmSlider = props => {
     const [page, setPage] = useState(1);
     const [totalPages, setTotalPages] = useState();
 
+    const [viewMoreVisible, setViewMoreVisible] = useState(true)
+
     const openMoreHandler = async () => {
         setLoadMore(true);
 
@@ -66,10 +68,11 @@ const FilmSlider = props => {
 
                     setMovieItems([...movieItems, ...response.results])
 
-                    console.log(movieItems)
+                    ///console.log(movieItems)
                 }
                 else {
                     const response = await tmdbApi.similar(props.category, props.id);
+
                     ///setMovieItems(response.results.slice(0, page))
                     ///setMovieItems([...movieItems, ...response.results])
 
@@ -101,6 +104,7 @@ const FilmSlider = props => {
                     const response = await tmdbApi.similar(props.category, props.id);
                     setMovieItems(response.results.slice(0, NUM_FILM_LOADING))
                     setTotalPages(response.total_pages)
+                    setViewMoreVisible(false)
                 }
             } catch {
                 console.log("Film slider error")
@@ -111,13 +115,13 @@ const FilmSlider = props => {
 
         const getTypes = () => {
             if (props.typeFilm === movieType.popular)
-                setMovieTypes('Phổ biến');
+                setMovieTypes('Popular');
             if (props.typeFilm === movieType.upcoming)
-                setMovieTypes('Sắp chiếu');;
+                setMovieTypes('Upcoming');;
             if (props.typeFilm === movieType.top_rated)
-                setMovieTypes('Đánh giá cao');
+                setMovieTypes('Top rated');
             if (props.typeFilm == 'similar') {
-                setMovieTypes('Tương tự')
+                setMovieTypes('Similar')
             }
         }
 
@@ -137,7 +141,9 @@ const FilmSlider = props => {
 
 
             <div className="typeOfFilm__container__content">
-                <ViewMoreButton typeFilm={props.typeFilm}></ViewMoreButton>
+                {viewMoreVisible &&
+                    <ViewMoreButton typeFilm={props.typeFilm}></ViewMoreButton>
+                }
                 <Swiper className="typeOfFilm__container__content__swiper"
                     slidesPerView={5}
                     centeredSlides={true}
@@ -223,7 +229,7 @@ export const ViewMoreButton = (props) => {
     return (
         <div className='typeOfFilm__container__content__viewMore'>
             <ThemeProvider theme={btnTheme} >
-                <Button sx={{ paddingX: 5, paddingY: 0.8 }} variant="outlined" onClick={onClick} >Xem thêm</Button>
+                <Button sx={{ paddingX: 5, paddingY: 0.8 }} variant="outlined" onClick={onClick} >View more</Button>
             </ThemeProvider>
         </div >
     )

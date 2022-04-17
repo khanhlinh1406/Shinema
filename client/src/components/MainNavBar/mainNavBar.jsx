@@ -95,7 +95,7 @@ const MainNavBar = () => {
                     {menuToggle && (
                         <div className="mainNavbar-menu__container">
                             <div className='mainNavbar-menu__item'>
-                                <p> <Link to="/userInfor">Thông tin cá nhân</Link></p>
+                                <p> <Link to="/profile">Thông tin cá nhân</Link></p>
                                 <AiOutlineUser className='menu__item__icon' color={defaultColor} size={25} />
                             </div>
 

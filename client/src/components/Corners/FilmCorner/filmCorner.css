@@ -135,7 +135,7 @@
 }
 
 .search-bar{
-    background: var(--color-bg);
+    background: transparent;
     display: flex;
     justify-self: flex-start;
 }
@@ -143,6 +143,6 @@
 .filter-type{
     display: flex;
     justify-self: flex-start;
-    background-color: var(--color-bg);
+    background-color: transparent;
     margin-top: 30px;
 }

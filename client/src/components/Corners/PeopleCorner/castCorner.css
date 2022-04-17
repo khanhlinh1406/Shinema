@@ -13,7 +13,8 @@
 }
 
 .people-search-bar{
-    background: var(--color-bg);
+    /* background: var(--color-bg); */
+    background: transparent;
 }
 
 .people__container{

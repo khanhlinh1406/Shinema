@@ -47,10 +47,6 @@ const FilmCorner = () => {
         setLoadMore(true);
 
         const getMovies = async () => {
-
-            // console.log("total page " + totalPages)
-            // console.log('page now ' + page)
-
             if (page + 1 > totalPages) {
                 setPage(totalPages)
             } else
@@ -64,7 +60,6 @@ const FilmCorner = () => {
                 }
 
                 if (keyword !== undefined) {
-                    console.log('uuuuuuuuuuuu')
                     const params = { page: page, query: keyword }
                     const response = await tmdbApi.search('movie', { params: params });
                     setMovieItems([...movieItems, ...response.results])
@@ -122,15 +117,15 @@ const FilmCorner = () => {
 
         const getTypes = () => {
             if (type === movieType.popular)
-                setMovieTypes('Phổ biến');
+                setMovieTypes('Popular');
             if (type === movieType.upcoming)
-                setMovieTypes('Sắp chiếu');;
+                setMovieTypes('Upcoming');;
             if (type === movieType.top_rated)
-                setMovieTypes('Đánh giá cao');
+                setMovieTypes('Top rated');
             if (type == movieType.now_playing)
-                setMovieTypes('Đang chiếu')
+                setMovieTypes('Now playing')
             if (type === 'similar') {
-                setMovieTypes('Tương tự')
+                setMovieTypes('Similar')
             }
         }
 
@@ -176,7 +171,7 @@ const FilmCorner = () => {
 
 const SlideItem = props => {
     const item = props.item;
-    const background = apiConfig.originalImage(item.backdrop_path ? item.poster_path : item.backdrop_path)
+    const background = apiConfig.originalImage(item.backdrop_path ? item.backdrop_path : item.poster_path)
     // const dispatch = useDispatch();
     // const data = useSelector(movieSelector)
     const navigate = useNavigate();
@@ -267,7 +262,7 @@ export const SearchBar = props => {
             <ThemeProvider theme={txtFieldTheme}>
                 <TextField
                     id="filled-search"
-                    label="Tìm kiếm phim..."
+                    label="Search movies..."
                     type="search"
                     variant="filled"
                     text="primary"
@@ -312,10 +307,10 @@ const TypeFilter = () => {
     })
 
     const options = [
-        { label: "Phổ biến", value: movieType.popular },
-        { label: "Đang chiếu", value: movieType.now_playing },
-        { label: "Đánh giá cao", value: movieType.top_rated },
-        { label: "Sắp chiếu", value: movieType.upcoming }
+        { label: "Popular", value: movieType.popular },
+        { label: "Now playing", value: movieType.now_playing },
+        { label: "Top rated", value: movieType.top_rated },
+        { label: "Upcoming", value: movieType.upcoming }
     ]
 
     const [value, setValue] = useState(options[movieSearch.chooseTypeIndex])
@@ -358,7 +353,7 @@ const TypeFilter = () => {
                     }}
 
                     renderInput={(params) =>
-                        <TextField {...params} label="Phân loại" sx={{
+                        <TextField {...params} label="Type" sx={{
                             label: {
                                 color: '#fcfcfc',
                             }

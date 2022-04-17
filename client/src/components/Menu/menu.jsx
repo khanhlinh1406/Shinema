@@ -29,7 +29,7 @@ export const CustomerMenu = ({ accountToggleHandle }) => {
     return (
         <div className='menu' >
             <div className='menu__item'>
-                <p onClick={() => { navigate('/userInfor') }}>Thông tin cá nhân</p>
+                <p onClick={() => { navigate('/profile') }}>Thông tin cá nhân</p>
                 <AiOutlineUser className='menu__item__icon' color={defaultColor} size={25} />
             </div>
 

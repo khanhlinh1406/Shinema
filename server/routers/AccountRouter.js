@@ -5,7 +5,7 @@ const accountController = require('../controller/account')
 const { authenToken } = require('../controller/authen')
 
 router.get('/', authenToken, accountController.getAll)
-router.get('/:email', authenToken, accountController.getByEmail)
+router.get('/:email', accountController.getByEmail)
 
 router.post('/', accountController.create)
 router.post('/checkEmail/:email', accountController.checkEmail)
