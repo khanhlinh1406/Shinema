@@ -42,6 +42,20 @@ const showTimeController = {
             theaterId: req.body.theaterId,
             listDateTime: req.body.listDateTime
         }
+
+        console.log(newShowTime)
+
+        if (newShowTime.filmId == null || newShowTime.filmId == '') {
+            res.send('Film id invalid')
+            return
+        } else if (newShowTime.theaterId == null || newShowTime.theaterId == '') {
+            res.send('Theater id invalid')
+            return
+        } else if (newShowTime.listDateTime == null || newShowTime.listDateTime.length == 0) {
+            res.send('List date time invalid')
+            return
+        }
+
         ShowTimeModel.create(newShowTime)
             .then(data => {
                 res.send("Successful")

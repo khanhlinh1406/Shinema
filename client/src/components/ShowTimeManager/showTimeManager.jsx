@@ -5,6 +5,7 @@ import ShowTimeApi from './../../api/showTimeApi';
 import tmdbApi from "../../api/tmdbApi";
 import { movieType, category } from '../../api/tmdbApi'
 import apiConfig from "../../api/apiConfig";
+import { Success } from '../Alert/alert';
 
 import { useSelector, useDispatch } from 'react-redux';
 import { showTimeSlice } from './../../redux/slices/showTimeSlice';
@@ -85,6 +86,12 @@ const ShowTimeManager = () => {
         forceRerender()
     }, [data])
 
+    const [updateSuccessVisible, setUpdateSuccessVisible] = useState(false)
+    const successNewShowTimeHandle = () => {
+        setShowNewForm(false)
+        setUpdateSuccessVisible(true)
+    }
+
     const btnTheme = createTheme({
         shape: {
             borderRadius: 20
@@ -120,7 +127,7 @@ const ShowTimeManager = () => {
                     </LocalizationProvider>
 
                     <ThemeProvider theme={btnTheme} >
-                        <Button sx={{ paddingX: 2.5, paddingY: 1 }} variant="contained" endIcon={<AddRoundedIcon />} onClick={() => setShowNewForm(true)}>Thêm mới</Button>
+                        <Button sx={{ paddingX: 2.5, paddingY: 1 }} variant="contained" endIcon={<AddRoundedIcon />} onClick={() => { setShowNewForm(true); setUpdateSuccessVisible(false) }}>Thêm mới</Button>
                     </ThemeProvider>
                 </div>
 
@@ -132,9 +139,11 @@ const ShowTimeManager = () => {
                     <Loading />
                 }
 
-                {showNewForm && <NewShowTimeForm />}
+                {showNewForm && <NewShowTimeForm successNewShowTimeHandle={successNewShowTimeHandle} />}
+
+                <Success message={'Insert successfully'} status={updateSuccessVisible} />
             </Box>
-        </ClickAwayListener>
+        </ClickAwayListener >
     )
 }
 export default ShowTimeManager

@@ -27,7 +27,6 @@ router.post('/refreshToken', (req, res) => {
                     const accessToken = jwt.sign({ email: daa.email },
                         process.env.ACCESS_TOKEN_SECRET, { expiresIn: '30s' }
                     );
-                    console.log('refresh: ' + accessToken)
                     res.json({ accessToken });
                 })
             } else {
