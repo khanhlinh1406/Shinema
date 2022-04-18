@@ -72,6 +72,13 @@ div {
     line-height: 1;
 }
 
+.movie-content__info__duration {
+    margin-bottom: 2rem;
+    margin-left: 0.5rem;
+    font-size: 0.8rem;
+    font-style: italic;
+}
+
 .movie-content__info__genres {
     margin-bottom: 2rem;
 }

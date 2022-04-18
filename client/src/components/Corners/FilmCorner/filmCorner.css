@@ -28,16 +28,13 @@
     font-family: var(--font-family);
 }
 
-
-.film__container__content {
-
-}
+.film__container__content {}
 
 .film__item__container {
     width: 120px;
     height: 230px;
-    background-color: transparent;
-    position: relative;
+    /* background-color: transparent;
+    position: relative;*/
     margin-bottom: 10px;
 }
 
@@ -58,7 +55,6 @@
     opacity: 0;
     transition: opacity 0.5 ease;
 }
-
 
 .film__item__container__hoverItem__buyTicketBtn {
     color: #fff;
@@ -87,11 +83,12 @@
 }
 
 .film__item__container__img {
-    height: 80%;
     width: 100%;
-    background-position: center;
+    height: 80%;
+    background-position: center center;
     background-size: cover;
     border-radius: 25px;
+    cursor: pointer;
 }
 
 .film__item__container__title {
@@ -125,8 +122,8 @@
     margin-bottom: 30px;
 }
 
-.filter{
-    width:28%;
+.filter {
+    width: 28%;
     float: left;
     margin-left: 15px;
     line-height: 100%;
@@ -134,13 +131,13 @@
     height: 200px;
 }
 
-.search-bar{
+.search-bar {
     background: transparent;
     display: flex;
     justify-self: flex-start;
 }
 
-.filter-type{
+.filter-type {
     display: flex;
     justify-self: flex-start;
     background-color: transparent;

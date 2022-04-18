@@ -15,19 +15,25 @@ import mFunction from "../../function";
 import Box from '@mui/material/Box';
 import TextField from '@mui/material/TextField';
 import Button from '@mui/material/Button';
-import CircularProgress from '@mui/material/CircularProgress';
-
-import { BiError } from 'react-icons/bi'
 
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import { red, grey } from "@mui/material/colors";
 
 import { encode } from 'base-64'
 
+import Loading from '../../components/Loading/loading'
+import Message from '../../components/Message/message'
+import { Success } from '../../components/Alert/alert'
+
+import background_login from '../../assets/background_login.jpg'
+
 const Profile = () => {
-  const [editMode, setEditMode] = useState(false);
-  const currentUser = useSelector(userSelector)
+  const currentUser = useSelector(userSelector);
   const dispatch = useDispatch();
+
+  const [isLoading, setIsLoading] = useState(false)
+
+  const [, refresh] = useState()
 
   const TextFieldTheme = createTheme({
     shape: {
@@ -48,9 +54,15 @@ const Profile = () => {
     },
   })
 
+  const [updateSucceeded, setUpdateSucceeded] = useState(false);
+
   useEffect(() => {
     console.log(currentUser)
   }, [])
+
+  useEffect(() => {
+    refresh()
+  }, [currentUser])
 
   //#region INFORMATION NOTE
   const [nameNote, setNameNote] = useState({
@@ -91,8 +103,6 @@ const Profile = () => {
 
   //#endregion
 
-  const [isLoading, setIsLoading] = useState(false)
-
   //#region PASSWORD NOTE
   const [oldPasswordNote, setOldPasswordNote] = useState({
     visible: false,
@@ -114,7 +124,6 @@ const Profile = () => {
 
   //#endregion
 
-
   const [values, setValues] = useState({
     name: currentUser.name,
     contact: currentUser.contact,
@@ -124,7 +133,9 @@ const Profile = () => {
     email: currentUser.email,
     password: currentUser.password,
     rank: currentUser.rank,
-    score: currentUser.score
+    score: currentUser.score,
+    listTicketId: currentUser.listTicketId,
+    listReview: currentUser.listReviews
   })
 
   const [passwords, setPasswords] = useState({
@@ -143,6 +154,8 @@ const Profile = () => {
 
   const validatePassword = async () => {
     let check = true;
+
+    //#region OLD
     if (passwords.old == '' || passwords.old === undefined) {
       setOldPasswordNote({
         ...oldPasswordNote,
@@ -151,7 +164,8 @@ const Profile = () => {
         visible: true
       })
       check = false;
-    } else if (encode(passwords.old) != currentUser.password){
+    }
+    else if (encode(passwords.old) != currentUser.password) {
       setOldPasswordNote({
         ...oldPasswordNote,
         type: 'err',
@@ -160,7 +174,13 @@ const Profile = () => {
       })
       check = false;
     }
+    else {
+      setOldPasswordNote({ ...oldPasswordNote, visible: false })
+    }
 
+    //#endregion
+
+    //#region NEW
     if (passwords.new == '' || passwords.new === undefined) {
       setNewPasswordNote({
         ...newPasswordNote,
@@ -177,28 +197,7 @@ const Profile = () => {
         visible: true
       })
       check = false;
-    }
-
-
-    if (passwords.repeatNew == '' || passwords.repeatNew === undefined) {
-      setRepeatNewPasswordNote({
-        ...repeatNewPasswordNote,
-        type: 'warning',
-        message: 'Please enter your new password again',
-        visible: true
-      })
-      check = false;
-    } else if (!mFunction.validatePassword(passwords.repeatNew)) {
-      setRepeatNewPasswordNote({
-        ...repeatNewPasswordNote,
-        type: 'err',
-        message: 'Password must have at least 6 characters',
-        visible: true
-      })
-      check = false;
-    }
-
-    if (passwords.old == passwords.new) {
+    } else if (passwords.old == passwords.new) {
       setNewPasswordNote({
         ...newPasswordNote,
         type: 'err',
@@ -208,19 +207,69 @@ const Profile = () => {
 
       check = false;
     }
+    else {
+      setNewPasswordNote({ ...newPasswordNote, visible: false })
+    }
+    //#endregion
 
-    if (passwords.new != passwords.repeatNew){
+    //#region REPEAT
+    if (passwords.repeatNew == '' || passwords.repeatNew === undefined) {
+      setRepeatNewPasswordNote({
+        ...repeatNewPasswordNote,
+        type: 'warning',
+        message: 'Please enter your new password again',
+        visible: true
+      })
+      check = false;
+    }
+    else if (!mFunction.validatePassword(passwords.repeatNew)) {
+      setRepeatNewPasswordNote({
+        ...repeatNewPasswordNote,
+        type: 'err',
+        message: 'Password must have at least 6 characters',
+        visible: true
+      })
+      check = false;
+    }
+    else if (passwords.new != passwords.repeatNew) {
       setRepeatNewPasswordNote({
         ...repeatNewPasswordNote,
         type: 'err',
         message: 'Repeat password must be same as new password',
         visible: true
       })
-
       check = false;
     }
+    else {
+      setRepeatNewPasswordNote({ ...repeatNewPasswordNote, visilbe: false })
+    }
 
+    //#endregion
+
+
+    console.log(passwords)
     return check;
+  }
+
+  const changePassword = async () => {
+    setValues({
+      ...values,
+      password: encode(passwords.repeatNew)
+    })
+
+    if (validatePassword()) {
+      setIsLoading(true)
+      await AccountApi.update(values)
+        .then((res) => {
+          dispatch(userSlice.actions.update(values))
+          setIsLoading(false)
+          setUpdateSucceeded(true)
+        })
+        .catch(err => {
+          console.log(err)
+        })
+    }
+
   }
 
   const validateInformation = () => {
@@ -234,7 +283,7 @@ const Profile = () => {
       })
 
       check = false;
-    }
+    } else (setNameNote({ ...nameNote, visible: false }))
 
     if (values.contact == '' || values.contact === undefined) {
       setContactNote({
@@ -244,16 +293,16 @@ const Profile = () => {
         visible: true
       })
       check = false;
-    } else
-      if (!mFunction.validatePhoneNumber(values.contact)) {
-        setContactNote({
-          ...contactNote,
-          type: 'err',
-          message: 'Your input is not a valid phone number format',
-          visible: true
-        })
-        check = false;
-      }
+    } else if (!mFunction.validatePhoneNumber(values.contact)) {
+      setContactNote({
+        ...contactNote,
+        type: 'err',
+        message: 'Your input is not a valid phone number format',
+        visible: true
+      })
+      check = false;
+    }
+    else (setContactNote({ ...contactNote, visible: false }))
 
 
     if (values.identifyNumber == '' || values.identifyNumber === undefined) {
@@ -265,6 +314,7 @@ const Profile = () => {
       })
       check = false;
     }
+    else { setIDNote({ ...IDNote, visible: false }) }
 
     if (values.address == '' || values.address === undefined) {
       setAddressNote({
@@ -274,7 +324,7 @@ const Profile = () => {
         visible: true
       })
       check = false;
-    }
+    } else { setAddressNote({ ...addressNote, visible: false }) }
 
     if (values.birthday == '' || values.birthday === undefined) {
       setBirthdayNote({
@@ -284,327 +334,311 @@ const Profile = () => {
         visible: true
       })
       check = false;
-    }
+    } else { setBirthdayNote({ ...birthdayNote, visible: false }) }
 
     // else if ()
     // {
     //   birthday lon hon current date
     //  check = false;
     // }
-
-    console.log(values.identifyNumber)
-
     return check
   }
 
   const editProfile = async () => {
-    setIsLoading(true)
     if (validateInformation()) {
+      setIsLoading(true)
       console.log(values)
       await AccountApi.update(values)
         .then((res) => {
-          console.log(res)
-          if (res == "Update successful") {
-            dispatch(userSlice.actions.update(res.data))
-          }
-
+          dispatch(userSlice.actions.update(values))
           setIsLoading(false)
+          setUpdateSucceeded(true)
         })
         .catch(err => {
           console.log(err)
         })
     }
+
   }
 
   return (
-    <div className="profile" style={{position: 'relative'}}>  
-      <div className="profile-container">
-        <div className="profile-information">
-          <div className="profile-information__title">ACCOUNT INFORMATION</div>
+    //  {currentUser.name != ''?
+    <div className="profile__container" 
+     style={{ backgroundImage: `url(${background_login})` }}
+    >
+      <div className="profile__background">
+        <div className="color__gradient"></div> 
+      </div>
+     
+      <div className="profile"  >
+        <div className="profile-container">
+          <div className="profile-information">
+            <div className="profile-information__title">ACCOUNT INFORMATION</div>
 
-          <div className="line"></div>
+            <div className="line"></div>
 
-          <div className="profile-information__item">
-            <div className="profile-information__item__title">Name</div>
-            <ThemeProvider theme={TextFieldTheme}>
-              <TextField className="profile-information__item__content"
-                variant="filled"
-                sx={{
-                  borderRadius: '0.5',
-                  input: { color: 'white', marginLeft: 10, marginX: 0.4 },
-                  backgroundColor: 'rgb(9, 24, 48)',
-                  // label: { color: 'rgb(153, 153, 153)', fontSize: 15 }
-                }}
-                defaultValue={currentUser.name}
-                onChange={handleChangeInformation('name')}
-              />
-            </ThemeProvider>
-            {nameNote.visible &&
-              <div className="profile-information__item__note">
-                <Message message={nameNote.message} type={nameNote.type} />
-              </div>
-            }
-          </div>
+            <div className="profile-information__item">
+              <div className="profile-information__item__title">Name</div>
+              <ThemeProvider theme={TextFieldTheme}>
+                <TextField className="profile-information__item__content"
+                  variant="standard"
+                  sx={{
+                    borderRadius: '0.5',
+                    input: { color: 'white', marginLeft: 10, marginX: 0.4 },
+                    icons: { color: 'white' }
+                    ///backgroundColor: 'rgb(9, 24, 48)',
+                    // label: { color: 'rgb(153, 153, 153)', fontSize: 15 }
+                  }}
+                  defaultValue={currentUser.name}
+                  onChange={handleChangeInformation('name')}
+                />
+              </ThemeProvider>
+              {nameNote.visible &&
+                <div className="profile-information__item__note">
+                  <Message message={nameNote.message} type={nameNote.type} />
+                </div>
+              }
+            </div>
 
-          <div className="profile-information__item">
-            <div className="profile-information__item__title">Contact</div>
-            <ThemeProvider theme={TextFieldTheme}>
-              <TextField className="profile-information__item__content"
-                variant="filled"
-                sx={{
-                  borderRadius: '0.5',
-                  input: { color: 'white', marginLeft: 10, marginX: 0.4 },
-                  backgroundColor: 'rgb(9, 24, 48)',
-                  // label: { color: 'rgb(153, 153, 153)', fontSize: 15 }
-                }}
-                defaultValue={currentUser.contact}
-                onChange={handleChangeInformation('contact')}
-              />
-            </ThemeProvider>
+            <div className="profile-information__item">
+              <div className="profile-information__item__title">Contact</div>
+              <ThemeProvider theme={TextFieldTheme}>
+                <TextField className="profile-information__item__content"
+                  variant="standard"
+                  sx={{
+                    borderRadius: '0.5',
+                    input: { color: 'white', marginLeft: 10, marginX: 0.4 },
+                    //backgroundColor: 'rgb(9, 24, 48)',
+                    // label: { color: 'rgb(153, 153, 153)', fontSize: 15 }
+                  }}
+                  defaultValue={currentUser.contact}
+                  onChange={handleChangeInformation('contact')}
+                />
+              </ThemeProvider>
 
-            {contactNote.visible &&
-              <div className="profile-information__item__note">
-                <Message message={contactNote.message} type={contactNote.type}></Message>
-              </div>
-            }
-          </div>
+              {contactNote.visible &&
+                <div className="profile-information__item__note">
+                  <Message message={contactNote.message} type={contactNote.type}></Message>
+                </div>
+              }
+            </div>
 
-          <div className="profile-information__item">
-            <div className="profile-information__item__title">Indentity number</div>
-            <ThemeProvider theme={TextFieldTheme}>
-              <TextField className="profile-information__item__content"
-                variant="filled"
-                sx={{
-                  borderRadius: '0.5',
-                  input: { color: 'white', marginLeft: 10, marginX: 0.4 },
-                  backgroundColor: 'rgb(9, 24, 48)',
-                  // label: { color: 'rgb(153, 153, 153)', fontSize: 15 }
-                }}
-                defaultValue={currentUser.identifyNumber}
-                onChange={handleChangeInformation('identifyNumber')}
-              />
-            </ThemeProvider>
-            {IDNote.visible &&
-              <div className="profile-information__item__note">
-                <Message type={IDNote.type} message={IDNote.message}></Message>
-              </div>
-            }
-          </div>
+            <div className="profile-information__item">
+              <div className="profile-information__item__title">Indentity number</div>
+              <ThemeProvider theme={TextFieldTheme}>
+                <TextField className="profile-information__item__content"
+                  variant="standard"
+                  sx={{
+                    borderRadius: '0.5',
+                    input: { color: 'white', marginLeft: 10, marginX: 0.4 },
+                    //backgroundColor: 'rgb(9, 24, 48)',
+                    // label: { color: 'rgb(153, 153, 153)', fontSize: 15 }
+                  }}
+                  defaultValue={currentUser.identifyNumber}
+                  onChange={handleChangeInformation('identifyNumber')}
+                />
+              </ThemeProvider>
+              {IDNote.visible &&
+                <div className="profile-information__item__note">
+                  <Message type={IDNote.type} message={IDNote.message}></Message>
+                </div>
+              }
+            </div>
 
-          <div className="profile-information__item">
-            <div className="profile-information__item__title">Address</div>
-            <ThemeProvider theme={TextFieldTheme}>
-              <TextField className="profile-information__item__content"
-                variant="filled"
-                sx={{
-                  borderRadius: '0.5',
-                  input: { color: 'white', marginLeft: 10, marginX: 0.4 },
-                  backgroundColor: 'rgb(9, 24, 48)',
-                  // label: { color: 'rgb(153, 153, 153)', fontSize: 15 }
-                }}
-                defaultValue={currentUser.address}
-                onChange={handleChangeInformation('address')}
-              />
-            </ThemeProvider>
-            {addressNote.visible &&
-              <div className="profile-information__item__note">
-                <Message message={addressNote.message} type={addressNote.type} />
-              </div>
-            }
-          </div>
+            <div className="profile-information__item">
+              <div className="profile-information__item__title">Address</div>
+              <ThemeProvider theme={TextFieldTheme}>
+                <TextField className="profile-information__item__content"
+                  variant="standard"
+                  sx={{
+                    borderRadius: '0.5',
+                    input: { color: 'white', marginLeft: 10, marginX: 0.4 },
+                    //backgroundColor: 'rgb(9, 24, 48)',
+                    // label: { color: 'rgb(153, 153, 153)', fontSize: 15 }
+                  }}
+                  defaultValue={currentUser.address}
+                  onChange={handleChangeInformation('address')}
+                />
+              </ThemeProvider>
+              {addressNote.visible &&
+                <div className="profile-information__item__note">
+                  <Message message={addressNote.message} type={addressNote.type} />
+                </div>
+              }
+            </div>
 
-          <div className="profile-information__item">
-            <div className="profile-information__item__title">Birthday</div>
-            <ThemeProvider theme={TextFieldTheme}>
-              <TextField className="profile-information__item__content"
-                variant="filled"
-                type="date"
-                format="yyyy-MM-dd"
-                sx={{
-                  borderRadius: '0.5',
-                  input: { color: 'white', marginLeft: 10, marginX: 0.4 },
-                  backgroundColor: 'rgb(9, 24, 48)',
-                  // label: { color: 'rgb(153, 153, 153)', fontSize: 15 }
-                }}
-                defaultValue={currentUser.birthday}
-                onChange={handleChangeInformation('birthday')}
-              />
-            </ThemeProvider>
+            <div className="profile-information__item">
+              <div className="profile-information__item__title">Birthday</div>
+              <ThemeProvider theme={TextFieldTheme}>
+                <TextField className="profile-information__item__content"
+                  variant="standard"
+                  type="date"
+                  format="yyyy-MM-dd"
+                  sx={{
+                    borderRadius: '0.5',
+                    input: { color: 'white', marginLeft: 10, marginX: 0.4 },
+                    // backgroundColor: 'rgb(9, 24, 48)',
+                    // label: { color: 'rgb(153, 153, 153)', fontSize: 15 }
+                  }}
+                  InputLabelProps={{
+                    color: "#fff",
+                    style: { color: "#ffff" },
+                    shrink: true,
+                  }}
 
-            {birthdayNote.visible &&
-              <div className="profile-information__item__note">
-                <Message type={birthdayNote.type} message={birthdayNote.message} />
-              </div>
-            }
-          </div>
+                  InputProps={{
+                    style: { color: "#ffff" },
+                  }}
+                  defaultValue={currentUser.birthday}
+                  onChange={handleChangeInformation('birthday')}
+                />
+              </ThemeProvider>
 
-          <div className="profile-information__item">
-            <div className="profile-information__item__title">Email</div>
-            <ThemeProvider theme={TextFieldTheme}>
-              <TextField className="profile-information__item__content"
-                variant="filled"
-                sx={{
-                  borderRadius: '0.5',
-                  input: { color: 'white', marginLeft: 10, marginX: 0.4 },
-                  backgroundColor: 'rgb(9, 24, 48)',
-                  // label: { color: 'rgb(153, 153, 153)', fontSize: 15 }
-                }}
-                defaultValue={currentUser.email}
-                onChange={handleChangeInformation('email')}
-                InputProps={{
-                  readOnly: true,
-                }}
-              />
-            </ThemeProvider>
-            {/* {emailNoteVisible &&
+              {birthdayNote.visible &&
+                <div className="profile-information__item__note">
+                  <Message type={birthdayNote.type} message={birthdayNote.message} />
+                </div>
+              }
+            </div>
+
+            <div className="profile-information__item">
+              <div className="profile-information__item__title">Email</div>
+              <ThemeProvider theme={TextFieldTheme}>
+                <TextField className="profile-information__item__content"
+                  variant="standard"
+                  sx={{
+                    borderRadius: '0.5',
+                    input: { color: 'white', marginLeft: 10, marginX: 0.4 },
+                    // backgroundColor: 'rgb(9, 24, 48)',
+                    // label: { color: 'rgb(153, 153, 153)', fontSize: 15 }
+                  }}
+                  defaultValue={currentUser.email}
+                  onChange={handleChangeInformation('email')}
+                  InputProps={{
+                    readOnly: true,
+                  }}
+                />
+              </ThemeProvider>
+              {/* {emailNoteVisible &&
               <div className="profile-information__item__note">
                 <Message ></Message>
               </div>
             } */}
+            </div>
+
+            <Box textAlign='center' >
+              <ThemeProvider theme={ButtonTheme}>
+                <Button variant="contained"
+                  className='profile-information__btnSave'
+                  sx={{
+                    padding: 1,
+                    marginTop: 3
+                  }}
+                  onClick={editProfile}
+                >SAVE CHANGES</Button>
+              </ThemeProvider>
+            </Box>
           </div>
 
-          <Box textAlign='center' >
-            <ThemeProvider theme={ButtonTheme}>
-              <Button variant="contained"
-                className='profile-information__btnSave'
-                sx={{
-                  padding: 1,
-                  marginTop: 3
-                }}
-                onClick={editProfile}
-              >SAVE CHANGES</Button>
-            </ThemeProvider>
-          </Box>
+          <div className="clear"></div>
         </div>
 
-        <div className="profile-pic">
-          <img className='profile-pic__img' src='' alt='Your profile image' />
+        <div className="password-information">
+          <div className="password-information__title">CHANGE YOUR PASSWORD</div>
+          <div className="line"></div>
+          <div className="password-information__item">
+            <div className="password-information__item__title">Old password</div>
+            <ThemeProvider theme={TextFieldTheme}>
+              <TextField className='password-information__item__txtfield'
+                type="password"
+                variant='standard'
+                autoComplete="current-password"
+                sx={{
+                  borderRadius: '0.5',
+                  input: { color: 'white', marginLeft: 10, marginX: 0.4 },
+                  // backgroundColor: 'rgb(9, 24, 48)',
+                  // label: { color: 'rgb(153, 153, 153)', fontSize: 15 }
+                }}
+                onChange={handleChangePasswords('old')}
+              />
+            </ThemeProvider>
+            {oldPasswordNote.visible &&
+              <div className="password-information__item__note">
+                <Message type={oldPasswordNote.type} message={oldPasswordNote.message} ></Message>
+              </div>
+            }
+          </div>
+
+          <div className="password-information__item">
+            <div className="password-information__item__title">New password</div>
+            <ThemeProvider theme={TextFieldTheme}>
+              <TextField className='password-information__item__txtfield'
+                type="password"
+                variant='standard'
+                autoComplete="current-password"
+                sx={{
+                  borderRadius: '0.5',
+                  input: { color: 'white', marginLeft: 10, marginX: 0.4 },
+                  // backgroundColor: 'rgb(9, 24, 48)',
+                  // label: { color: 'rgb(153, 153, 153)', fontSize: 15 }
+                }}
+                onChange={handleChangePasswords('new')}
+              />
+            </ThemeProvider>
+            {newPasswordNote.visible &&
+              <div className="password-information__item__note">
+                <Message message={newPasswordNote.message} type={newPasswordNote.type}></Message>
+              </div>
+            }
+          </div>
+
+          <div className="password-information__item">
+            <div className="password-information__item__title">Repeat new password</div>
+            <ThemeProvider theme={TextFieldTheme}>
+              <TextField className='password-information__item__txtfield'
+                type="password"
+                variant='standard'
+                autoComplete="current-password"
+                sx={{
+                  borderRadius: '0.5',
+                  input: { color: 'white', marginLeft: 10, marginX: 0.4 },
+                  //backgroundColor: 'rgb(9, 24, 48)',
+                  // label: { color: 'rgb(153, 153, 153)', fontSize: 15 }
+                }}
+                onChange={handleChangePasswords('repeatNew')}
+              />
+            </ThemeProvider>
+            {repeatNewPasswordNote.visible &&
+              <div className="password-information__item__note">
+                <Message type={repeatNewPasswordNote.type} message={repeatNewPasswordNote.message}></Message>
+              </div>
+            }
+          </div>
+
           <Box textAlign='center'>
             <ThemeProvider theme={ButtonTheme}>
-              <Button variant="contained" className='profile-pic__btnChange'
+              <Button variant="contained"
+                className='password-information__btnChange'
                 sx={{
                   padding: 1,
                   marginTop: 3
                 }}
-              >CHANGE</Button>
+                onClick={changePassword}
+              >CHANGE PASSWORD</Button>
             </ThemeProvider>
           </Box>
-          <div className="profile-pic__note">Acceptable formats .png and .jpg only</div>
         </div>
 
-        <div className="clear"></div>
-      </div>
-
-      <div className="password-information">
-        <div className="password-information__title">CHANGE YOUR PASSWORD</div>
-        <div className="line"></div>
-        <div className="password-information__item">
-          <div className="password-information__item__title">Old password</div>
-          <ThemeProvider theme={TextFieldTheme}>
-            <TextField className='password-information__item__txtfield'
-              type="password"
-              variant='filled'
-              autoComplete="current-password"
-              sx={{
-                borderRadius: '0.5',
-                input: { color: 'white', marginLeft: 10, marginX: 0.4 },
-                backgroundColor: 'rgb(9, 24, 48)',
-                // label: { color: 'rgb(153, 153, 153)', fontSize: 15 }
-              }}
-              onChange={handleChangePasswords('old')}
-            />
-          </ThemeProvider>
-          {oldPasswordNote.visible &&
-            <div className="password-information__item__note">
-              <Message type={oldPasswordNote.type} message={oldPasswordNote.message} ></Message>
-            </div>
-          }
-        </div>
-
-        <div className="password-information__item">
-          <div className="password-information__item__title">New password</div>
-          <ThemeProvider theme={TextFieldTheme}>
-            <TextField className='password-information__item__txtfield'
-              type="password"
-              variant='filled'
-              autoComplete="current-password"
-              sx={{
-                borderRadius: '0.5',
-                input: { color: 'white', marginLeft: 10, marginX: 0.4 },
-                backgroundColor: 'rgb(9, 24, 48)',
-                // label: { color: 'rgb(153, 153, 153)', fontSize: 15 }
-              }}
-              onChange={handleChangePasswords('new')}
-            />
-          </ThemeProvider>
-          {newPasswordNote.visible &&
-            <div className="password-information__item__note">
-              <Message message={newPasswordNote.message} type={newPasswordNote.type}></Message>
-            </div>
-          }
-        </div>
-
-        <div className="password-information__item">
-          <div className="password-information__item__title">Repeat new password</div>
-          <ThemeProvider theme={TextFieldTheme}>
-            <TextField className='password-information__item__txtfield'
-              type="password"
-              variant='filled'
-              autoComplete="current-password"
-              sx={{
-                borderRadius: '0.5',
-                input: { color: 'white', marginLeft: 10, marginX: 0.4 },
-                backgroundColor: 'rgb(9, 24, 48)',
-                // label: { color: 'rgb(153, 153, 153)', fontSize: 15 }
-              }}
-              onChange={handleChangePasswords('repeatNew')}
-            />
-          </ThemeProvider>
-          {repeatNewPasswordNote.visible &&
-            <div className="password-information__item__note">
-              <Message type={repeatNewPasswordNote.type} message={repeatNewPasswordNote.message}></Message>
-            </div>
-          }
-        </div>
-
-        <Box textAlign='center'>
-          <ThemeProvider theme={ButtonTheme}>
-            <Button variant="contained"
-              className='password-information__btnChange'
-              sx={{
-                padding: 1,
-                marginTop: 3
-              }}
-              onClick={validatePassword}
-            >CHANGE PASSWORD</Button>
-          </ThemeProvider>
-        </Box>
-      </div>
-
-      {isLoading && <Loading/>}
+        {isLoading && <Loading />}
+        {updateSucceeded && <Success message="Update successfully!" status={updateSucceeded} />}
+      </div >
     </div>
+    //  : <Loading />
+    //         }
   )
 }
 
 
 export default Profile
 
-const Message = props => {
-  const mess = props.message;
-  const type = props.type
 
-  return (
-    <div className="login__form__message" style={{ color: type == 'err' ? 'rgb(192, 7, 7)' : '#e9be00' }}>
-      <BiError size={15} />
-      <p>{mess}</p>
-    </div >
-  )
-}
-
-const Loading = () => {
-  return (
-    <div style={{ backgroundColor: 'rgba(255, 255, 255, 0.1)', position: 'absolute', display: 'flex', alignItems: 'center', justifyContent: 'center', top: 0, left: 0, right: 0, bottom: 0, height: '100%' }}> 
-      <CircularProgress />
-    </div>
-  )
-}

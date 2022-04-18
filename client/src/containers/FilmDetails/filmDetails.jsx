@@ -61,6 +61,7 @@ const FilmDetails = () => {
 
               <div className="movie-content__info">
                 <div className="movie-content__info__title">{film.name || film.title}</div>
+                <div className="movie-content__info__duration">{film.runtime} minutes</div>
                 <div className="movie-content__info__genres">
                   {
                     film.genres && film.genres.slice(0, 5).map((genre, i) => (

@@ -79,7 +79,11 @@ const accountController = {
                 name: req.body.name,
                 password: req.body.password,
                 rank: req.body.rank,
-                score: req.body.score
+                score: req.body.score,
+                password: req.body.password,
+                listTicketId: req.body.listTicketId,
+                listReview: req.body.listReview
+
             }, { new: 'true' })
             .then(data => {
                 res.json("Update successful")

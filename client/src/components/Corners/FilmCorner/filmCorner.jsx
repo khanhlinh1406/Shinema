@@ -171,7 +171,7 @@ const FilmCorner = () => {
 
 const SlideItem = props => {
     const item = props.item;
-    const background = apiConfig.originalImage(item.backdrop_path ? item.backdrop_path : item.poster_path)
+    const background = apiConfig.originalImage(item.poster_path ?  item.poster_path: item.backdrop_path )
     // const dispatch = useDispatch();
     // const data = useSelector(movieSelector)
     const navigate = useNavigate();

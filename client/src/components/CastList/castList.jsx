@@ -16,7 +16,12 @@ const CastList = ({id, category}) => {
             try {
                 const params = {}
                 const res = await tmdbApi.credits(category, id)
-                setCasts(res.cast.slice(0, 5));
+                setCasts(res.cast.filter(item =>
+                    (item.profile_path != null)
+                ))
+                console.log(casts)
+                setCasts(res.cast.slice(0,5))
+
             }
             catch (e) {
                 console.log(e)

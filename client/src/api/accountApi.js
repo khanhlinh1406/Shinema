@@ -46,7 +46,7 @@ const AccountApi = {
         return res
     },
     update: async(account) => {
-        const res = await ApiDatabase.put('/account/' + account.email)
+        const res = await ApiDatabase.put('/account', account)
         return res;
     }
 
