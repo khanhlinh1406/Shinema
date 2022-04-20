@@ -109,14 +109,6 @@ function App() {
         }
         />
 
-        <Route path="/profile/change-password" element={
-          <div>
-            <MainNavBar />
-            <Profile />
-            <Footer />
-          </div>
-        }
-        />
       </Routes>
 
 

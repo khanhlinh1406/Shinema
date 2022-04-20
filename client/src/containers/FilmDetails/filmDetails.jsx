@@ -18,7 +18,7 @@ import MainNavBar from "../../components/MainNavBar/mainNavBar";
 
 const FilmDetails = () => {
 
-  const {id} = useParams();
+  const { id } = useParams();
   const [film, setFilm] = useState();
 
   useEffect(() => {
@@ -37,6 +37,10 @@ const FilmDetails = () => {
     getMovie();
   })
 
+  useEffect(() => {
+    window.scrollTo(0, 0)
+  }, [id])
+
   return (
     <div className="film-details">
       {
@@ -46,7 +50,7 @@ const FilmDetails = () => {
               <title>{film.title || film.name}</title>
             </Helmet>
 
-            <MainNavBar/>
+            <MainNavBar />
             <div className="banner" style={{
               backgroundImage: `url(${apiConfig.originalImage(film.backdrop_path || film.poster_path)})`
               /// backgroundColor: 'white'
@@ -76,7 +80,7 @@ const FilmDetails = () => {
 
                 <div className="movie-content__info__cast">
                   <div className="movie-content__info__cast__section-header">
-                    <h2>Diễn viên</h2>
+                    <h2>Actors</h2>
                   </div>
                   <CastList id={film.id} category={category.movie}></CastList>
                 </div>

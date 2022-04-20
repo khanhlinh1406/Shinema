@@ -88,7 +88,7 @@
  .profile-information__item,
  .password-information__item {
      padding: 20px 0px;
-     display: flex;
+     /* display: flex; */
  }
  
  .profile-information__item__title,
@@ -99,6 +99,7 @@
      padding-top: 15px;
      color: rgb(196, 196, 196);
      font-weight: 200;
+     float: left;
  }
  
  .profile-information__item__content,
@@ -131,7 +132,7 @@
      background-repeat: no-repeat;
  }
  
- */ .color__gradient {
+ .color__gradient {
      /* ff 3.6+ */
      background: -moz-linear-gradient(66deg, rgba(4, 12, 24, 1) 57%, rgba(4, 12, 24, 0.52) 78%, rgba(255, 255, 255, 0) 100%);
      /* safari 5.1+,chrome 10+ */

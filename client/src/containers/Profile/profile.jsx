@@ -26,6 +26,7 @@ import Message from '../../components/Message/message'
 import { Success } from '../../components/Alert/alert'
 
 import background_login from '../../assets/background_login.jpg'
+import { Helmet } from 'react-helmet';
 
 const Profile = () => {
   const currentUser = useSelector(userSelector);
@@ -54,7 +55,10 @@ const Profile = () => {
     },
   })
 
-  const [updateSucceeded, setUpdateSucceeded] = useState(false);
+  const [updateSucceeded, setUpdateSucceeded] = useState({
+    status: false,
+    message: ''
+  })
 
   useEffect(() => {
     console.log(currentUser)
@@ -63,6 +67,9 @@ const Profile = () => {
   useEffect(() => {
     refresh()
   }, [currentUser])
+
+  useEffect(() => {
+  }, [updateSucceeded])
 
   //#region INFORMATION NOTE
   const [nameNote, setNameNote] = useState({
@@ -146,10 +153,19 @@ const Profile = () => {
 
   const handleChangeInformation = (prop) => (event) => {
     setValues({ ...values, [prop]: event.target.value });
+    setUpdateSucceeded({
+      status: false,
+      message: ''
+    })
+
   };
 
   const handleChangePasswords = (prop) => (event) => {
     setPasswords({ ...passwords, [prop]: event.target.value })
+    setUpdateSucceeded({
+      status: false,
+      message: ''
+    })
   }
 
   const validatePassword = async () => {
@@ -263,12 +279,21 @@ const Profile = () => {
         .then((res) => {
           dispatch(userSlice.actions.update(values))
           setIsLoading(false)
-          setUpdateSucceeded(true)
+          setUpdateSucceeded({
+            status: true,
+            message: 'Update your password successfully!'
+          })
         })
         .catch(err => {
           console.log(err)
+          setUpdateSucceeded({
+            status: true,
+            message: 'Sorry! There are something wrong with your request'
+          })
         })
+
     }
+
 
   }
 
@@ -352,24 +377,33 @@ const Profile = () => {
         .then((res) => {
           dispatch(userSlice.actions.update(values))
           setIsLoading(false)
-          setUpdateSucceeded(true)
+          setUpdateSucceeded({
+            status: true,
+            message: 'Update your profile successfully!'
+          })
         })
         .catch(err => {
+          setUpdateSucceeded({
+            status: true,
+            message: 'Sorry! There are something wrong with your request'
+          })
           console.log(err)
         })
     }
-
   }
 
   return (
     //  {currentUser.name != ''?
-    <div className="profile__container" 
-     style={{ backgroundImage: `url(${background_login})` }}
+    <div className="profile__container"
+      style={{ backgroundImage: `url(${background_login})` }}
     >
+      <Helmet>
+        <title>Profile</title>
+      </Helmet>
       <div className="profile__background">
-        <div className="color__gradient"></div> 
+        <div className="color__gradient"></div>
       </div>
-     
+
       <div className="profile"  >
         <div className="profile-container">
           <div className="profile-information">
@@ -628,10 +662,10 @@ const Profile = () => {
             </ThemeProvider>
           </Box>
         </div>
-
-        {isLoading && <Loading />}
-        {updateSucceeded && <Success message="Update successfully!" status={updateSucceeded} />}
       </div >
+
+      {isLoading && <Loading />}
+      <Success message={updateSucceeded.message} status={updateSucceeded.status} />
     </div>
     //  : <Loading />
     //         }

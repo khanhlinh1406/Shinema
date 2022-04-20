@@ -15,6 +15,7 @@ import { createTheme, ThemeProvider } from '@mui/material/styles';
 import { red, grey } from "@mui/material/colors";
 
 import { ShowTimeManager, TheaterManager, Statistics } from '../../components'
+import { Helmet } from 'react-helmet';
 
 const Manager = () => {
 
@@ -23,7 +24,7 @@ const Manager = () => {
 
     useEffect(() => {
         const checkAuth = () => {
-            if (user ){
+            if (user) {
                 if (user.rank != "Manager" && user.rank != "Admin") {
                     navigate('/')
                 }
@@ -46,29 +47,35 @@ const Manager = () => {
     };
 
     return (
-        <ThemeProvider theme={tabTheme}>
-            <Typography sx={{ color: '#fff', fontSize: 20, margin: 7 }}>QUẢN LÍ DỮ LIỆU</Typography>
-            <Box sx={{ width: '100%' }}>
-                <Box sx={{ borderBottom: 1, borderColor: 'divider', marginTop: 5, marginLeft: 5 }}>
-                    <Tabs value={value} onChange={handleChange} aria-label="basic tabs example" >
-                        <Tab label="Suất chiếu" {...a11yProps(0)} sx={{ color: '#fff' }} />
-                        <Tab label="Thống kê" {...a11yProps(1)} sx={{ color: '#fff' }} />
-                        <Tab label="Rạp" {...a11yProps(2)} sx={{ color: '#fff' }} />
-                    </Tabs>
+        <div>
+            <Helmet>
+                <title>Data Manager</title>
+            </Helmet>
+            
+            <ThemeProvider theme={tabTheme}>
+                <Typography sx={{ color: '#fff', fontSize: 20, margin: 7 }}>QUẢN LÍ DỮ LIỆU</Typography>
+                <Box sx={{ width: '100%' }}>
+                    <Box sx={{ borderBottom: 1, borderColor: 'divider', marginTop: 5, marginLeft: 5 }}>
+                        <Tabs value={value} onChange={handleChange} aria-label="basic tabs example" >
+                            <Tab label="Suất chiếu" {...a11yProps(0)} sx={{ color: '#fff' }} />
+                            <Tab label="Thống kê" {...a11yProps(1)} sx={{ color: '#fff' }} />
+                            <Tab label="Rạp" {...a11yProps(2)} sx={{ color: '#fff' }} />
+                        </Tabs>
+                    </Box>
+
+                    <TabPanel value={value} index={0}>
+                        <ShowTimeManager />
+                    </TabPanel>
+                    <TabPanel value={value} index={1}>
+                        <Statistics />
+                    </TabPanel>
+                    <TabPanel value={value} index={2}>
+                        <TheaterManager />
+                    </TabPanel>
+
                 </Box>
-
-                <TabPanel value={value} index={0}>
-                    <ShowTimeManager />
-                </TabPanel>
-                <TabPanel value={value} index={1}>
-                    <Statistics />
-                </TabPanel>
-                <TabPanel value={value} index={2}>
-                    <TheaterManager />
-                </TabPanel>
-
-            </Box>
-        </ThemeProvider>
+            </ThemeProvider>
+        </div>
     );
 }
 

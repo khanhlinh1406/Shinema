@@ -71,7 +71,7 @@ const MainNavBar = () => {
         <div className='mainNavBar'>
             <div>
                 <div className='mainNavBar-links'>
-                    <p onClick={goToCorner}>GÓC ĐIỆN ẢNH</p>
+                    <p onClick={goToCorner}>CINEMA CORNER</p>
 
                     {logged == 'true' ?
                         <div>
@@ -95,17 +95,17 @@ const MainNavBar = () => {
                     {menuToggle && (
                         <div className="mainNavbar-menu__container">
                             <div className='mainNavbar-menu__item'>
-                                <p> <Link to="/profile">Thông tin cá nhân</Link></p>
+                                <p> <Link to="/profile">Profile</Link></p>
                                 <AiOutlineUser className='menu__item__icon' color={defaultColor} size={25} />
                             </div>
 
                             <div className='mainNavbar-menu__item'>
-                                <p> <Link to="/userInfor">Thông báo</Link></p>
+                                <p> <Link to="/userInfor">Notifications</Link></p>
                                 <BsBell className='menu__item__icon' color={defaultColor} size={23} />
                             </div>
 
                             <div className='mainNavbar-menu__item'>
-                                <p> <Link to="/corner/movie/popular">Góc điện ảnh</Link></p>
+                                <p> <Link to="/corner/movie/popular">CINEMA CORNER</Link></p>
                                 <GiFilmStrip className='menu__item__icon' color={defaultColor} size={23} />
                             </div>
                         </div>

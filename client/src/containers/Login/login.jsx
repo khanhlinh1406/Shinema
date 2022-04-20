@@ -31,6 +31,7 @@ import { userSlice } from './../../redux/slices/userSlice';
 import AccountApi from "../../api/accountApi";
 import mFunction from "../../function";
 import Loading from '../../components/Loading/loading'
+import { Helmet } from 'react-helmet';
 
 const Login = () => {
     let navigate = useNavigate();
@@ -177,6 +178,9 @@ const Login = () => {
     useEffect(getAccount, [])
     return (
         <div className="login">
+            <Helmet>
+                <title>Login</title>
+            </Helmet>
             <div className="login__background">
                 <img className="login__background__img" src={background_login} alt="background" />
                 <div className="login__color__gradient"></div>

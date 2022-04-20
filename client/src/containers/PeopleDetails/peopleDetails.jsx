@@ -59,8 +59,7 @@ const PeopleDetails = () => {
             }
         }
         getMovie();
-        console.log('iiiiiii');
-        console.log(movies)
+     
     }, [id])
 
     const tabTheme = createTheme({

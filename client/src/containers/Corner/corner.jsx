@@ -26,7 +26,7 @@ import { useSelector, useDispatch } from 'react-redux'
 import { Helmet } from 'react-helmet';
 
 const Corner = () => {
-
+    const [currentURL, setCurrentURL] = useState(window.location.pathname);
     const { category } = useParams()
     const { type } = useParams()
 
@@ -38,11 +38,9 @@ const Corner = () => {
     };
 
     // useEffect(() =>{
-    //     switch(value){
-
-    //     }
-
-    // }, [value])
+    //   setCurrentURL(window.location.pathname);
+    //     console.log(currentURL);
+    // }, [window.location.pathname])
 
     const tabTheme = createTheme({
         palette: {

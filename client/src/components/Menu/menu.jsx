@@ -29,7 +29,7 @@ export const CustomerMenu = ({ accountToggleHandle }) => {
     return (
         <div className='menu' >
             <div className='menu__item'>
-                <p onClick={() => { navigate('/profile') }}>Thông tin cá nhân</p>
+                <p onClick={() => { navigate('/profile') }}>Profile</p>
                 <AiOutlineUser className='menu__item__icon' color={defaultColor} size={25} />
             </div>
 
@@ -37,7 +37,7 @@ export const CustomerMenu = ({ accountToggleHandle }) => {
                 user.rank == "Customer"
                 &&
                 <div className='menu__item'>
-                    <p onClick={() => { accountToggleHandle(); navigate('/manager') }}>Bình luận phim</p>
+                    <p onClick={() => { accountToggleHandle(); navigate('/manager') }}>Movies review</p>
                     <BiCommentDetail className='menu__item__icon' color={defaultColor} size={25} />
                 </div>
             }
@@ -46,7 +46,7 @@ export const CustomerMenu = ({ accountToggleHandle }) => {
                 user.rank == "Customer"
                 &&
                 <div className='menu__item'>
-                    <p onClick={() => { accountToggleHandle(); navigate('/manager') }}>Lịch sử giao dịch</p>
+                    <p onClick={() => { accountToggleHandle(); navigate('/manager') }}>Transaction history</p>
                     <VscHistory className='menu__item__icon' color={defaultColor} size={23} />
                 </div>
             }
@@ -55,7 +55,7 @@ export const CustomerMenu = ({ accountToggleHandle }) => {
                 (user.rank == "Manager" || user.rank == "Admin")
                 &&
                 <div className='menu__item'>
-                    <p onClick={() => { accountToggleHandle(); navigate('/manager') }}>Quản lí dữ liệu</p>
+                    <p onClick={() => { accountToggleHandle(); navigate('/manager') }}>Data Manager</p>
                     <BsHddStack className='menu__item__icon' color={defaultColor} size={23} />
                 </div>
             }
@@ -64,7 +64,7 @@ export const CustomerMenu = ({ accountToggleHandle }) => {
                 user.rank == "Censor"
                 &&
                 <div className='menu__item'>
-                    <p onClick={() => { accountToggleHandle(); navigate('/manager') }}>Kiểm duyệt</p>
+                    <p onClick={() => { accountToggleHandle(); navigate('/manager') }}>Censor</p>
                     <IoIosInformationCircleOutline className='menu__item__icon' color={defaultColor} size={25} />
                 </div>
             }
@@ -73,7 +73,7 @@ export const CustomerMenu = ({ accountToggleHandle }) => {
             <div className="menu__line" />
 
             <div className='menu__item'>
-                <p onClick={logoutHandle}>Đăng xuất</p>
+                <p onClick={logoutHandle}>Log out</p>
                 <IoIosLogOut className='menu__item__icon' color={defaultColor} size={23} />
             </div>
 

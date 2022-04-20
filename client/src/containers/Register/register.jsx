@@ -32,6 +32,7 @@ import { createTheme, ThemeProvider } from '@mui/material/styles';
 import { red, grey } from "@mui/material/colors";
 
 import { useNavigate } from 'react-router-dom';
+import { Helmet } from "react-helmet";
 
 const Register = () => {
     let navigate = useNavigate();
@@ -287,6 +288,10 @@ const Register = () => {
 
     return (
         <div className="register">
+            <Helmet >
+                <title>Register</title>
+            </Helmet>
+            
             <div className="register__background">
                 <img className="register__background__img" src={background_login} alt="background" />
                 <div className="register__color__gradient"></div>
