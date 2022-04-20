@@ -3,12 +3,12 @@ import { useState } from "react";
 
 import './footer.css'
 
-import Logo from '../../assets/Logo.png';
+import Logo from '../../assets/logo.png';
 import { Link } from 'react-router-dom';
 
 import { FaTelegramPlane } from 'react-icons/fa';
-import {AiOutlineMail} from 'react-icons/ai';
-import {BsTelephoneFill} from 'react-icons/bs'
+import { AiOutlineMail } from 'react-icons/ai';
+import { BsTelephoneFill } from 'react-icons/bs'
 
 const Footer = () => {
     const defaultColor = '#fff'
@@ -19,7 +19,7 @@ const Footer = () => {
                 <div className="footer-container__introduce__name">Shinema</div>
                 <div className="clear"></div>
                 <div className="footer-container__introduce__content">
-                Lorem ipsum dolor sit amet, consectetur adipisicing elit. Architecto incidunt, accusantium, cumque obcaecati similique et ducimus inventore fugiat velit exercitationem dolorem iusto porro repellat accusamus quia eum, quos eveniet expedita!
+                    Lorem ipsum dolor sit amet, consectetur adipisicing elit. Architecto incidunt, accusantium, cumque obcaecati similique et ducimus inventore fugiat velit exercitationem dolorem iusto porro repellat accusamus quia eum, quos eveniet expedita!
                 </div>
                 <p className="footer-container__introduce__more"><Link to=''>More about us</Link></p>
             </div>

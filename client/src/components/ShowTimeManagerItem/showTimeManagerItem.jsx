@@ -38,10 +38,12 @@ const ShowTimeManagerItem = ({ item }) => {
             <div >
 
                 <Box sx={styles.container}>
+                    <p style={{ color: 'white', fontSize: 18, fontStyle: 'italic' }}>{item.film.runtime} minutes</p>
+
                     <h1 style={{ color: 'white', fontSize: 45, }}>{item.film.title}</h1>
                     <p style={{ color: 'white', }}>{item.film.overview}</p>
 
-                    <Grid sx={{ paddingLeft: 0, paddingTop: 10 }} container spacing={{ md: 1 }} >
+                    <Grid sx={{ paddingLeft: 0, paddingTop: 7 }} container spacing={{ md: 1 }} >
 
                         {item.listDateTime[0].times.map((_, index) => (
                             <Grid item key={index} sx={{ minWidth: 80 }}>
