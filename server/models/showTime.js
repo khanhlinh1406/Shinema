@@ -9,6 +9,10 @@ const showTimeSchema = new mongoose.Schema({
         type: String,
         required: true
     },
+    roomId: {
+        type: String,
+        required: true
+    },
     listDateTime: Array
 
 }, { timestamps: true }, {

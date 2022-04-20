@@ -47,7 +47,6 @@ function App() {
           <div>
             <MainNavBar />
             <Manager />
-            <Footer />
           </div>} />
 
 

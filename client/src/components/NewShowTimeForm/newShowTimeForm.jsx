@@ -13,6 +13,7 @@ import { theaterSlice } from './../../redux/slices/theaterSlice';
 import { theaterSelector } from '../../redux/selector'
 
 import TheaterApi from '../../api/theaterApi'
+import ShowTimeApi from '../../api/showTimeApi'
 
 import TextField from '@mui/material/TextField';
 import Autocomplete from '@mui/material/Autocomplete';
@@ -36,53 +37,39 @@ import ErrorOutlineIcon from '@mui/icons-material/ErrorOutline';
 import viLocale from "date-fns/locale/vi"
 import format from 'date-fns/format'
 
-const NewShowTimeForm = () => {
+const NewShowTimeForm = ({ successNewShowTimeHandle }) => {
     const dispatch = useDispatch()
     const [, forceRender] = useState()
 
+    const btnTheme = createTheme({
+        shape: {
+            borderRadius: 5
+        },
+        palette: {
+            primary: red
+        },
+    })
+
     const [currentFilm, setCurrentFilm] = useState()
     const [currentTheater, setCurrentTheater] = useState()
-    const [listDateTime, setListDateTime] = useState([])
+    const [currentRoom, setCurrentRoom] = useState()
     const [dateSelected, setDateSelected] = useState()
 
-    const [errorDateVisible, setErrorDateVisible] = useState(false)
-    const [errorFilmTheaterVisible, setErrorFilmTheaterVisible] = useState(false)
+    const [listDateTime, setListDateTime] = useState([])
+
+    const [messageErrorVisible, setMessageErrorVisible] = useState({
+        date: false,
+        film: false,
+        theater: false,
+        times: false,
+        showTimeExist: false,
+        room: false
+    })
+
+    const [errorTimes, setErrorTimes] = useState(false)
 
     const upcomingMovies = useSelector(state => state.movies.upcoming)
     const theaters = useSelector(theaterSelector)
-
-    useEffect(() => {
-        const getMovies = async () => {
-            const params = {
-
-            }
-            try {
-                const response = await tmdbApi.getMoviesList(movieType.upcoming, { params: params });
-                dispatch(movieSlice.actions.updateAllUpcoming(response.results))
-            } catch {
-                console.log("Film slider error")
-            }
-        }
-
-        const getTheaters = () => {
-            TheaterApi.getAll().then(res => {
-                if (res) {
-                    setCurrentTheater(res[0])
-                    dispatch(theaterSlice.actions.updateAll(res))
-                }
-
-            })
-                .catch(err => console.log(err))
-        }
-
-        setDateSelected(new Date())
-        getMovies();
-        getTheaters();
-    }, []);
-
-    useEffect(() => {
-        forceRender()
-    }, [upcomingMovies, theaters])
 
     const movieOptions = upcomingMovies.map((option) => {
         const firstLetter = option.title[0].toUpperCase();
@@ -103,10 +90,10 @@ const NewShowTimeForm = () => {
         ) {
             if (listDateTime.length != 0 && listDateTime.find(e => e.date == dateFormat)) return
 
-            setListDateTime([...listDateTime, { date: dateFormat }])
+            setListDateTime([...listDateTime, { date: dateFormat, times: '' }])
         }
         else {
-            setErrorDateVisible(true)
+            setMessageErrorVisible({ ...messageErrorVisible, date: true })
         }
     }
 
@@ -118,41 +105,114 @@ const NewShowTimeForm = () => {
     const onChangeTimeHandle = (item) => {
         let temp = listDateTime.map(e => e.date !== item.date ? e : item);
         setListDateTime(temp)
+
+        setMessageErrorVisible({ ...messageErrorVisible, times: false, date: false })
     }
 
-    const btnTheme = createTheme({
-        shape: {
-            borderRadius: 5
-        },
-        palette: {
-            primary: red
-        },
-    })
+    const onChangeErrorTimeHandle = (val) => {
+        setErrorTimes(val)
+    }
 
     const addShowTimeHandle = () => {
-        checkShowTime()
+        if (checkShowTime()) {
+            let showTime = {
+                filmId: currentFilm.id,
+                theaterId: currentTheater._id,
+                listDateTime: listDateTime
+            }
+
+            ShowTimeApi.create(showTime).then(res => {
+                if (res.data == 'Show time has already existed') {
+                    setMessageErrorVisible({ ...messageErrorVisible, showTimeExist: true })
+                    return
+                }
+                else if (res.data == 'Successful') {
+                    successNewShowTimeHandle()
+                    return
+                }
+            }).catch(err => console.log(err))
+        }
     }
 
     const checkShowTime = () => {
         if (currentFilm == null || currentTheater == null) {
-            setErrorFilmTheaterVisible(true)
+            setMessageErrorVisible({ ...messageErrorVisible, film: true })
             return false
         }
 
-        return true
+        else if (currentTheater == null) {
+            setMessageErrorVisible({ ...messageErrorVisible, theater: true })
+            return false
+        }
+
+        else if (listDateTime.length == 0 || errorTimes) {
+            setMessageErrorVisible({ ...messageErrorVisible, times: true })
+            return false
+        }
+
+        else {
+            let err = listDateTime.find(e => e.times == '')
+            if (err) {
+                setMessageErrorVisible({ ...messageErrorVisible, times: true })
+                return false
+            }
+            else return true
+        }
+
+
     }
+
+    useEffect(() => {
+        const getMovies = async () => {
+            const params = {
+
+            }
+            try {
+                const response = await tmdbApi.getMoviesList(movieType.upcoming, { params: params });
+                dispatch(movieSlice.actions.updateAllUpcoming(response.results))
+            } catch {
+                console.log("Film slider error")
+            }
+        }
+
+        const getTheaters = () => {
+            TheaterApi.getAll().then(res => {
+                if (res) {
+                    dispatch(theaterSlice.actions.updateAll(res))
+                }
+
+            })
+                .catch(err => console.log(err))
+        }
+
+        setDateSelected(new Date())
+        getMovies();
+        getTheaters();
+    }, []);
+
+    useEffect(() => {
+        forceRender()
+    }, [upcomingMovies, theaters])
+
+    useEffect(() => {
+        console.log(listDateTime)
+    }, [listDateTime])
 
     return (
         <div style={styles.container} >
             <div>
                 <Autocomplete
-                    onChange={(event, value) => { setCurrentFilm(value); setErrorFilmTheaterVisible(false) }}
+                    onChange={(event, value) => {
+                        setCurrentFilm(value)
+                        setMessageErrorVisible({ ...messageErrorVisible, film: false })
+                        setMessageErrorVisible({ ...messageErrorVisible, showTimeExist: false })
+                    }}
                     options={movieOptions.sort((a, b) => -b.firstLetter.localeCompare(a.firstLetter))}
                     groupBy={(option) => option.firstLetter}
                     getOptionLabel={(option) => option.title}
                     isOptionEqualToValue={(option, value) => option.id === value.id}
                     sx={{ width: 300 }}
-                    renderInput={(params) => <TextField {...params} label="Chọn phim" />}
+                    renderInput={(params) => <TextField {...params} label="Movie" />}
                 />
 
                 {currentFilm && <CurrentFilm currentFilm={currentFilm} />}
@@ -161,22 +221,45 @@ const NewShowTimeForm = () => {
             <div style={{ display: 'flex', flexDirection: 'column', marginLeft: 30, width: '100%' }}>
 
                 <div style={{ display: 'flex', flexDirection: 'row', width: '100%', justifyContent: 'space-between', alignItems: 'flex-start' }}>
-                    <Autocomplete
-                        onChange={(event, value) => { setCurrentTheater(value); setErrorFilmTheaterVisible(false) }}
-                        options={theaters}
-                        getOptionLabel={(option) => option.name}
-                        isOptionEqualToValue={(option, value) => option.id === value.id}
-                        sx={{ width: 300 }}
-                        renderInput={(params) => <TextField {...params} label="Chọn rạp" />}
-                    />
+
+                    <div style={{ display: 'flex' }}>
+                        <Autocomplete
+                            onChange={(event, value) => {
+                                setCurrentTheater(value)
+                                setMessageErrorVisible({ ...messageErrorVisible, theater: false })
+                                setMessageErrorVisible({ ...messageErrorVisible, showTimeExist: false })
+                            }}
+                            options={theaters}
+                            getOptionLabel={(option) => option.name}
+                            isOptionEqualToValue={(option, value) => option.id === value.id}
+                            sx={{ width: 300 }}
+                            renderInput={(params) => <TextField {...params} label="Theater" />}
+                        />
+
+                        {currentTheater &&
+                            <Autocomplete
+                                onChange={(event, value) => {
+                                    setCurrentRoom(value)
+                                    setMessageErrorVisible({ ...messageErrorVisible, room: false })
+                                    setMessageErrorVisible({ ...messageErrorVisible, showTimeExist: false })
+                                }}
+                                options={currentTheater.listRoom}
+                                getOptionLabel={(option) => option.name}
+                                isOptionEqualToValue={(option, value) => option.id === value.id}
+                                sx={{ width: 300, marginLeft: 3 }}
+                                renderInput={(params) => <TextField {...params} label="Room" />}
+                            />}
+
+                    </div>
+
                     <ThemeProvider theme={btnTheme} >
-                        <Button sx={{ paddingX: 2.5, paddingY: 1.5 }} variant="contained" endIcon={<VideoLabelOutlinedIcon />} onClick={addShowTimeHandle} >Thêm suất chiếu</Button>
+                        <Button sx={{ paddingX: 2.5, paddingY: 1.5 }} variant="contained" endIcon={<VideoLabelOutlinedIcon />} onClick={addShowTimeHandle} >Insert show time</Button>
                     </ThemeProvider>
                 </div>
 
                 <div style={{ width: '100%', marginTop: 20 }}>
                     <div style={{ display: 'flex', flexDirection: 'row', width: '100%', justifyContent: 'space-between', alignItems: 'flex-start' }}>
-                        <p style={{ color: 'rgb(9, 24, 48)', fontSize: 20, marginTop: 5 }}>Suất chiếu</p>
+                        <p style={{ color: 'rgb(9, 24, 48)', fontSize: 20, marginTop: 5 }}>Show time</p>
 
                         <div>
                             <IconButton size='large' onClick={addDateHandle}>
@@ -185,11 +268,11 @@ const NewShowTimeForm = () => {
 
                             <LocalizationProvider dateAdapter={AdapterDateFns} locale={viLocale}  >
                                 <DatePicker
-                                    label="Ngày"
+                                    label="Date"
                                     value={dateSelected}
                                     onChange={(newValue) => {
                                         setDateSelected(newValue)
-                                        setErrorDateVisible(false)
+                                        setMessageErrorVisible({ ...messageErrorVisible, date: false })
                                     }}
                                     renderInput={(params) =>
                                         <TextField
@@ -204,16 +287,101 @@ const NewShowTimeForm = () => {
                     {listDateTime.length != 0 &&
                         <div style={{ border: '1px solid #cfcfcf', width: '100%', borderRadius: 5, marginTop: 10 }}>
                             {listDateTime.map((item, index) => (
-                                <DateTimeItem key={index} item={item} deleteDateHandle={deleteDateHandle} onChangeTimeHandle={onChangeTimeHandle} />
+                                <DateTimeItem key={index} item={item} deleteDateHandle={deleteDateHandle} onChangeTimeHandle={onChangeTimeHandle} onChangeErrorTimeHandle={onChangeErrorTimeHandle} />
                             ))}
                         </div>}
                 </div>
 
-            </div >
 
-            <Error message={'Vui lòng lên lịch trước 1 ngày so với thời gian diễn ra'} status={errorDateVisible} />
-            <Error message={'Vui lòng chọn phim và rạp'} status={errorFilmTheaterVisible} />
+                <Error message={'Please schedule this time 1 day before occuring'} status={messageErrorVisible.date} />
+                <Error message={'Please select movie '} status={messageErrorVisible.film} />
+                <Error message={'Please select theater'} status={messageErrorVisible.theater} />
+                <Error message={'Please select room'} status={messageErrorVisible.room} />
+                <Error message={'Show time is not valid'} status={messageErrorVisible.times} />
+                <Error message={'Show time has already existed, please try to update it'} status={messageErrorVisible.showTimeExist} />
+
+            </div >
         </div >
+    )
+}
+
+const DateTimeItem = ({ item, deleteDateHandle, onChangeTimeHandle, onChangeErrorTimeHandle }) => {
+    const [timesString, setTimesString] = useState()
+    const [errorTimeVisible, setErrorTimeVisible] = useState(false)
+
+    const handleChange = (event) => {
+        setTimesString(event.target.value)
+
+        if (checkTimeFormat(event.target.value)) {
+            let timeString = event.target.value.trim()
+            let timeArr = timeString.split(' ')
+            onChangeTimeHandle({ date: item.date, times: timeArr })
+
+            setErrorTimeVisible(false)
+            onChangeErrorTimeHandle(false)
+        }
+        else {
+            onChangeTimeHandle({ date: item.date, times: event.target.value })
+            setErrorTimeVisible(true)
+            onChangeErrorTimeHandle(true)
+        }
+    };
+    const deleteHandle = () => {
+        deleteDateHandle(item)
+    }
+
+
+    const checkTimeFormat = (timeArray) => {
+        let timesString = timeArray.trim();
+        let listTime = timesString.split(' ')
+
+        var timeFormat = /^(?:\d|[01]\d|2[0-3]):[0-5]\d$/
+        let result = true
+        listTime.forEach(element => {
+            if (element.match(timeFormat) === null) {
+                result = false
+                return result
+            }
+        });
+
+        return result
+    }
+
+    return (
+        <div style={{ display: 'flex', alignItems: 'stretch', flexDirection: 'column', padding: 15 }}>
+            <p style={{ color: 'rgb(9, 24, 48)' }}>{item.date}</p>
+
+            <FormControl sx={{ m: 1 }} variant="standard">
+                <InputLabel htmlFor="standard-adornment-password">Time. Ex: 8:30 10:30 ... </InputLabel>
+                <Input
+                    id="standard-adornment-password"
+                    type='text'
+                    value={timesString}
+                    onChange={handleChange}
+                    endAdornment={
+                        <InputAdornment position="end">
+                            <IconButton
+                                aria-label="toggle password visibility"
+                                onClick={deleteHandle}
+                                onMouseDown={event => event.preventDefault()}
+                            >
+                                <CloseRoundedIcon />
+                            </IconButton>
+                        </InputAdornment>
+                    }
+                />
+            </FormControl>
+
+            {errorTimeVisible &&
+                <div style={{ padding: 8, backgroundColor: '#fdeded', display: 'flex', alignItems: 'center', borderRadius: 3 }}>
+                    <ErrorOutlineIcon sx={{ color: '#f16663' }} />
+                    <p style={{ color: '#8d4a4a', fontFamily: 'sans-serif', marginLeft: 10 }}>Danh sách thời gian chưa đúng định dạng</p>
+                </div>
+            }
+
+        </div>
+
+
     )
 }
 
@@ -241,57 +409,4 @@ const CurrentFilm = ({ currentFilm }) => {
     )
 }
 
-const DateTimeItem = ({ item, deleteDateHandle, onChangeTimeHandle }) => {
-    const [value, setValue] = useState()
-    const handleChange = () => (event) => {
-        setValue(event.target.value)
-        onChangeTimeHandle({ date: item.date, times: value })
-
-        checkTimeFormat(event.target.value)
-    };
-    const deleteHandle = () => {
-        deleteDateHandle(item)
-    }
-
-    const [errorTimeVisible, setErrorTimeVisible] = useState(false)
-    const checkTimeFormat = (timeArray) => {
-        let result = timeArray.trim();
-
-        var timeFormat = /^\(?([0-2]{1})\)?[:]?([0-5]{1})$/;
-        console.log(result.match(timeFormat))
-
-    }
-    return (
-        <div style={{ display: 'flex', alignItems: 'stretch', flexDirection: 'column', padding: 15 }}>
-            <p style={{ color: 'rgb(9, 24, 48)' }}>{item.date}</p>
-
-            <FormControl sx={{ m: 1 }} variant="standard">
-                <InputLabel htmlFor="standard-adornment-password">Giờ. Vd: 8:30 10:30 ... </InputLabel>
-                <Input
-                    id="standard-adornment-password"
-                    type='text'
-                    value={value}
-                    onChange={handleChange()}
-                    endAdornment={
-                        <InputAdornment position="end">
-                            <IconButton
-                                aria-label="toggle password visibility"
-                                onClick={deleteHandle}
-                                onMouseDown={event => event.preventDefault()}
-                            >
-                                <CloseRoundedIcon />
-                            </IconButton>
-                        </InputAdornment>
-                    }
-                />
-            </FormControl>
-
-            <div style={{ padding: 8, backgroundColor: '#fdeded', display: 'flex', alignItems: 'center', borderRadius: 3 }}>
-                <ErrorOutlineIcon sx={{ color: '#f16663' }} />
-                {errorTimeVisible && <p style={{ color: '#8d4a4a', fontFamily: 'sans-serif', marginLeft: 10 }}>Danh sách thời gian chưa đúng định dạng</p>}
-            </div>
-        </div>
-
-    )
-}
 export default NewShowTimeForm
