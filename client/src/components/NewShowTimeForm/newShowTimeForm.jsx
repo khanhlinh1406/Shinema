@@ -52,6 +52,7 @@ const NewShowTimeForm = ({ successNewShowTimeHandle }) => {
 
     const [currentFilm, setCurrentFilm] = useState()
     const [currentTheater, setCurrentTheater] = useState()
+    const [currentRoom, setCurrentRoom] = useState()
     const [dateSelected, setDateSelected] = useState()
 
     const [listDateTime, setListDateTime] = useState([])
@@ -61,6 +62,8 @@ const NewShowTimeForm = ({ successNewShowTimeHandle }) => {
         film: false,
         theater: false,
         times: false,
+        showTimeExist: false,
+        room: false
     })
 
     const [errorTimes, setErrorTimes] = useState(false)
@@ -119,8 +122,13 @@ const NewShowTimeForm = ({ successNewShowTimeHandle }) => {
             }
 
             ShowTimeApi.create(showTime).then(res => {
-                if (res.data == 'Successful') {
+                if (res.data == 'Show time has already existed') {
+                    setMessageErrorVisible({ ...messageErrorVisible, showTimeExist: true })
+                    return
+                }
+                else if (res.data == 'Successful') {
                     successNewShowTimeHandle()
+                    return
                 }
             }).catch(err => console.log(err))
         }
@@ -197,6 +205,7 @@ const NewShowTimeForm = ({ successNewShowTimeHandle }) => {
                     onChange={(event, value) => {
                         setCurrentFilm(value)
                         setMessageErrorVisible({ ...messageErrorVisible, film: false })
+                        setMessageErrorVisible({ ...messageErrorVisible, showTimeExist: false })
                     }}
                     options={movieOptions.sort((a, b) => -b.firstLetter.localeCompare(a.firstLetter))}
                     groupBy={(option) => option.firstLetter}
@@ -212,17 +221,37 @@ const NewShowTimeForm = ({ successNewShowTimeHandle }) => {
             <div style={{ display: 'flex', flexDirection: 'column', marginLeft: 30, width: '100%' }}>
 
                 <div style={{ display: 'flex', flexDirection: 'row', width: '100%', justifyContent: 'space-between', alignItems: 'flex-start' }}>
-                    <Autocomplete
-                        onChange={(event, value) => {
-                            setCurrentTheater(value)
-                            setMessageErrorVisible({ ...messageErrorVisible, theater: false })
-                        }}
-                        options={theaters}
-                        getOptionLabel={(option) => option.name}
-                        isOptionEqualToValue={(option, value) => option.id === value.id}
-                        sx={{ width: 300 }}
-                        renderInput={(params) => <TextField {...params} label="Theater" />}
-                    />
+
+                    <div style={{ display: 'flex' }}>
+                        <Autocomplete
+                            onChange={(event, value) => {
+                                setCurrentTheater(value)
+                                setMessageErrorVisible({ ...messageErrorVisible, theater: false })
+                                setMessageErrorVisible({ ...messageErrorVisible, showTimeExist: false })
+                            }}
+                            options={theaters}
+                            getOptionLabel={(option) => option.name}
+                            isOptionEqualToValue={(option, value) => option.id === value.id}
+                            sx={{ width: 300 }}
+                            renderInput={(params) => <TextField {...params} label="Theater" />}
+                        />
+
+                        {currentTheater &&
+                            <Autocomplete
+                                onChange={(event, value) => {
+                                    setCurrentRoom(value)
+                                    setMessageErrorVisible({ ...messageErrorVisible, room: false })
+                                    setMessageErrorVisible({ ...messageErrorVisible, showTimeExist: false })
+                                }}
+                                options={currentTheater.listRoom}
+                                getOptionLabel={(option) => option.name}
+                                isOptionEqualToValue={(option, value) => option.id === value.id}
+                                sx={{ width: 300, marginLeft: 3 }}
+                                renderInput={(params) => <TextField {...params} label="Room" />}
+                            />}
+
+                    </div>
+
                     <ThemeProvider theme={btnTheme} >
                         <Button sx={{ paddingX: 2.5, paddingY: 1.5 }} variant="contained" endIcon={<VideoLabelOutlinedIcon />} onClick={addShowTimeHandle} >Insert show time</Button>
                     </ThemeProvider>
@@ -267,7 +296,9 @@ const NewShowTimeForm = ({ successNewShowTimeHandle }) => {
                 <Error message={'Please schedule this time 1 day before occuring'} status={messageErrorVisible.date} />
                 <Error message={'Please select movie '} status={messageErrorVisible.film} />
                 <Error message={'Please select theater'} status={messageErrorVisible.theater} />
+                <Error message={'Please select room'} status={messageErrorVisible.room} />
                 <Error message={'Show time is not valid'} status={messageErrorVisible.times} />
+                <Error message={'Show time has already existed, please try to update it'} status={messageErrorVisible.showTimeExist} />
 
             </div >
         </div >

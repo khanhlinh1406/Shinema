@@ -40,29 +40,90 @@ const showTimeController = {
         const newShowTime = {
             filmId: req.body.filmId,
             theaterId: req.body.theaterId,
+            roomId: req.body.roomId,
             listDateTime: req.body.listDateTime
         }
-
-        console.log(newShowTime)
+        const runtime = req.body.runtime
 
         if (newShowTime.filmId == null || newShowTime.filmId == '') {
-            res.send('Film id invalid')
-            return
+            return res.send('Film id invalid')
         } else if (newShowTime.theaterId == null || newShowTime.theaterId == '') {
-            res.send('Theater id invalid')
-            return
+            return res.send('Theater id invalid')
+        } else if (newShowTime.roomId == null || newShowTime.roomId == '') {
+            return res.send('Room id invalid')
         } else if (newShowTime.listDateTime == null || newShowTime.listDateTime.length == 0) {
-            res.send('List date time invalid')
-            return
+            return res.send('List date time invalid')
         }
 
-        ShowTimeModel.create(newShowTime)
-            .then(data => {
-                res.send("Successful")
-            })
-            .catch(err => {
-                res.status(500).json({ Err: err })
-            })
+
+        ShowTimeModel.findOne({
+            filmId: newShowTime.filmId,
+            theaterId: newShowTime.theaterId
+        }).then(data => {
+            if (data) {
+                return res.send('Show time has already existed')
+
+            } else {
+
+                //sort date
+                newShowTime.listDateTime.sort((a, b) => new Date(a.date) - new Date(b.date))
+
+                //sort time
+                const getNumber = t => +t.replace(/:/g, '')
+                newShowTime.listDateTime.forEach(dateTime => {
+                    dateTime.times.sort((a, b) => getNumber(a) - getNumber(b))
+                });
+
+
+                //check times available with runtime of film
+                let err = false
+                newShowTime.listDateTime.forEach(dateTime => {
+                    for (let i = 0; i < dateTime.times.length - 1; i++) {
+                        if (parseInt(mFunction.subTime(dateTime.times[i], dateTime.times[i + 1])) < parseInt(runtime)) {
+                            err = true
+                            return
+                        }
+                    }
+                });
+
+                if (err) {
+                    res.send('Times is not available')
+                } else {
+                    ShowTimeModel.findOne({
+                        theaterId: newShowTime.theaterId,
+                        roomId: req.body.roomId
+                    }).then(data => {
+                        if (data) {
+
+                            if (mFunction.availableRoom(newShowTime.listDateTime, data.listDateTime, runtime)) {
+                                ShowTimeModel.create(newShowTime)
+                                    .then(data => {
+                                        return res.send("Successful")
+                                    })
+                                    .catch(err => {
+                                        res.status(500).json({ Err: err })
+                                    })
+                            } else {
+                                res.send('Room is not available')
+                            }
+
+                        } else {
+                            ShowTimeModel.create(newShowTime)
+                                .then(data => {
+                                    return res.send("Successful")
+                                })
+                                .catch(err => {
+                                    res.status(500).json({ Err: err })
+                                })
+                        }
+                    })
+                }
+
+
+            }
+        }).catch(err => console.log(err))
+
+
     },
 
     update: (req, res) => {

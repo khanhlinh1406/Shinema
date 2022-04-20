@@ -34,6 +34,57 @@ const mFunction = {
         }
         return result;
     },
+    availableRoom: (newListDateTime, defaultListDateTime, runtime) => {
+        let newList = []
+        let defaultList = []
+
+        newListDateTime.forEach(newItem => {
+            defaultListDateTime.forEach(defaultItem => {
+                if (newItem.date == defaultItem.date) {
+                    newList.push(newItem)
+                    defaultList.push(defaultItem)
+                }
+            });
+        })
+
+        const subTime = (time1, time2) => {
+            let time1Arr = time1.split(':')
+            let h1 = time1Arr[0]
+            let m1 = time1Arr[1]
+
+            let time2Arr = time2.split(':')
+            let h2 = time2Arr[0]
+            let m2 = time2Arr[1]
+
+            return Math.abs((h1 - h2) * 60 + (m1 - m2))
+        }
+
+        let result = true
+        for (let i = 0; i < newList.length; i++) {
+
+            newList[i].times.forEach(newTime => {
+                defaultList[i].times.forEach(defaultTime => {
+                    if (parseInt(subTime(newTime, defaultTime)) < (parseInt(runtime) + 30)) {
+                        result = false
+                        return
+                    }
+                })
+            })
+        }
+
+        return result
+    },
+    subTime: subTime = (time1, time2) => {
+        let time1Arr = time1.split(':')
+        let h1 = time1Arr[0]
+        let m1 = time1Arr[1]
+
+        let time2Arr = time2.split(':')
+        let h2 = time2Arr[0]
+        let m2 = time2Arr[1]
+
+        return Math.abs((h1 - h2) * 60 + (m1 - m2))
+    }
 
 }
 module.exports = mFunction;

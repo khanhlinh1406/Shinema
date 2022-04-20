@@ -90,6 +90,7 @@ const ShowTimeManager = () => {
     const successNewShowTimeHandle = () => {
         setShowNewForm(false)
         setUpdateSuccessVisible(true)
+        getShowTimes()
     }
 
     const btnTheme = createTheme({
