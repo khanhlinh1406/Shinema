@@ -58,7 +58,8 @@ const showTimeController = {
 
         ShowTimeModel.findOne({
             filmId: newShowTime.filmId,
-            theaterId: newShowTime.theaterId
+            theaterId: newShowTime.theaterId,
+            roomId: newShowTime.roomId
         }).then(data => {
             if (data) {
                 return res.send('Show time has already existed')
