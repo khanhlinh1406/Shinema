@@ -74,7 +74,7 @@ const mFunction = {
 
         return result
     },
-    subTime: subTime = (time1, time2) => {
+    subTime: (time1, time2) => {
         let time1Arr = time1.split(':')
         let h1 = time1Arr[0]
         let m1 = time1Arr[1]
@@ -84,6 +84,17 @@ const mFunction = {
         let m2 = time2Arr[1]
 
         return Math.abs((h1 - h2) * 60 + (m1 - m2))
+    },
+
+    availableSeat: (listBookedSeats, listRoomSeats, currentSeat) => {
+        if (listRoomSeats.contains(currentSeat)) {
+            if (listBookedSeats.contains(currentSeat)) {
+                return false;
+            }
+
+            return true;
+        }
+
     }
 
 }

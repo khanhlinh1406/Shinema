@@ -68,6 +68,10 @@ const SlideItem = props => {
         navigate(`/filmDetails/${item.id}`);
     }
 
+    const openBooking = ()=>{
+        navigate(`/booking/${item.id}`);
+    }
+
     return (
         <div className="slide__item"
             style={{ backgroundImage: `url(${background})` }}
@@ -78,7 +82,7 @@ const SlideItem = props => {
                     <h2 className="slide__item__content__info__title">{item.title}</h2>
                     <div className="slide__item__content__info__overview">{item.overview}</div>
                     <div className="slide__item__content__info__button">
-                        <button className="slide__item__content__info__button__bookTicket">BUY TICKET</button>
+                        <button className="slide__item__content__info__button__bookTicket" onClick={openBooking}>BUY TICKET</button>
                         <button className="slide__item__content__info__button__trailer" onClick={GoToDetails}>DETAILS</button>
                     </div>
                 </div>

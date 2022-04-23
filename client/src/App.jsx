@@ -4,7 +4,8 @@ import { Routes, Route } from 'react-router-dom';
 import {
   Actor, Censor, Genre, Home, Manager, Review, Profile, Login, Register,
   FilmDetails, PeopleDetails,
-  FilmCorner, Corner
+  FilmCorner, Corner, 
+  Booking
 } from './containers'
 
 import { MainNavBar, Footer } from './components';
@@ -108,6 +109,15 @@ function App() {
         }
         />
 
+        {/* Đặt vé */}
+        <Route path="/booking/:id" element={
+          <div>
+            <MainNavBar />
+            <Booking />
+            <Footer />
+          </div>
+        }
+        />
       </Routes>
 
 

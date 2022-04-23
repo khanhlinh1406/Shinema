@@ -102,3 +102,7 @@ div {
 }
 
 .movie-content__info__cast {}
+
+.movie-content__booking {
+    padding-top: 2.5rem;
+}

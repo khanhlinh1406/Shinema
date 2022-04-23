@@ -182,6 +182,10 @@ const SlideItem = props => {
     // const data = useSelector(movieSelector)
     const navigate = useNavigate();
 
+    const openBooking = ()=>{
+        navigate(`/booking/${props.item.id}`)
+    }
+
     const GoToDetails = () => {
         // dispatch(
         //     movieSlice.actions.addMovie({name: 'ccccccc'})
@@ -193,13 +197,13 @@ const SlideItem = props => {
         navigate(`/filmDetails/${props.item.id}`);
     }
     return (
-        <div className="typeOfFilm__item__container" onClick={GoToDetails}>
+        <div className="typeOfFilm__item__container" >
             <div className="typeOfFilm__item__container__hoverItem">
-                <button className="typeOfFilm__item__container__hoverItem__buyTicketBtn">Đặt vé</button>
+                <button className="typeOfFilm__item__container__hoverItem__buyTicketBtn" onClick={openBooking}>Booking</button>
 
             </div>
-            <img className="typeOfFilm__item__container__img" src={background} alt={item.title} />
-            <label className="typeOfFilm__item__container__title">{item.title}</label>
+            <img className="typeOfFilm__item__container__img" src={background} alt={item.title} onClick={GoToDetails}/>
+            <label className="typeOfFilm__item__container__title" onClick={GoToDetails}>{item.title}</label>
         </div>
     )
 }

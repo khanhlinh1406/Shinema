@@ -4,7 +4,7 @@ import './filmDetails.css'
 import { useLocation } from "react-router-dom";
 
 import { Helmet } from 'react-helmet';
-import { useParams } from "react-router";
+import { useParams, useNavigate } from "react-router";
 import { useState, useEffect } from "react";
 
 import tmdbApi from "../../api/tmdbApi";
@@ -15,6 +15,11 @@ import CastList from "../../components/CastList/castList";
 import VideoList from "../../components/VideoList/videoList";
 import FilmSlider from "../../components/FilmSlider/filmSlider";
 import MainNavBar from "../../components/MainNavBar/mainNavBar";
+
+import Button from '@mui/material/Button';
+import Box from '@mui/material/Box';
+import { createTheme, ThemeProvider } from '@mui/material/styles';
+import { red } from '@mui/material/colors'
 
 const FilmDetails = () => {
 
@@ -59,9 +64,16 @@ const FilmDetails = () => {
             <div className="movie-content">
               <div className="movie-content__poster">
                 <div className="movie-content__poster__img" style={{ backgroundImage: `url(${apiConfig.originalImage(film.poster_path)})` }}>
-
                 </div>
+
+                <div className="movie-content__booking">
+                  <Box textAlign="center">
+                    <BookingBtn id={id} />
+                  </Box>
+                </div>
+
               </div>
+
 
               <div className="movie-content__info">
                 <div className="movie-content__info__title">{film.name || film.title}</div>
@@ -107,3 +119,29 @@ const FilmDetails = () => {
 }
 
 export default FilmDetails;
+
+
+export const BookingBtn = (props) => {
+  const btnTheme = createTheme({
+    shape: {
+      borderRadius: 20
+    },
+    palette: {
+      primary: red
+    },
+  })
+
+  const navigate = useNavigate();
+
+  const onClick = () => {
+    navigate(`/booking/${props.id}`);
+  }
+
+  return (
+    <div>
+      <ThemeProvider theme={btnTheme} >
+        <Button sx={{ paddingX: 5, paddingY: 0.8 }} variant="contained" onClick={onClick} >BOOKING NOW</Button>
+      </ThemeProvider>
+    </div >
+  )
+}

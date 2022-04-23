@@ -27,7 +27,12 @@ const TicketSchema = new Schema({
         required: true
     },
 
-    occurAt: {
+    dateOccur: {
+        type: String,
+        required: true
+    },
+
+    timeOccur: {
         type: String,
         required: true
     },
