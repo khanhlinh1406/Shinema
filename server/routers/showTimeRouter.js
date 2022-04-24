@@ -6,7 +6,7 @@ const { authenToken } = require('../controller/authen')
 
 router.get('/', authenToken, showTimeController.getAll)
 router.get('/:id', authenToken, showTimeController.getById)
-router.get('/byFilmId/:filmId', authenToken, showTimeController.getByFilmId)
+router.get('/byFilmId/:filmId', showTimeController.getByFilmId)
 
 router.post('/', showTimeController.create)
 

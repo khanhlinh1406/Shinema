@@ -50,7 +50,6 @@ const ticketController = {
                 // }
             )
             .then(data => {
-                console.log(data)
                 if (data === null || data === undefined)
                     res.send("getBookedSeats returns null/ undefined")
                 else {

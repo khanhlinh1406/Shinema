@@ -1,0 +1,100 @@
+.booking-form__container {
+    margin-top: 8rem;
+}
+
+.booking-form__container__select {
+    width: 100%;
+    height: 8rem;
+    display: flex
+}
+
+.booking-form__container__select__date {
+    width: 40%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    margin-left: 2rem;
+}
+
+.booking-form__container__select__date__title {
+    line-height: 100%;
+    font-size: 0.8rem;
+    font-weight: bold;
+}
+
+.booking-form__container__select__date__swiper {
+    height: 100%;
+    width: 60%;
+    margin: 1rem;
+}
+
+.booking-form__container__select__time {
+    width: 30%;
+    height: 100%;
+}
+
+.booking-form__container__select__time__title {
+    padding: 0.5rem;
+    padding-top: 1rem;
+    font-size: 0.8rem;
+    font-weight: bold;
+}
+
+.booking-form__container__select__time__picker {}
+
+.booking-form__container__select__theater {
+    width: 30%;
+    height: 100%;
+}
+
+.booking-form__container__select__theater__title {
+    padding: 0.5rem;
+    padding-top: 1rem;
+    font-size: 0.8rem;
+    font-weight: bold;
+}
+
+.booking-form__container__select__theater__picker {}
+
+
+/* .booking-form__container__check {
+    height: 3rem;
+}*/
+
+.showtime-item-container {
+    height: 100%;
+}
+
+.date-item__container {
+    height: 10rem;
+    width: '100px';
+    color: black;
+    padding: 1rem;
+    text-align: center;
+}
+
+.date-item__container__content {
+    padding: 0.5rem;
+}
+
+.date-item__container__content__day {
+    font-size: 0.8rem;
+    color: rgba(255, 255, 255, 0.623);
+    text-transform: uppercase;
+}
+
+.date-item__container__content__date {
+    font-size: 1.2rem;
+    font-weight: bold;
+    margin: 0.3rem
+}
+
+.date-item__container__content__month {
+    font-size: 0.6rem;
+    color: rgba(255, 255, 255, 0.623);
+}
+
+.date-item__container__content__year {
+    font-size: 0.6rem;
+    color: rgba(255, 255, 255, 0.623);
+}

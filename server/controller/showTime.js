@@ -25,7 +25,7 @@ const showTimeController = {
     },
 
     getByFilmId: (req, res) => {
-        ShowTimeModel.findOne({
+        ShowTimeModel.find({
                 filmId: req.params.filmId
             })
             .then(data => {

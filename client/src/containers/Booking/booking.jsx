@@ -14,10 +14,29 @@ import Box from '@mui/material/Box';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import { red } from '@mui/material/colors'
 
+// Import Swiper React components
+import { Swiper, SwiperSlide } from "swiper/react";
+import "swiper/css";
+import "swiper/css/pagination";
+import { Pagination } from "swiper";
+
+import Loading from '../../components/Loading/loading'
+import Message from '../../components/Message/message'
+import { Success } from '../../components/Alert/alert'
+
+import AccountApi from "../../api/accountApi";
+import TicketApi from "../../api/ticketApi";
+import ShowTimeApi from "../../api/showTimeApi";
+import EmailApi from '../../api/emailApi'
+import mFunction from "../../function";
+
+import BookingForm from '../../components/BookingForm/bookingForm';
+
 const Booking = () => {
     const { id } = useParams()
 
     const [movieInfo, setMovieInfo] = useState();
+    const [showTimeList, setShowTimeList] = useState([]);
 
     useEffect(() => {
         const getMovie = async () => {
@@ -33,7 +52,16 @@ const Booking = () => {
         }
 
         getMovie();
-    })
+
+        const fetchShowTimeByFilmId = async () => {
+            await ShowTimeApi.getByFilmId(id)
+                .then(res => {
+                    setShowTimeList(res.data)
+                })
+        }
+
+        fetchShowTimeByFilmId()
+    }, [id])
 
     const navigate = useNavigate()
     const viewDetails = () => {
@@ -74,28 +102,8 @@ const Booking = () => {
                         </div>
                     </div>
 
-                    <div className="booking-container__select">
-                        <div className="booking-container__select__date">
-                            <div className="booking-container__select__date__title">Date</div>
-                            <div className="booking-container__select__date__swiper"></div>
-                        </div>
+                    <BookingForm showTimeList={showTimeList} />
 
-                        <div className="booking-container__select__time">
-                            <div className="booking-container__select__time__title">Time</div>
-                            <div className="booking-container__select__time__picker"></div>
-                        </div>
-
-                        <div className="booking-container__select__theater">
-                            <div className="booking-container__select__theater__title">Theater</div>
-                            <div className="booking-container__select__theater__picker"></div>
-                        </div>
-                    </div>
-
-                    <div className="booking-container__check">
-                        <Box textAlign="center">
-                            <CheckBtn />
-                        </Box>
-                    </div>
 
 
 
@@ -107,26 +115,3 @@ const Booking = () => {
 
 export default Booking
 
-export const CheckBtn = () => {
-    const btnTheme = createTheme({
-        shape: {
-            borderRadius: 20
-        },
-        palette: {
-            primary: red
-        },
-    })
-
-    const navigate = useNavigate();
-
-    const onClick = () => {
-    }
-
-    return (
-        <div >
-            <ThemeProvider theme={btnTheme} >
-                <Button sx={{ paddingX: 5, paddingY: 0.8 }} variant="contained" onClick={onClick} >CHECK</Button>
-            </ThemeProvider>
-        </div >
-    )
-}

@@ -18,7 +18,7 @@ const ShowTimeApi = {
     },
 
     getByFilmId: async(id) => {
-        const res = await ApiDatabase.get('/showTime/byFilmId' + id)
+        const res = await ApiDatabase.get('/showTime/byFilmId/' + id)
         return res
     },
 
