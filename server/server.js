@@ -45,3 +45,6 @@ app.use('/api/showTime/', showTimeRouter)
 
 var theaterRouter = require('./routers/theaterRouter')
 app.use('/api/theater/', theaterRouter)
+
+var ticketRouter = require('./routers/ticketRouter')
+app.use('/api/ticket/', ticketRouter)

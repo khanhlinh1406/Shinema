@@ -11,8 +11,8 @@ const TicketApi = {
         return res.data
     },
 
-    getByUser: async(user) => {
-        const res = await ApiDatabase.get('/ticket/user' + user)
+    getByUser: async(email) => {
+        const res = await ApiDatabase.get('/ticket/user/' + email)
         return res.data
     },
 

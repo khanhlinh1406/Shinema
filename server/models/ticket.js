@@ -22,8 +22,8 @@ const TicketSchema = new Schema({
         required: true
     },
 
-    seatId: {
-        type: String,
+    seatIdArray: {
+        type: Array,
         required: true
     },
 
@@ -37,7 +37,7 @@ const TicketSchema = new Schema({
         required: true
     },
 
-    _userId: {
+    _userEmail: {
         type: String,
         required: true
     },
