@@ -4,7 +4,7 @@ import { useState, useEffect, useCallback } from "react";
 import { Error } from '../Alert/alert';
 
 import tmdbApi from "../../api/tmdbApi";
-import { movieType } from '../../api/tmdbApi'
+import { movieType, category } from '../../api/tmdbApi'
 import apiConfig from "../../api/apiConfig";
 
 import { useSelector, useDispatch } from 'react-redux'
@@ -63,7 +63,8 @@ const NewShowTimeForm = ({ successNewShowTimeHandle }) => {
         theater: false,
         times: false,
         showTimeExist: false,
-        room: false
+        room: false,
+        roomUnavailable: false
     })
 
     const [errorTimes, setErrorTimes] = useState(false)
@@ -106,7 +107,7 @@ const NewShowTimeForm = ({ successNewShowTimeHandle }) => {
         let temp = listDateTime.map(e => e.date !== item.date ? e : item);
         setListDateTime(temp)
 
-        setMessageErrorVisible({ ...messageErrorVisible, times: false, date: false })
+        setMessageErrorVisible({ ...messageErrorVisible, times: false, date: false, timeUnavailable: false })
     }
 
     const onChangeErrorTimeHandle = (val) => {
@@ -115,22 +116,40 @@ const NewShowTimeForm = ({ successNewShowTimeHandle }) => {
 
     const addShowTimeHandle = () => {
         if (checkShowTime()) {
-            let showTime = {
-                filmId: currentFilm.id,
-                theaterId: currentTheater._id,
-                listDateTime: listDateTime
-            }
 
-            ShowTimeApi.create(showTime).then(res => {
-                if (res.data == 'Show time has already existed') {
-                    setMessageErrorVisible({ ...messageErrorVisible, showTimeExist: true })
-                    return
-                }
-                else if (res.data == 'Successful') {
-                    successNewShowTimeHandle()
-                    return
-                }
-            }).catch(err => console.log(err))
+            tmdbApi.detail(category.movie, currentFilm.id, { params: {} })
+                .then(res => {
+                    let showTime = {
+                        filmId: currentFilm.id,
+                        theaterId: currentTheater._id,
+                        listDateTime: listDateTime,
+                        roomId: currentRoom.id,
+                        runtime: res.runtime ? res.runtime : 100
+                    }
+
+                    ShowTimeApi.create(showTime).then(res => {
+                        console.log(res)
+                        if (res.data == 'Show time has already existed') {
+                            setMessageErrorVisible({ ...messageErrorVisible, showTimeExist: true })
+                            return
+                        }
+                        else if (res.data == 'Times is not available') {
+                            setMessageErrorVisible({ ...messageErrorVisible, timeUnavailable: true })
+                            return
+                        }
+                        else if (res.data == 'Room is not available') {
+                            setMessageErrorVisible({ ...messageErrorVisible, roomUnavailable: true })
+                            return
+                        }
+                        else if (res.data == 'Successful') {
+                            successNewShowTimeHandle()
+                            return
+                        }
+                    }).catch(err => console.log(err))
+                })
+                .catch(err => console.log(err))
+
+
         }
     }
 
@@ -147,6 +166,11 @@ const NewShowTimeForm = ({ successNewShowTimeHandle }) => {
 
         else if (listDateTime.length == 0 || errorTimes) {
             setMessageErrorVisible({ ...messageErrorVisible, times: true })
+            return false
+        }
+
+        else if (currentRoom == null) {
+            setMessageErrorVisible({ ...messageErrorVisible, room: true })
             return false
         }
 
@@ -194,9 +218,9 @@ const NewShowTimeForm = ({ successNewShowTimeHandle }) => {
         forceRender()
     }, [upcomingMovies, theaters])
 
-    useEffect(() => {
-        console.log(listDateTime)
-    }, [listDateTime])
+    // useEffect(() => {
+    //     console.log(listDateTime)
+    // }, [listDateTime])
 
     return (
         <div style={styles.container} >
@@ -299,6 +323,8 @@ const NewShowTimeForm = ({ successNewShowTimeHandle }) => {
                 <Error message={'Please select room'} status={messageErrorVisible.room} />
                 <Error message={'Show time is not valid'} status={messageErrorVisible.times} />
                 <Error message={'Show time has already existed, please try to update it'} status={messageErrorVisible.showTimeExist} />
+                <Error message={'Room is not available in time list'} status={messageErrorVisible.roomUnavailable} />
+                <Error message={'The time between two show times is not suitable'} status={messageErrorVisible.timeUnavailable} />
 
             </div >
         </div >
@@ -375,7 +401,7 @@ const DateTimeItem = ({ item, deleteDateHandle, onChangeTimeHandle, onChangeErro
             {errorTimeVisible &&
                 <div style={{ padding: 8, backgroundColor: '#fdeded', display: 'flex', alignItems: 'center', borderRadius: 3 }}>
                     <ErrorOutlineIcon sx={{ color: '#f16663' }} />
-                    <p style={{ color: '#8d4a4a', fontFamily: 'sans-serif', marginLeft: 10 }}>Danh sách thời gian chưa đúng định dạng</p>
+                    <p style={{ color: '#8d4a4a', fontFamily: 'sans-serif', marginLeft: 10 }}>The time list is not correct</p>
                 </div>
             }
 

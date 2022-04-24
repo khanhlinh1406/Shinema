@@ -95,3 +95,34 @@
     background-color: #fff;
     color: #FF4820;
 }
+
+@media screen and (max-width: 1350px) {
+    .slider__item__content__poster {
+        display: none;
+    }
+}
+
+@media screen and (max-width: 1140px) {
+    .slide__item__content__info__button__bookTicket {
+        font-size: 12px;
+        padding: 0.2rem 2rem;
+    }
+    .slide__item__content__info__button__trailer {
+        font-size: 12px;
+        padding: 0.2rem 2rem;
+    }
+}
+
+@media screen and (max-width: 900px) {
+    .slide__item__content__info {
+        width: 100%;
+        margin-left: 50px;
+        margin-right: 0px;
+    }
+}
+
+@media screen and (max-width: 650px) {
+    .slide__item__content__info__overview {
+        display: none;
+    }
+}

@@ -106,13 +106,13 @@ const ShowTimeManager = () => {
         <ClickAwayListener onClickAway={() => setShowNewForm(false)}>
             <Box sx={{ width: '100%', height: '100%', position: 'relative' }}>
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'self-start' }}>
-                    <LocalizationProvider dateAdapter={AdapterDateFns} locale={viLocale}  >
+                    <LocalizationProvider dateAdapter={AdapterDateFns}  >
                         <DatePicker
                             label="Ngày"
                             value={dateSelect}
                             onChange={(newValue) => {
                                 setDateSelect(newValue)
-                                const dateFormat = format(newValue, "dd/MM/yyyy");
+                                const dateFormat = format(newValue, "MM/dd/yyyy");
                                 dispatch(showTimeSlice.actions.setFilter(dateFormat))
                             }}
                             renderInput={(params) =>
