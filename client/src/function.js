@@ -74,7 +74,7 @@ const mFunction = {
 
         return result
     },
-    subTime: subTime = (time1, time2) => {
+    subTime: (time1, time2) => {
         let time1Arr = time1.split(':')
         let h1 = time1Arr[0]
         let m1 = time1Arr[1]

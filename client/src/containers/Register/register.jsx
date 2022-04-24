@@ -60,7 +60,6 @@ const Register = () => {
     const registerHandle = async () => {
         checkInfo()
             .then(res => {
-                console.log(res)
                 if (res) sendMail()
             })
     }
@@ -134,8 +133,8 @@ const Register = () => {
 
         var mailOptions = {
             to: values.email,
-            subject: 'Xác nhận tài khoản',
-            text: 'Cảm ơn bạn đã sử dụng dịch vụ của Shinema, mã xác nhận của bạn là: ' + verifyCode
+            subject: 'Verify account',
+            text: 'Thanks for using Shinema, your verify code is: ' + verifyCode
         };
 
         EmailApi.sendVerify(mailOptions)
@@ -295,7 +294,7 @@ const Register = () => {
             <div className="register__form__container">
                 <div className="register__form__title">
                     <img style={{ width: 40 }} src={logo_png} alt="logo_png" />
-                    <h2>ĐĂNG KÝ</h2>
+                    <h2>REGISTER</h2>
                 </div>
 
                 <ThemeProvider theme={txtFieldThem}>
@@ -315,8 +314,8 @@ const Register = () => {
                         onChange={handleChange('email')} />
                 </ThemeProvider>
 
-                {emailErrVisible && <Message message="Email không hợp lệ" type="err" />}
-                {emailWarningVisible && <Message message="Email đã được sử dụng" type="warning" />}
+                {emailErrVisible && <Message message="Invalid email" type="err" />}
+                {emailWarningVisible && <Message message="Email is already used" type="warning" />}
 
                 <ThemeProvider theme={txtFieldThem}>
                     <FormControl
@@ -326,7 +325,7 @@ const Register = () => {
                             borderRadius: 0.5,
                         }}
                         variant="filled">
-                        <InputLabel sx={{ color: 'rgb(153, 153, 153)', marginLeft: 1 }} htmlFor="filled-adornment-password">Mật khẩu</InputLabel>
+                        <InputLabel sx={{ color: 'rgb(153, 153, 153)', marginLeft: 1 }} htmlFor="filled-adornment-password">Password</InputLabel>
                         <FilledInput
                             type={values.showPassword ? 'text' : 'password'}
                             value={values.password}
@@ -350,7 +349,7 @@ const Register = () => {
                     </FormControl>
                 </ThemeProvider>
 
-                {passwordErrVisible && <Message message="Mật khẩu ít nhất có 6 kí tự" type="err" />}
+                {passwordErrVisible && <Message message="Password has least 6 character" type="err" />}
 
                 <ThemeProvider theme={txtFieldThem}>
                     <FormControl
@@ -360,7 +359,7 @@ const Register = () => {
                             borderRadius: 0.5,
                         }}
                         variant="filled">
-                        <InputLabel sx={{ color: 'rgb(153, 153, 153)', marginLeft: 1 }} htmlFor="filled-adornment-password">Xác nhận mật khẩu</InputLabel>
+                        <InputLabel sx={{ color: 'rgb(153, 153, 153)', marginLeft: 1 }} htmlFor="filled-adornment-password">Confirm password</InputLabel>
                         <FilledInput
                             type={values.showConfirmPassword ? 'text' : 'password'}
                             value={values.confirmPassword}
@@ -385,16 +384,16 @@ const Register = () => {
                 </ThemeProvider>
 
 
-                {confirmPasswordErrVisible && <Message message="Xác nhận mật khẩu không trùng khớp" type="err" />}
+                {confirmPasswordErrVisible && <Message message="Confirm password is not correct" type="err" />}
 
                 <ThemeProvider theme={btnTheme} >
-                    <Button sx={{ padding: 1, marginTop: 3 }} variant="contained" onClick={registerHandle}>Đăng ký</Button>
+                    <Button sx={{ padding: 1, marginTop: 3 }} variant="contained" onClick={registerHandle}>Register</Button>
                 </ThemeProvider>
 
 
                 <div className="register__form__register">
-                    <p>Bạn đã có tài khoản? </p>
-                    <a>Đăng nhập</a>
+                    <p>Had you have account already? </p>
+                    <a href="/login">Login</a>
                 </div>
 
             </div>
@@ -405,7 +404,7 @@ const Register = () => {
                 <DialogTitle sx={{ color: '#040C18' }}>Xác nhận email</DialogTitle>
                 <DialogContent>
                     <DialogContentText>
-                        Shinema vừa gửi mã xác nhận đến email của bạn. Vui lòng kiểm tra và điền mã xác nhận bên dưới.
+                        Shinema has already sent you a email. Please check and confirm your verify code below.
                     </DialogContentText>
                     {values.correctVerify ?
                         <TextField
@@ -437,17 +436,17 @@ const Register = () => {
 
                     <p>{timer}</p>
 
-                    <Button onClick={handleCloseDialog}>Hủy</Button>
+                    <Button onClick={handleCloseDialog}>Cancel</Button>
                     {timer == '00:00' ?
-                        <Button onClick={handleResendMail}>Gửi lại</Button>
+                        <Button onClick={handleResendMail}>Resend</Button>
                         :
-                        <Button disabled>Gửi lại</Button>
+                        <Button disabled>Resend</Button>
                     }
 
                     {timer == '00:00' ?
-                        <Button disabled >Xác nhận</Button>
+                        <Button disabled >Confirm</Button>
                         :
-                        <Button onClick={handleConfirmDialog} >Xác nhận</Button>
+                        <Button onClick={handleConfirmDialog} >Confirm</Button>
                     }
                 </DialogActions>
             </Dialog>

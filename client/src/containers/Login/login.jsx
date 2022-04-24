@@ -185,7 +185,7 @@ const Login = () => {
             <div className="login__form__container">
                 <div className="login__form__title">
                     <img style={{ width: 40 }} src={logo_png} alt="logo_png" />
-                    <h2>ĐĂNG NHẬP</h2>
+                    <h2>LOGIN</h2>
                 </div>
 
                 <ThemeProvider theme={txtFieldThem}>
@@ -206,8 +206,8 @@ const Login = () => {
                         onChange={handleChange('email')} />
                 </ThemeProvider>
 
-                {emailErrVisible && <Message message="Email không hợp lệ" type="err" />}
-                {emailWarningVisible && <Message message="Email chưa được đăng kí" type="warning" />}
+                {emailErrVisible && <Message message="Invalid email" type="err" />}
+                {emailWarningVisible && <Message message="Email do not register" type="warning" />}
 
 
                 <ThemeProvider theme={txtFieldThem}>
@@ -218,7 +218,7 @@ const Login = () => {
                             borderRadius: 0.5,
                         }}
                         variant="filled">
-                        <InputLabel sx={{ color: 'rgb(153, 153, 153)', marginLeft: 1 }} htmlFor="filled-adornment-password">Mật khẩu</InputLabel>
+                        <InputLabel sx={{ color: 'rgb(153, 153, 153)', marginLeft: 1 }} htmlFor="filled-adornment-password">Password</InputLabel>
                         <FilledInput
                             //id="filled-adornment-password"
                             type={values.showPassword ? 'text' : 'password'}
@@ -243,36 +243,36 @@ const Login = () => {
                     </FormControl>
                 </ThemeProvider>
 
-                {passwordErrVisible && <Message message="Mật khẩu không chính xác" type="err" />}
+                {passwordErrVisible && <Message message="Password is incorrect" type="err" />}
 
                 <div className="login__form__remember__container">
-                    <a>Quên  mật khẩu?</a>
+                    <a>Forgot your password?</a>
 
                     <div className="login__form__remember">
-                        <p>Ghi nhớ</p>
+                        <p>Remember me</p>
                         <input type='checkbox' checked={values.rememberAccount} onChange={checkBoxChange('rememberAccount')} />
                     </div>
                 </div>
 
                 <ThemeProvider theme={btnTheme} >
-                    <Button sx={{ padding: 1, marginTop: 3 }} variant="contained" onClick={loginHandle}>Đăng nhập</Button>
+                    <Button sx={{ padding: 1, marginTop: 3 }} variant="contained" onClick={loginHandle}>Login</Button>
                 </ThemeProvider>
 
                 <hr style={{ marginBottom: 60, marginTop: 20 }} />
 
                 <div className="login__form__socialMedia" >
                     <AiOutlineGoogle size={23} />
-                    <p>Đăng nhập với Google</p>
+                    <p>Login with Google</p>
                 </div>
 
                 <div className="login__form__socialMedia">
                     <FaFacebookF size={21} />
-                    <p>Đăng nhập với Facebook</p>
+                    <p>Login with Facebook</p>
                 </div>
 
                 <div className="login__form__register">
-                    <p>Bạn chưa có tài khoản? </p>
-                    <a>Đăng ký</a>
+                    <p>You don't have account? </p>
+                    <a href="/register">Register</a>
                 </div>
 
             </div>
