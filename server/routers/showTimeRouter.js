@@ -10,9 +10,9 @@ router.get('/byFilmId/:filmId', showTimeController.getByFilmId)
 
 router.post('/', authenToken, showTimeController.create)
 
-router.put('/', showTimeController.update)
-router.put('/byFilmId', showTimeController.updateByFilmId)
+router.put('/', authenToken, showTimeController.update)
+router.put('/byFilmId', authenToken, showTimeController.updateByFilmId)
 
-router.delete('/:id', showTimeController.delete)
+router.delete('/:id', authenToken, showTimeController.delete)
 
 module.exports = router
