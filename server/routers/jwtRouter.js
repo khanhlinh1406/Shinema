@@ -10,7 +10,7 @@ router.post('/refreshToken', (req, res) => {
     //const refreshToken = req.cookies.refresh_token;
     const refreshToken = req.body.token
     if (!refreshToken) {
-        res.sendStatus(401);
+        res.status(401);
         return;
     }
 
@@ -23,11 +23,13 @@ router.post('/refreshToken', (req, res) => {
                     if (err) {
                         res.sendStatus(401);
                         return;
+                    } else {
+                        const accessToken = jwt.sign({ email: daa.email },
+                            process.env.ACCESS_TOKEN_SECRET, { expiresIn: '10s' }
+                        );
+                        res.json({ accessToken });
                     }
-                    const accessToken = jwt.sign({ email: daa.email },
-                        process.env.ACCESS_TOKEN_SECRET, { expiresIn: '30s' }
-                    );
-                    res.json({ accessToken });
+
                 })
             } else {
                 res.sendStatus(401)

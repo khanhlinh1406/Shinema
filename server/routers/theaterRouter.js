@@ -9,8 +9,8 @@ router.get('/:id', authenToken, theaterController.getById)
 
 router.post('/', theaterController.create)
 
-router.put('/:id', authenToken, theaterController.update)
+router.put('/:id', theaterController.update)
 
-router.delete('/:id', authenToken, theaterController.deleteById)
+router.delete('/:id', theaterController.deleteById)
 
 module.exports = router

@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useRef } from "react";
+import { Link } from 'react-router-dom'
 import './register.css'
 
 import background_login from '../../assets/background_login.jpg'
@@ -393,7 +394,8 @@ const Register = () => {
 
                 <div className="register__form__register">
                     <p>Had you have account already? </p>
-                    <a href="/login">Login</a>
+                    <a ><Link to="/login">Login</Link></a>
+
                 </div>
 
             </div>

@@ -10,7 +10,7 @@ const TheaterManagerItem = ({ item }) => {
         <Box sx={styles.boxContainer}>
             <h2 style={styles.text}>{item.name}</h2>
             <p style={styles.text}>{item.address}</p>
-            <p style={styles.text}>Thông tin liên hệ: {item.contact}</p>
+            <p style={styles.text}>Contact: {item.contact}</p>
 
             {
                 item.listRoom.map((item, index) => (

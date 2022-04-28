@@ -7,11 +7,7 @@ export const showTimeSlice = createSlice({
         filter: {
             date: ''
         },
-        newShowTime: {
-            film: {},
-            theater: {},
-            listDateTime: []
-        }
+        currentShowTime: {}
     },
     reducers: {
         updateAll: (state, action) => {
@@ -23,17 +19,9 @@ export const showTimeSlice = createSlice({
         setFilter: (state, action) => {
             state.filter.date = action.payload
         },
-        updateNewShowtime: (state, action) => {
-            state.newShowTime = action.payload
+        updateCurrentShowtime: (state, action) => {
+            state.currentShowTime = state.data.find(e => e._id == action.payload._id)
         },
-        updateNewFilm: (state, action) => {
-            state.newShowTime.film = action
-        },
-        updateNewTheater: (state, action) => {
-            state.newShowTime.theater = action
-        },
-        addNewListDateTime: (state, action) => {
-            state.newShowTime.listDateTime.push(action.payload)
-        }
+
     }
 })

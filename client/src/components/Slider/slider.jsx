@@ -70,7 +70,7 @@ const SlideItem = props => {
                     <h2 className="slide__item__content__info__title">{item.title}</h2>
                     <div className="slide__item__content__info__overview">{item.overview}</div>
                     <div className="slide__item__content__info__button">
-                        <button className="slide__item__content__info__button__bookTicket">ĐẶT VÉ</button>
+                        <button className="slide__item__content__info__button__bookTicket">BOOK</button>
                         <button className="slide__item__content__info__button__trailer">TRAILER</button>
                     </div>
                 </div>

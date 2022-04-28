@@ -71,7 +71,7 @@ const MainNavBar = () => {
         <div className='mainNavBar'>
             <div>
                 <div className='mainNavBar-links'>
-                    <p onClick={goToCorner}>GÓC ĐIỆN ẢNH</p>
+                    <p onClick={goToCorner}>FILMDOM</p>
 
                     {logged == 'true' ?
                         <div>
@@ -95,17 +95,17 @@ const MainNavBar = () => {
                     {menuToggle && (
                         <div className="mainNavbar-menu__container">
                             <div className='mainNavbar-menu__item'>
-                                <p> <Link to="/profile">Thông tin cá nhân</Link></p>
+                                <p> <Link to="/profile">Profile</Link></p>
                                 <AiOutlineUser className='menu__item__icon' color={defaultColor} size={25} />
                             </div>
 
                             <div className='mainNavbar-menu__item'>
-                                <p> <Link to="/userInfor">Thông báo</Link></p>
+                                <p> <Link to="/userInfor">Notification</Link></p>
                                 <BsBell className='menu__item__icon' color={defaultColor} size={23} />
                             </div>
 
                             <div className='mainNavbar-menu__item'>
-                                <p> <Link to="/corner/movie/popular">Góc điện ảnh</Link></p>
+                                <p> <Link to="/corner/movie/popular">FILMDOM</Link></p>
                                 <GiFilmStrip className='menu__item__icon' color={defaultColor} size={23} />
                             </div>
                         </div>
@@ -132,10 +132,10 @@ export const NotSignInMenu = () => {
 
     return (
         <div className='mainNavBar__login'>
-            <p ><Link to="/login">ĐĂNG NHẬP</Link></p>
+            <p ><Link to="/login">LOGIN</Link></p>
 
             <ThemeProvider theme={btnTheme} >
-                <Button sx={{ paddingX: 5, paddingY: 0.8 }} variant="contained" onClick={() => navigate('/register')}>Đăng ký</Button>
+                <Button sx={{ paddingX: 5, paddingY: 0.8 }} variant="contained" onClick={() => navigate('/register')}>REGISTER</Button>
             </ThemeProvider>
             {/* <button className='mainNavBar__login__btn mainNavBar__login__btn--register'><p ><Link to="/register">Đăng ký</Link></p></button> */}
         </div >
