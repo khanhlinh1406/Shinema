@@ -42,7 +42,7 @@ const TheaterRoom = ({ item }) => {
                 borderBottomRightRadius: 5,
                 borderBottomLeftRadius: 5,
             }} />
-            <p style={{ color: '#fff', marginBottom: 30 }}>Màn hình</p>
+            <p style={{ color: '#fff', marginBottom: 30 }}>Screen</p>
 
             <Grid container spacing={1}>
                 {item.listSeat.map((row, index) => (

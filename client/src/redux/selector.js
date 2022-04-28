@@ -47,5 +47,5 @@ export const theaterRemainingSelector = createSelector(
             return theater._id == theaterId
         })
     })
-    
+
 export const movieCornerSelector = (state) => state.corner__movie

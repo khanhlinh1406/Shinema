@@ -68,7 +68,7 @@ const SlideItem = props => {
         navigate(`/filmDetails/${item.id}`);
     }
 
-    const openBooking = ()=>{
+    const openBooking = () => {
         navigate(`/booking/${item.id}`);
     }
 

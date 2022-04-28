@@ -24,7 +24,7 @@ import FormControl from '@mui/material/FormControl';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import { red, grey } from "@mui/material/colors";
 
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
 import { userSlice } from './../../redux/slices/userSlice';
 
@@ -276,7 +276,8 @@ const Login = () => {
 
                 <div className="login__form__register">
                     <p>You don't have account? </p>
-                    <a href="/register">Register</a>
+                    <a ><Link to="/register">Register</Link></a>
+
                 </div>
 
             </div>
