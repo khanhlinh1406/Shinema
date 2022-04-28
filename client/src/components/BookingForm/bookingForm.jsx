@@ -15,19 +15,28 @@ import "swiper/css/pagination";
 import { Pagination } from "swiper";
 
 import format from 'date-fns/format'
+import mFunction from "../../function";
+
+import { bookingSelector } from '../../redux/selector'
+import { bookingSlice } from '../../redux/slices/bookingSlice'
+import { useSelector, useDispatch } from 'react-redux';
 
 const BookingForm = (props) => {
     const [showTimeList, setShowTimeList] = useState([])
     const [dateArray, setDateArray] = useState([])
 
+    const CURRENT_BOOKING = useSelector(bookingSelector)
+
     useEffect(() => {
         const getDate = async () => {
             await props.showTimeList.forEach((showTime) => {
                 showTime.listDateTime.forEach((object) => {
-                    ///dateArray.push(object.date)
-                    setDateArray([...dateArray, object.date])
+                    dateArray.push(object.date)
+                    ///setDateArray([...dateArray, object.date])
                 })
             })
+
+            setDateArray(mFunction.removeDuplicates(dateArray));
         }
 
         getDate();
@@ -96,6 +105,15 @@ export const DateItem = (props) => {
     const item = props.date;
     const [month, date, year] = item.split('/')
     const current = new Date(year, month, date);
+    const CURRENT_BOOKING = useSelector(bookingSelector)
+    const [isHighlighted, setIsHighlighted] = useState(false)
+
+    useEffect(() => {
+        if (CURRENT_BOOKING.selectedDate == item)
+            setIsHighlighted(true)
+        else
+            setIsHighlighted(false)
+    }, [CURRENT_BOOKING.selectedDate])
 
     const dayArr = [
         "Sun",
@@ -122,19 +140,28 @@ export const DateItem = (props) => {
         "Dec"
     ]
 
-    ///console.log(dayArr[current.getDay()])
-
+    const dispatch = useDispatch()
     return (
         <div className="date-item__container"
-            onClick={() => console.log(current)}
-        >
-            <div className="date-item__container__content">
-                <div className="date-item__container__content__day">{dayArr[current.getDay()]}</div>
-                <div className="date-item__container__content__date">{current.getDate()}</div>
-                <div className="date-item__container__content__month">{monthArr[current.getMonth()]}</div>
-                <div className="date-item__container__content__year">{current.getFullYear()}</div>
-            </div>
+            onClick={() => dispatch(bookingSlice.actions.setDate(item))}
+        >{
+                !isHighlighted ?
+                    <div className="date-item__container__content">
+                        <div className="date-item__container__content__day">{dayArr[current.getDay()]}</div>
+                        <div className="date-item__container__content__date">{current.getDate()}</div>
+                        <div className="date-item__container__content__month">{monthArr[current.getMonth()]}</div>
+                        <div className="date-item__container__content__year">{current.getFullYear()}</div>
+                    </div>
 
+                    :
+
+                    <div className="date-item__container__content_red">
+                        <div className="date-item__container__content__day">{dayArr[current.getDay()]}</div>
+                        <div className="date-item__container__content__date">{current.getDate()}</div>
+                        <div className="date-item__container__content__month">{monthArr[current.getMonth()]}</div>
+                        <div className="date-item__container__content__year">{current.getFullYear()}</div>
+                    </div>
+            }
         </div>
     )
 }
@@ -142,14 +169,15 @@ export const DateItem = (props) => {
 export const ShowDateItem = (props) => {
     const dateArray = props.array
     console.log(dateArray)
+
     return (
         <div className="showtime-item-container"
         // style={{ backgroundColor: 'white' }}
-        >
+        >{dateArray &&
             <Swiper
                 slidesPerView={3}
                 centeredSlides={true}
-                spaceBetween={20}
+                spaceBetween={10}
                 // grabCursor={true}
                 pagination={{
                     clickable: true,
@@ -165,7 +193,7 @@ export const ShowDateItem = (props) => {
                     ))
                 }
             </Swiper>
-
+            }
         </div>
     )
 }

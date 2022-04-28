@@ -96,9 +96,11 @@ const Booking = () => {
                                     ))
                                 }
                             </div>
-                            <p className="booking-container__movie-cover__overview">
-                                {movieInfo.overview} <p className="booking-container__movie-cover__view-more" onClick={viewDetails}>View more detail</p>
-                            </p>
+                            <div className="booking-containercontainer__movie-cover__overview">
+                                {movieInfo.overview}
+                            </div>
+
+                            <div className="booking-container__movie-cover__view-more" onClick={viewDetails}>View more detail</div>
                         </div>
                     </div>
 

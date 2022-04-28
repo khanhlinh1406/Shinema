@@ -56,10 +56,10 @@
 
 .booking-form__container__select__theater__picker {}
 
-
-/* .booking-form__container__check {
+.booking-form__container__check {
     height: 3rem;
-}*/
+    margin-bottom: 2rem;
+}
 
 .showtime-item-container {
     height: 100%;
@@ -71,10 +71,23 @@
     color: black;
     padding: 1rem;
     text-align: center;
+    cursor: pointer;
 }
 
 .date-item__container__content {
     padding: 0.5rem;
+    background-color: rgb(4, 15, 41);
+    width: 6rem;
+}
+
+.date-item__container__content_red {
+    padding: 0.5rem;
+    background-color: rgb(3, 11, 29);
+    width: 6rem;
+}
+
+.date-item__container__content_red div {
+    color: red;
 }
 
 .date-item__container__content__day {

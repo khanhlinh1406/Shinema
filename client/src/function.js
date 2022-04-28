@@ -95,6 +95,10 @@ const mFunction = {
             return true;
         }
 
+    },
+
+    removeDuplicates: (array) => {
+        return Array.from(new Set(array))
     }
 
 }
