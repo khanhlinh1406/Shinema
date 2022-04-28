@@ -59,7 +59,6 @@ ApiDatabase.interceptors.response.use(
         return res;
     },
     async err => {
-        console.log(err)
         if (err.response) {
 
             //axios.interceptors.response.eject(interceptor);

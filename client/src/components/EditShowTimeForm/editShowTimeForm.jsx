@@ -124,7 +124,7 @@ const EditShowTimeForm = ({ successNewShowTimeHandle, }) => {
         setErrorTimes(val)
     }
 
-    const addShowTimeHandle = () => {
+    const updateShowTimeHandle = () => {
         if (checkShowTime()) {
 
             tmdbApi.detail(category.movie, currentFilm.id, { params: {} })
@@ -137,13 +137,8 @@ const EditShowTimeForm = ({ successNewShowTimeHandle, }) => {
                         runtime: res.runtime ? res.runtime : 100
                     }
 
-                    ShowTimeApi.create(showTime).then(res => {
-                        console.log(res)
-                        if (res.data == 'Show time has already existed') {
-                            setMessageErrorVisible({ ...messageErrorVisible, showTimeExist: true })
-                            return
-                        }
-                        else if (res.data == 'Times is not available') {
+                    ShowTimeApi.update(showTime).then(res => {
+                        if (res.data == 'Times is not available') {
                             setMessageErrorVisible({ ...messageErrorVisible, timeUnavailable: true })
                             return
                         }
@@ -151,7 +146,7 @@ const EditShowTimeForm = ({ successNewShowTimeHandle, }) => {
                             setMessageErrorVisible({ ...messageErrorVisible, roomUnavailable: true })
                             return
                         }
-                        else if (res.data == 'Successful') {
+                        else if (res.data == 'Update successful') {
                             successNewShowTimeHandle()
                             return
                         }
@@ -228,7 +223,6 @@ const EditShowTimeForm = ({ successNewShowTimeHandle, }) => {
 
     useEffect(() => {
         const setDefaultValue = () => {
-            console.log(currentShowTime)
 
             if (currentShowTime != null && theaters != null) {
                 let currTheater = theaters.find(e => e._id == currentShowTime.theaterId)
@@ -265,6 +259,7 @@ const EditShowTimeForm = ({ successNewShowTimeHandle, }) => {
                             setMessageErrorVisible({ ...messageErrorVisible, film: false })
                             setMessageErrorVisible({ ...messageErrorVisible, showTimeExist: false })
                         }}
+                        disabled
                         defaultValue={movieOptions.find(e => e.id == currentFilmDefault.id)}
                         options={movieOptions.sort((a, b) => -b.firstLetter.localeCompare(a.firstLetter))}
                         groupBy={(option) => option.firstLetter}
@@ -290,6 +285,7 @@ const EditShowTimeForm = ({ successNewShowTimeHandle, }) => {
                                     setMessageErrorVisible({ ...messageErrorVisible, theater: false })
                                     setMessageErrorVisible({ ...messageErrorVisible, showTimeExist: false })
                                 }}
+                                disabled
                                 defaultValue={theaters.find(e => e._id == currentTheaterDefault._id)}
                                 options={theaters}
                                 getOptionLabel={(option) => option.name}
@@ -306,6 +302,7 @@ const EditShowTimeForm = ({ successNewShowTimeHandle, }) => {
                                     setMessageErrorVisible({ ...messageErrorVisible, room: false })
                                     setMessageErrorVisible({ ...messageErrorVisible, showTimeExist: false })
                                 }}
+                                disabled
                                 defaultValue={currentTheater.listRoom.find(e => e.id == currentRoomDefault.id)}
                                 options={currentTheater.listRoom}
                                 getOptionLabel={(option) => option.name}
@@ -317,7 +314,7 @@ const EditShowTimeForm = ({ successNewShowTimeHandle, }) => {
                     </div>
 
                     <ThemeProvider theme={btnTheme} >
-                        <Button sx={{ paddingX: 2.5, paddingY: 1.5 }} variant="contained" endIcon={<VideoLabelOutlinedIcon />} onClick={addShowTimeHandle} >Insert show time</Button>
+                        <Button sx={{ paddingX: 2.5, paddingY: 1.5 }} variant="contained" endIcon={<VideoLabelOutlinedIcon />} onClick={updateShowTimeHandle} >Update show time</Button>
                     </ThemeProvider>
                 </div>
 
@@ -418,18 +415,20 @@ const DateTimeItem = ({ item, deleteDateHandle, onChangeTimeHandle, onChangeErro
     useEffect(() => {
 
         const setDefault = () => {
-            let timeString;
-            item.times.forEach(item => {
-                timeString += item + " "
-            })
-            setTimesString(timeString)
+            let timeString = '';
+            if (item.times != null && item.times != "") {
+                item.times.forEach(item => {
+                    timeString += item + " "
+                })
+                setTimesString(timeString)
+            }
+
         }
 
         setDefault()
     }, [])
 
     useEffect(() => {
-        console.log(timesString)
         forceRender()
     }, [timesString])
 
@@ -442,7 +441,7 @@ const DateTimeItem = ({ item, deleteDateHandle, onChangeTimeHandle, onChangeErro
                 <Input
                     id="standard-adornment-password"
                     type='text'
-                    defaultValue={timesString}
+                    value={timesString}
                     onChange={handleChange}
                     endAdornment={
                         <InputAdornment position="end">

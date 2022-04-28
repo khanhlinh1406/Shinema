@@ -23,7 +23,7 @@ const ShowTimeApi = {
     },
 
     update: async(showTime) => {
-        const res = await ApiDatabase.put('/showTime/' + showTime.id)
+        const res = await ApiDatabase.put('/showTime', showTime)
         return res
     },
 

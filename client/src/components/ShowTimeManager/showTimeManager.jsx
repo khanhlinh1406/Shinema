@@ -93,6 +93,8 @@ const ShowTimeManager = () => {
     const [updateSuccessVisible, setUpdateSuccessVisible] = useState(false)
     const successNewShowTimeHandle = () => {
         setShowNewForm(false)
+        setShowEditForm(false)
+
         setUpdateSuccessVisible(true)
         getShowTimes()
     }
