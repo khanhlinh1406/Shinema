@@ -31,12 +31,15 @@ import EmailApi from '../../api/emailApi'
 import mFunction from "../../function";
 
 import BookingForm from '../../components/BookingForm/bookingForm';
+import { useDispatch } from 'react-redux';
+import { bookingSlice } from './../../redux/slices/bookingSlice';
 
 const Booking = () => {
     const { id } = useParams()
 
     const [movieInfo, setMovieInfo] = useState();
     const [showTimeList, setShowTimeList] = useState([]);
+    const dispatch = useDispatch()
 
     useEffect(() => {
         const getMovie = async () => {
@@ -61,6 +64,8 @@ const Booking = () => {
         }
 
         fetchShowTimeByFilmId()
+
+        dispatch(bookingSlice.actions.setSelectedFilm(id))
     }, [id])
 
     const navigate = useNavigate()

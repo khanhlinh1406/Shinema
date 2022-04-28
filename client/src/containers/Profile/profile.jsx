@@ -168,7 +168,7 @@ const Profile = () => {
     })
   }
 
-  const validatePassword = async () => {
+  const validatePassword = () => {
     let check = true;
 
     //#region OLD

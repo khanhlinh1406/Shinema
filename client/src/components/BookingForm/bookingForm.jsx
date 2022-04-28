@@ -20,14 +20,20 @@ import mFunction from "../../function";
 import { bookingSelector } from '../../redux/selector'
 import { bookingSlice } from '../../redux/slices/bookingSlice'
 import { useSelector, useDispatch } from 'react-redux';
+import TheaterApi from './../../api/theaterApi';
 
 const BookingForm = (props) => {
     const [showTimeList, setShowTimeList] = useState([])
     const [dateArray, setDateArray] = useState([])
+    const [theaterArray, setTheaterArray] = useState([])
 
     const CURRENT_BOOKING = useSelector(bookingSelector)
+    const dispatch = useDispatch()
+
 
     useEffect(() => {
+        dispatch(bookingSlice.actions.setShowTimeList(props.showTimeList))
+
         const getDate = async () => {
             await props.showTimeList.forEach((showTime) => {
                 showTime.listDateTime.forEach((object) => {
@@ -46,6 +52,12 @@ const BookingForm = (props) => {
 
     return (
         <div className="booking-form__container">
+            <div className="booking-form__container__check">
+                <Box textAlign="right">
+                    <CheckBtn />
+                </Box>
+            </div>
+
             <div className="booking-form__container__select">
                 <div className="booking-form__container__select__date">
                     <div className="booking-form__container__select__date__title">Date</div>
@@ -57,7 +69,9 @@ const BookingForm = (props) => {
 
                 <div className="booking-form__container__select__time">
                     <div className="booking-form__container__select__time__title">Time</div>
-                    <div className="booking-form__container__select__time__picker"></div>
+                    <div className="booking-form__container__select__time__swiper">
+                        <ShowTimeItem array={CURRENT_BOOKING.currentTimeArray} />
+                    </div>
                 </div>
 
                 <div className="booking-form__container__select__theater">
@@ -66,11 +80,6 @@ const BookingForm = (props) => {
                 </div>
             </div>
 
-            <div className="booking-form__container__check">
-                <Box textAlign="center">
-                    <CheckBtn />
-                </Box>
-            </div>
         </div>
     )
 }
@@ -107,10 +116,28 @@ export const DateItem = (props) => {
     const current = new Date(year, month, date);
     const CURRENT_BOOKING = useSelector(bookingSelector)
     const [isHighlighted, setIsHighlighted] = useState(false)
+    const [timeArray, setTimeArray] = useState([])
+    const dispatch = useDispatch()
 
     useEffect(() => {
-        if (CURRENT_BOOKING.selectedDate == item)
+        if (CURRENT_BOOKING.selectedDate == item) {
             setIsHighlighted(true)
+
+            const getTime = async () => {
+                await CURRENT_BOOKING.showTimeList.forEach((showTime) => {
+                    showTime.listDateTime.forEach((object) => {
+                        if (object.date == CURRENT_BOOKING.selectedDate) {
+                            setTimeArray(object.times)
+                        }
+                    })
+
+                })
+
+                dispatch(bookingSlice.actions.setCurrentTimeArray(timeArray))
+            }
+
+            getTime();
+        }
         else
             setIsHighlighted(false)
     }, [CURRENT_BOOKING.selectedDate])
@@ -140,7 +167,6 @@ export const DateItem = (props) => {
         "Dec"
     ]
 
-    const dispatch = useDispatch()
     return (
         <div className="date-item__container"
             onClick={() => dispatch(bookingSlice.actions.setDate(item))}
@@ -168,10 +194,9 @@ export const DateItem = (props) => {
 
 export const ShowDateItem = (props) => {
     const dateArray = props.array
-    console.log(dateArray)
 
     return (
-        <div className="showtime-item-container"
+        <div className="showdate-item-container"
         // style={{ backgroundColor: 'white' }}
         >{dateArray &&
             <Swiper
@@ -179,10 +204,11 @@ export const ShowDateItem = (props) => {
                 centeredSlides={true}
                 spaceBetween={10}
                 // grabCursor={true}
-                pagination={{
-                    clickable: true,
-                }}
-                modules={[Pagination]}
+                // pagination={{
+                //     clickable: true,
+                // }}
+                //modules={[Pagination]}
+                clickable={true}
                 className="mySwiper"
             >
                 {
@@ -198,6 +224,164 @@ export const ShowDateItem = (props) => {
     )
 }
 
-export const ShowTimeItem = (props) => {
+export const TimeItem = (props) => {
+    const item = props.time;
 
+    const CURRENT_BOOKING = useSelector(bookingSelector)
+    const [isHighlighted, setIsHighlighted] = useState(false)
+    const dispatch = useDispatch()
+
+    const [theaterArray, setTheaterArray] = useState([])
+
+    useEffect(() => {
+        if (CURRENT_BOOKING.selectedTime == item) {
+            setIsHighlighted(true)
+
+            // const getTheaters = async () => {
+            //     await CURRENT_BOOKING.showTimeList.forEach((showTime) => {
+            //         showTime.listDateTime.forEach((object) => {
+            //             if (object.date == CURRENT_BOOKING.selectedDate) {
+            //                 const [theater, setTheater] = useState() 
+            //                 await TheaterApi.getById(CURRENT_BOOKING.selectedFilm)
+            //                 .then((res) =>
+            //                 {
+            //                     setTheaterArray([...theaterArray, ...res.data])
+            //                 })
+            //             }
+            //         })
+
+            //     })
+
+            //     dispatch(bookingSlice.actions.setCurrentTheaterArray(theaterArray))
+            // }
+
+            // getTheaters();
+        }
+        else
+            setIsHighlighted(false)
+    }, [CURRENT_BOOKING.selectedTime])
+
+    return (
+        <div className="time-item__container"
+            onClick={() => dispatch(bookingSlice.actions.setTime(item))}
+        >{
+                !isHighlighted ?
+                    <div className="time-item__container__content">
+                        {item}
+                    </div>
+
+                    :
+                    <div className="time-item__container__content_red">
+                        {item}
+                    </div>
+            }
+        </div>
+    )
+
+}
+
+export const ShowTimeItem = (props) => {
+    const timeArray = props.array
+
+    const CURRENT_BOOKING = useSelector(bookingSelector)
+
+    const [display, setDisplay] = useState(false);
+    
+    const [,refresh] = useState();
+
+    useEffect(() =>{
+        refresh()
+    },[display])
+
+    useEffect(() => {
+        if (timeArray.length !=0)
+        {
+            setDisplay(true)
+        }
+        else
+        setDisplay(false)
+    }, [CURRENT_BOOKING.selectedDate, CURRENT_BOOKING.currentTimeArray])
+
+
+    return (
+        <div className="showtime-item-container"
+        // style={{ backgroundColor: 'white' }}
+        >{display ?
+            <Swiper
+                slidesPerView={3}
+                centeredSlides={true}
+                spaceBetween={10}
+                // grabCursor={true}
+                clickable={true}
+                // pagination={{
+                //     clickable: true,
+                // }}
+                className="showtime-item-container__swp"
+            >
+                {
+                    timeArray.map((item, i) => (
+                        <SwiperSlide key={i}>
+                            <TimeItem time={item} />
+                        </SwiperSlide>
+                    ))
+                }
+            </Swiper>
+
+            : 
+            <div className="showtime-item-container__require">
+                Please choose the date
+            </div>
+            }
+        </div>
+    )
+}
+
+export const ShowTheaterItem = (props) =>{
+    const theaterArray = props.array
+
+    const CURRENT_BOOKING = useSelector(bookingSelector)
+
+    const [display, setDisplay] = useState(false);
+
+    useEffect(() => {
+        // if (timeArray.length !=0)
+        // {
+        //     setDisplay(true)
+        // }
+        // else
+        // setDisplay(false)
+    }, [CURRENT_BOOKING.selectedDate, CURRENT_BOOKING.selectedTime])
+
+
+    return (
+        <div className="showtime-item-container"
+        // style={{ backgroundColor: 'white' }}
+        >{display ?
+            <Swiper
+                slidesPerView={3}
+                centeredSlides={true}
+                spaceBetween={10}
+                // grabCursor={true}
+                clickable={true}
+                // pagination={{
+                //     clickable: true,
+                // }}
+                className="showtime-item-container__swp"
+            >
+                {
+                    // timeArray.map((item, i) => (
+                    //     <SwiperSlide key={i}>
+                    //         <TimeItem time={item} />
+                    //     </SwiperSlide>
+                    // ))
+                }
+            </Swiper>
+
+            : 
+            <div className="showtime-item-container__require">
+                Please choose the date
+            </div>
+            }
+        </div>
+    )
 }

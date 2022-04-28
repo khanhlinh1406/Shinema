@@ -56,16 +56,23 @@ const FilmCorner = () => {
                 if (type !== 'similar' && keyword === undefined) {
                     const params = { page: page }
                     const response = await tmdbApi.getMoviesList(type, { params: params });
-                    setMovieItems([...movieItems, ...response.results])
+                    setMovieItems([...movieItems, ...response.results.filter(
+                        item =>
+                            (item.backdrop_path != null || item.poster_path != null)
+                    )])
                 }
 
                 if (keyword !== undefined) {
                     const params = { page: page, query: keyword }
                     const response = await tmdbApi.search('movie', { params: params });
-                    setMovieItems([...movieItems, ...response.results])
-
+                    /// setMovieItems([...movieItems, ...response.results])
+                    setMovieItems([...movieItems, ...response.results.filter(
+                        item =>
+                            (item.backdrop_path != null || item.poster_path != null)
+                    )])
 
                 }
+
                 // else {
                 //     const response = await tmdbApi.similar(category, props.id);
                 //     ///setMovieItems(response.results.slice(0, page))
@@ -91,7 +98,11 @@ const FilmCorner = () => {
             try {
                 if (keyword === undefined && type === undefined) {
                     const response = await tmdbApi.getMoviesList(movieType.popular, { params: params });
-                    setMovieItems(response.results)
+                    ///  setMovieItems(response.results)
+                    setMovieItems(response.results.filter(
+                        item =>
+                            (item.backdrop_path != null || item.poster_path != null)
+                    ))
                     setTotalPages(response.total_pages)
                 }
                 else if (keyword !== undefined) {
@@ -101,13 +112,22 @@ const FilmCorner = () => {
                     }
                     const response = await tmdbApi.search('movie', { params: params });
                     console.log(response.results)
-                    setMovieItems(response.results)
+                    //setMovieItems(response.results)
+                    setMovieItems(response.results.filter(
+                        item =>
+                            (item.backdrop_path != null || item.poster_path != null)
+                    ))
                     setTotalPages(response.total_pages)
                 } else if (type !== 'similar' && type !== 'underfined') {
                     const response = await tmdbApi.getMoviesList(type, { params: params });
-                    setMovieItems(response.results)
+                    // setMovieItems(response.results)
+                    setMovieItems(response.results.filter(
+                        item =>
+                            (item.backdrop_path != null || item.poster_path != null)
+                    ))
                     setTotalPages(response.total_pages)
                 }
+
             } catch (err) {
                 console.log(err)
             }
@@ -148,6 +168,7 @@ const FilmCorner = () => {
                 </div>
 
                 <div className="film__container__content">
+
                     <div className="film__container__view-more-content">
                         <div className="film__container__view-more-content-list">
                             {
@@ -171,7 +192,7 @@ const FilmCorner = () => {
 
 const SlideItem = props => {
     const item = props.item;
-    const background = apiConfig.originalImage(item.poster_path ?  item.poster_path: item.backdrop_path )
+    const background = apiConfig.originalImage(item.poster_path ? item.poster_path : item.backdrop_path)
     // const dispatch = useDispatch();
     // const data = useSelector(movieSelector)
     const navigate = useNavigate();
