@@ -24,6 +24,7 @@ import { red } from "@mui/material/colors";
 
 import ShowTimeManagerItem from '../ShowTimeManagerItem/showTimeManagerItem';
 import NewShowTimeForm from '../NewShowTimeForm/newShowTimeForm';
+import EditShowTimeForm from '../EditShowTimeForm/editShowTimeForm'
 
 import Loading from '../Loading/loading'
 
@@ -38,6 +39,7 @@ const ShowTimeManager = () => {
 
     const [dateSelect, setDateSelect] = useState(new Date());
     const [showNewForm, setShowNewForm] = useState(false)
+    const [showEditForm, setShowEditForm] = useState(false)
 
     const dispatch = useDispatch()
 
@@ -73,13 +75,15 @@ const ShowTimeManager = () => {
     }
 
     const setDefaultFilter = () => {
-        const dateFormat = format(dateSelect, "dd/MM/yyyy");
+        const dateFormat = format(dateSelect, "MM/dd/yyyy");
         dispatch(showTimeSlice.actions.setFilter(dateFormat))
     }
 
     useEffect(() => {
         getShowTimes()
         setDefaultFilter()
+
+
     }, [])
 
     useEffect(() => {
@@ -89,8 +93,14 @@ const ShowTimeManager = () => {
     const [updateSuccessVisible, setUpdateSuccessVisible] = useState(false)
     const successNewShowTimeHandle = () => {
         setShowNewForm(false)
+        setShowEditForm(false)
+
         setUpdateSuccessVisible(true)
         getShowTimes()
+    }
+
+    const openEdit = () => {
+        setShowEditForm(true)
     }
 
     const btnTheme = createTheme({
@@ -103,12 +113,12 @@ const ShowTimeManager = () => {
     })
 
     return (
-        <ClickAwayListener onClickAway={() => setShowNewForm(false)}>
+        <ClickAwayListener onClickAway={() => { setShowNewForm(false); setShowEditForm(false) }}>
             <Box sx={{ width: '100%', height: '100%', position: 'relative' }}>
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'self-start' }}>
                     <LocalizationProvider dateAdapter={AdapterDateFns}  >
                         <DatePicker
-                            label="Ngày"
+                            label="Date"
                             value={dateSelect}
                             onChange={(newValue) => {
                                 setDateSelect(newValue)
@@ -128,19 +138,20 @@ const ShowTimeManager = () => {
                     </LocalizationProvider>
 
                     <ThemeProvider theme={btnTheme} >
-                        <Button sx={{ paddingX: 2.5, paddingY: 1 }} variant="contained" endIcon={<AddRoundedIcon />} onClick={() => { setShowNewForm(true); setUpdateSuccessVisible(false) }}>Thêm mới</Button>
+                        <Button sx={{ paddingX: 2.5, paddingY: 1 }} variant="contained" endIcon={<AddRoundedIcon />} onClick={() => { setShowNewForm(true); setUpdateSuccessVisible(false) }}>New</Button>
                     </ThemeProvider>
                 </div>
 
                 {data ?
                     data.map((item, i) => (
-                        <ShowTimeManagerItem key={i} item={item} />
+                        <ShowTimeManagerItem key={i} item={item} openEdit={openEdit} />
                     ))
                     :
                     <Loading />
                 }
 
                 {showNewForm && <NewShowTimeForm successNewShowTimeHandle={successNewShowTimeHandle} />}
+                {showEditForm && <EditShowTimeForm successNewShowTimeHandle={successNewShowTimeHandle} />}
 
                 <Success message={'Insert successfully'} status={updateSuccessVisible} />
             </Box>

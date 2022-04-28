@@ -34,7 +34,11 @@ export const movieSlice = createSlice({
         },
 
         addUpcoming: (state, action) => {
-            state.upcoming.push(action.payload)
+            let upcoming = state.upcoming.filter(e => e.id == action.payload.id)
+            if (upcoming.length == 0) {
+                state.upcoming.push(action.payload)
+            }
+
         },
     }
 })

@@ -51,15 +51,15 @@ const Manager = () => {
             <Helmet>
                 <title>Data Manager</title>
             </Helmet>
-            
+
             <ThemeProvider theme={tabTheme}>
-                <Typography sx={{ color: '#fff', fontSize: 20, margin: 7 }}>QUẢN LÍ DỮ LIỆU</Typography>
+                <Typography sx={{ color: '#fff', fontSize: 20, margin: 7 }}>MANAGER</Typography>
                 <Box sx={{ width: '100%' }}>
                     <Box sx={{ borderBottom: 1, borderColor: 'divider', marginTop: 5, marginLeft: 5 }}>
                         <Tabs value={value} onChange={handleChange} aria-label="basic tabs example" >
-                            <Tab label="Suất chiếu" {...a11yProps(0)} sx={{ color: '#fff' }} />
-                            <Tab label="Thống kê" {...a11yProps(1)} sx={{ color: '#fff' }} />
-                            <Tab label="Rạp" {...a11yProps(2)} sx={{ color: '#fff' }} />
+                            <Tab label="Show time" {...a11yProps(0)} sx={{ color: '#fff' }} />
+                            <Tab label="Statistic" {...a11yProps(1)} sx={{ color: '#fff' }} />
+                            <Tab label="Theater" {...a11yProps(2)} sx={{ color: '#fff' }} />
                         </Tabs>
                     </Box>
 

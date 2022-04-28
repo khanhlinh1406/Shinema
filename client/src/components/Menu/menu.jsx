@@ -55,7 +55,7 @@ export const CustomerMenu = ({ accountToggleHandle }) => {
                 (user.rank == "Manager" || user.rank == "Admin")
                 &&
                 <div className='menu__item'>
-                    <p onClick={() => { accountToggleHandle(); navigate('/manager') }}>Data Manager</p>
+                    <p onClick={() => { accountToggleHandle(); navigate('/manager') }}>Manager</p>
                     <BsHddStack className='menu__item__icon' color={defaultColor} size={23} />
                 </div>
             }
