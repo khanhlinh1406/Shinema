@@ -59,7 +59,7 @@ const PeopleDetails = () => {
             }
         }
         getMovie();
-     
+
     }, [id])
 
     const tabTheme = createTheme({
@@ -159,7 +159,7 @@ const PeopleDetails = () => {
 
 const SlideItem = props => {
     const item = props.item;
-    const background = apiConfig.originalImage(item.backdrop_path ? item.backdrop_path : item.poster_path)
+    const background = apiConfig.originalImage(item.poster_path ? item.poster_path : item.backdrop_path)
     // const dispatch = useDispatch();
     // const data = useSelector(movieSelector)
     const navigate = useNavigate();
@@ -176,7 +176,7 @@ const SlideItem = props => {
     }
     return (
         <div className="item__container" onClick={GoToDetails}>
-            <img className="item__container__img"  src={background} alt={item.original_title} />
+            <img className="item__container__img" src={background} alt={item.original_title} />
             <label className="item__container__title">{item.original_title}</label>
             <br />
             <label className='item__container__character'>{item.character}</label>
