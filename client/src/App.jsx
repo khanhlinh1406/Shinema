@@ -4,15 +4,17 @@ import { Routes, Route } from 'react-router-dom';
 import {
   Actor, Censor, Genre, Home, Manager, Review, Profile, Login, Register,
   FilmDetails, PeopleDetails,
-  FilmCorner, Corner, 
+  FilmCorner, Corner,
   Booking
 } from './containers'
 
 import { MainNavBar, Footer } from './components';
+import ChatBot from './components/Chatbot';
 
 function App() {
   return (
     <div className="App">
+      <ChatBot />
 
       <Routes>
         <Route path="/" element={

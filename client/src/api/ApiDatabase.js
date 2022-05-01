@@ -7,7 +7,7 @@ const ApiDatabase = axios.create({
     headers: {
         'Content-Type': 'application/json',
     },
-});
+}); 
 
 // ApiDatabase.interceptors.request.use(
 //     async(config) => {
