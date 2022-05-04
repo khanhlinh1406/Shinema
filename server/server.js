@@ -48,3 +48,6 @@ app.use('/api/theater/', theaterRouter)
 
 var ticketRouter = require('./routers/ticketRouter')
 app.use('/api/ticket/', ticketRouter)
+
+var dialogflow = require('./routers/dialogflowRouter')
+app.use('/api/dialogflow/', dialogflow)
