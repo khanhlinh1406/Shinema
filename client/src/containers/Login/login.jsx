@@ -276,7 +276,7 @@ const Login = () => {
 
                 <div className="login__form__register">
                     <p>You don't have account? </p>
-                    <a ><Link to="/register">Register</Link></a>
+                    <p ><Link to="/register">Register</Link></p>
 
                 </div>
 
