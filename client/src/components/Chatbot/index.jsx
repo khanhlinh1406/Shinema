@@ -25,6 +25,7 @@
 //export default ChatBot
 
 import React, { useState, useEffect } from 'react'
+import { useNavigate, useParams } from "react-router";
 import './styles.css'
 import bot_avatar from '../../assets/bot_avatar.png'
 import Loading from '../Loading/loading'
@@ -39,6 +40,7 @@ import ChatIcon from '@mui/icons-material/Chat';
 import CloseRoundedIcon from '@mui/icons-material/CloseRounded';
 import IconButton from '@mui/material/IconButton';
 import SendIcon from '@mui/icons-material/Send';
+import { useSelector } from 'react-redux';
 
 const ChatBot = () => {
     const [isOpen, setIsOpen] = useState(false)
@@ -60,27 +62,18 @@ const ChatBot = () => {
 }
 
 const FormChat = ({ openFormHandle }) => {
+    const userName = useSelector(state => state.users.instance.name)
     const [messages, setMessages] = useState([
         {
-            type: 'user',
-            message: 'Get started',
+            type: 'bot',
+            message: 'Hi, ' + userName + ' Nice to meet you. I am Alex and I am a virtual assistant of Shenima to help you with your support needs. What are your looking for?',
             listBtn: [],
             dateTime: 'May 2, 10:20',
         },
-        {
-            type: 'bot',
-            message: 'Hi there, I’m Alex and I can help you find somethings?',
-            listBtn: ['btn1', 'btn2', 'btn3'],
-            dateTime: 'May 2, 10:25',
-        },
-        {
-            type: 'user',
-            message: 'find movie',
-            listBtn: [],
-            dateTime: 'May 2, 10:30',
-        }
+
     ])
 
+    const navigate = useNavigate();
     const sendMessageHandle = (text) => {
         if (text == '') return;
         let messageObj = {
@@ -90,7 +83,7 @@ const FormChat = ({ openFormHandle }) => {
             dateTime: 'May 2, 10:35',
         }
         setMessages([...messages, messageObj])
-
+        let messageTemp = [...messages, messageObj]
 
 
         let sendObj = {
@@ -98,14 +91,41 @@ const FormChat = ({ openFormHandle }) => {
         }
         ChatbotApi.send(sendObj).then(
             res => {
-                let botMessageObj = {
-                    type: 'bot',
-                    message: res.data.fulfillmentMessages[0].text[0],
-                    listBtn: [],
-                    dateTime: 'May 2, 10:35',
+                if (res.status == 200) {
+                    let botMessageObj = {}
+                    let respondMessage = res.data.fulfillmentText
+                    let sendMessage = ''
+
+                    if (respondMessage == "Search movie") {
+                        let movieName = res.data.parameters.fields.movieName.stringValue
+                        navigate(`/corner/movie/search/${movieName}`)
+                        sendMessage = "You will be automatically redirected to the search page for `" + movieName + "` movie"
+
+                    }
+                    else if (respondMessage == "Search actor") {
+                        let actorName = res.data.parameters.fields.actorName.stringValue
+                        navigate(`/corner/people/search/${actorName}`)
+                        sendMessage = "You will be automatically redirected to the search page for `" + actorName + "`"
+
+                    }
+                    else if (respondMessage == "Please visit my home page of the application for more details. http://localhost:3000") {
+                        navigate('/')
+                        sendMessage = respondMessage
+
+                    }
+                    else {
+                        sendMessage = respondMessage
+                    }
+                    botMessageObj = {
+                        type: 'bot',
+                        message: sendMessage,
+                        listBtn: [],
+                        dateTime: 'May 2, 10:35',
+                    }
+                    setMessages([...messageTemp, botMessageObj])
+
                 }
-                console.log(res.data.fulfillmentMessages[0].text[0])
-                setMessages([...messages, botMessageObj])
+
             }
         ).catch(err => console.log(err))
 
@@ -141,14 +161,26 @@ const Header = ({ openFormHandle }) => {
 }
 
 const MessList = ({ messages }) => {
+    const messagesEndRef = React.useRef(null)
 
+    const scrollToBottom = () => {
+        messagesEndRef.current.scrollIntoView({ behavior: "smooth" })
+    }
+
+    useEffect(scrollToBottom, [messages]);
     return (
         <div className='form__messList'>
             {
                 messages ?
-                    messages.map((item, i) => (
-                        <MessageItem key={i} item={item} />
-                    ))
+                    <div>
+                        {
+                            messages.map((item, i) => (
+                                <MessageItem key={i} item={item} />
+                            ))
+                        }
+                        <div ref={messagesEndRef} />
+                    </div>
+
                     :
                     <Loading />
             }
@@ -192,6 +224,11 @@ const SendBox = ({ sendMessageHandle }) => {
         <div className='form__sendBox'>
             <OutlinedInput
                 placeholder="Type your message..."
+                onKeyPress={e => {
+                    if (e.key === 'Enter') {
+                        sendMessageHandle(message); setMessage('')
+                    }
+                }}
                 value={message}
                 onChange={e => setMessage(e.target.value)}
                 sx={{ fontSize: 15, width: 'stretch', height: 45, borderRadius: 6, margin: 1 }}
