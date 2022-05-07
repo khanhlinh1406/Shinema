@@ -2,7 +2,7 @@ import './App.css';
 import { Routes, Route } from 'react-router-dom';
 
 import {
-  Actor, Censor, Genre, Home, Manager, Review, Profile, Login, Register,
+  Actor, Censor, Genre, Home, Manager, Review, Profile, Login, Register, ForgotPassword,
   FilmDetails, PeopleDetails,
   FilmCorner, Corner,
   Booking
@@ -55,6 +55,7 @@ function App() {
 
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
+        <Route path="/forgotPassword" element={<ForgotPassword />} />
 
         {/* Chi tiết phim */}
         <Route path="/filmDetails/:id" element={

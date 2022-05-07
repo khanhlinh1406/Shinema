@@ -48,6 +48,10 @@ const AccountApi = {
     update: async(account) => {
         const res = await ApiDatabase.put('/account', account)
         return res;
+    },
+    updatePassword: async(account) => {
+        const res = await ApiDatabase.put('/account/password', account)
+        return res;
     }
 
 }

@@ -11,6 +11,7 @@ router.post('/', accountController.create)
 router.post('/checkEmail/:email', accountController.checkEmail)
 
 router.put('/', accountController.update)
+router.put('/password', accountController.updatePassword)
 
 router.delete('/:email', accountController.deleteByEmail)
 

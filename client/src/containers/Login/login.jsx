@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import './login.css'
 
 import { decode } from 'base-64'
@@ -29,6 +29,7 @@ import { useSelector, useDispatch } from 'react-redux';
 import { userSlice } from './../../redux/slices/userSlice';
 
 import AccountApi from "../../api/accountApi";
+import EmailApi from '../../api/emailApi'
 import mFunction from "../../function";
 import Loading from '../../components/Loading/loading'
 import { Helmet } from 'react-helmet';
@@ -56,12 +57,15 @@ const Login = () => {
         },
     })
 
+    const [verifyCode, setVerifyCode] = useState('')
+
     const [values, setValues] = useState({
         email: '',
         password: '',
         showPassword: false,
         isLoading: false,
-        rememberAccount: false
+        rememberAccount: false,
+        verifyCode: ''
     });
 
     const [emailErrVisible, setEmailErrVisible] = useState(false)
@@ -176,6 +180,8 @@ const Login = () => {
         }
     }
     useEffect(getAccount, [])
+
+
     return (
         <div className="login">
             <Helmet>
@@ -250,7 +256,7 @@ const Login = () => {
                 {passwordErrVisible && <Message message="Password is incorrect" type="err" />}
 
                 <div className="login__form__remember__container">
-                    <a>Forgot your password?</a>
+                    <p ><Link to="/forgotPassword">Forgot your password?</Link></p>
 
                     <div className="login__form__remember">
                         <p>Remember me</p>
@@ -282,12 +288,8 @@ const Login = () => {
 
             </div>
 
-            {/* {
-                values.isLoading &&
-                <div style={{ backgroundColor: 'rgba(255, 255, 255, 0.1)', position: 'absolute', display: 'flex', alignItems: 'center', justifyContent: 'center', top: 0, left: 0, right: 0, bottom: 0 }} >
-                    <CircularProgress />
-                </div>
-            } */}
+
+
 
             {values.isLoading && <Loading />}
 

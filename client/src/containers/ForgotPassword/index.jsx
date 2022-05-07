@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from "react";
 import { Link } from 'react-router-dom'
-import './register.css'
+import './styles.css'
 
 import background_login from '../../assets/background_login.jpg'
 import logo_png from '../../assets/logo_png.png'
@@ -35,7 +35,7 @@ import { red, grey } from "@mui/material/colors";
 import { useNavigate } from 'react-router-dom';
 import { Helmet } from "react-helmet";
 
-const Register = () => {
+const ForgotPassword = () => {
     let navigate = useNavigate();
 
     const [emailErrVisible, setEmailErrVisible] = useState(false)
@@ -59,9 +59,10 @@ const Register = () => {
     });
 
 
-    const registerHandle = async () => {
+    const forgotHandle = async () => {
         checkInfo()
             .then(res => {
+                console.log(res)
                 if (res) sendMail()
             })
     }
@@ -100,21 +101,24 @@ const Register = () => {
         }
 
         if (!errEmail && !errPassword && !errConfirmPassword) {
+            let flag = false;
             await AccountApi.checkEmail(values.email)
                 .then(res => {
-                    if (res != 'Email already exists') {
+                    console.log(res)
+                    if (res == 'Email already exists') {
                         setEmailWarningVisible(false)
+                        flag = true
                     }
                     else {
                         setEmailWarningVisible(true)
+                        flag = false;
                     }
                 })
                 .catch(err => {
                     console.log(err)
                 })
 
-
-            return !emailWarningVisible
+            return flag
         }
         else {
             return false
@@ -216,30 +220,24 @@ const Register = () => {
         if (verifyCode == values.confirmVerify) {
             setValues({ ...values, correctVerify: true })
             setOpenDialog(false);
-            createAccount();
+            updatePassword();
         }
         else {
             setValues({ ...values, correctVerify: false })
         }
     };
 
-    const createAccount = () => {
+    const updatePassword = () => {
         const account = {
-            name: values.email,
-            contact: '',
-            identifyNumber: '',
-            address: '',
-            birthday: '',
             email: values.email,
             password: values.password,
-            rank: 'Customer',
-            score: 0,
-            listTicketId: [],
-            listReview: []
+
         }
-        AccountApi.create(account)
+        AccountApi.updatePassword(account)
             .then(res => {
-                navigate('/login')
+                if (res.status == 200) {
+                    navigate('/login')
+                }
             })
             .catch(err => console.log(err))
     }
@@ -288,7 +286,7 @@ const Register = () => {
     return (
         <div className="register">
             <Helmet >
-                <title>Register</title>
+                <title>Register password</title>
             </Helmet>
 
             <div className="register__background">
@@ -299,7 +297,7 @@ const Register = () => {
             <div className="register__form__container">
                 <div className="register__form__title">
                     <img style={{ width: 40 }} src={logo_png} alt="logo_png" />
-                    <h2>REGISTER</h2>
+                    <h2>FORGOT PASSWORD</h2>
                 </div>
 
                 <ThemeProvider theme={txtFieldThem}>
@@ -320,7 +318,7 @@ const Register = () => {
                 </ThemeProvider>
 
                 {emailErrVisible && <Message message="Invalid email" type="err" />}
-                {emailWarningVisible && <Message message="Email is already used" type="warning" />}
+                {emailWarningVisible && <Message message="Email does not register" type="warning" />}
 
                 <ThemeProvider theme={txtFieldThem}>
                     <FormControl
@@ -392,7 +390,7 @@ const Register = () => {
                 {confirmPasswordErrVisible && <Message message="Confirm password is not correct" type="err" />}
 
                 <ThemeProvider theme={btnTheme} >
-                    <Button sx={{ padding: 1, marginTop: 3 }} variant="contained" onClick={registerHandle}>Register</Button>
+                    <Button sx={{ padding: 1, marginTop: 3 }} variant="contained" onClick={forgotHandle}>Reset</Button>
                 </ThemeProvider>
 
 
@@ -427,7 +425,7 @@ const Register = () => {
                         <TextField
                             autoFocus
                             margin="dense"
-                            label="Mã xác nhận"
+                            label="Verify code"
                             type="text"
                             fullWidth
                             variant="standard"
@@ -440,7 +438,7 @@ const Register = () => {
 
                 <DialogActions>
 
-                    <p>{timer}</p>
+                    <p style={{ color: '#272727' }}>{timer}</p>
 
                     <Button onClick={handleCloseDialog}>Cancel</Button>
                     {timer == '00:00' ?
@@ -459,7 +457,7 @@ const Register = () => {
 
             {
                 values.isLoading &&
-                <div style={{ backgroundColor: 'rgba(255, 255, 255, 0.1)', position: 'absolute', display: 'flex', alignItems: 'center', justifyContent: 'center', top: 0, left: 0, right: 0, bottom: 0 }} >
+                <div style={{ backgroundColor: 'rgba(255, 255, 255, 0.1)', position: 'absolute', display: 'flex', alignItems: 'center', justifyContent: 'center', top: 0, left: 0, right: 0, bottom: 0, zIndex: 3 }} >
                     <CircularProgress />
                 </div>
             }
@@ -483,4 +481,4 @@ const Message = props => {
 }
 
 
-export default Register
+export default ForgotPassword

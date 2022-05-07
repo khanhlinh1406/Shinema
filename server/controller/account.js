@@ -71,16 +71,15 @@ const accountController = {
 
     update: (req, res) => {
         AccountModel.updateOne({ email: req.body.email }, {
-                address: req.body.address,
+                //address: req.body.address,
                 birthday: req.body.birthday,
                 contact: req.body.contact,
                 email: req.body.email,
                 identifyNumber: req.body.identifyNumber,
                 name: req.body.name,
-                password: req.body.password,
+                password: encode(req.body.password),
                 rank: req.body.rank,
                 score: req.body.score,
-                password: req.body.password,
                 listTicketId: req.body.listTicketId,
                 listReview: req.body.listReview
 
@@ -115,6 +114,18 @@ const accountController = {
                 }
             })
             .catch(err => console.log(err))
+    },
+
+    updatePassword: (req, res) => {
+        AccountModel.updateOne({ email: req.body.email }, {
+                password: encode(req.body.password),
+            }, { new: 'true' })
+            .then(data => {
+                res.json("Update successful")
+            })
+            .catch(err => {
+                res.status(500).json({ Err: err })
+            })
     }
 }
 module.exports = accountController
