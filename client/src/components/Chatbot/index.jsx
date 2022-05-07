@@ -62,11 +62,17 @@ const ChatBot = () => {
 }
 
 const FormChat = ({ openFormHandle }) => {
-    const userName = useSelector(state => state.users.instance.name)
+    let userName = useSelector(state => state.users.instance.name)
+    if (userName == null) {
+        userName = ' '
+    }
+    else {
+        userName = userName + ' '
+    }
     const [messages, setMessages] = useState([
         {
             type: 'bot',
-            message: 'Hi, ' + userName + ' Nice to meet you. I am Alex and I am a virtual assistant of Shenima to help you with your support needs. What are your looking for?',
+            message: 'Hi, ' + userName + 'nice to meet you. I am Alex and I am a virtual assistant of Shenima to help you with your support needs. What are your looking for?',
             listBtn: [],
             dateTime: 'May 2, 10:20',
         },
