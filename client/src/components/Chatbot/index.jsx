@@ -27,6 +27,8 @@
 import React, { useState, useEffect } from 'react'
 import { useNavigate, useParams } from "react-router";
 import './styles.css'
+import { TypingAnim } from '../index'
+
 import bot_avatar from '../../assets/bot_avatar.png'
 import Loading from '../Loading/loading'
 import ChatbotApi from '../../api/chatbotApi'
@@ -40,7 +42,9 @@ import ChatIcon from '@mui/icons-material/Chat';
 import CloseRoundedIcon from '@mui/icons-material/CloseRounded';
 import IconButton from '@mui/material/IconButton';
 import SendIcon from '@mui/icons-material/Send';
+
 import { useSelector } from 'react-redux';
+import format from 'date-fns/format'
 
 const ChatBot = () => {
     const [isOpen, setIsOpen] = useState(false)
@@ -69,6 +73,8 @@ const FormChat = ({ openFormHandle }) => {
     else {
         userName = userName + ' '
     }
+
+    const [loading, setLoading] = useState(false)
     const [messages, setMessages] = useState([
         {
             type: 'bot',
@@ -82,11 +88,13 @@ const FormChat = ({ openFormHandle }) => {
     const navigate = useNavigate();
     const sendMessageHandle = (text) => {
         if (text == '') return;
+        let currentTime = new Date()
+        const dateFormat = format(currentTime, "PP p");
         let messageObj = {
             type: 'user',
             message: text,
             listBtn: [],
-            dateTime: 'May 2, 10:35',
+            dateTime: dateFormat,
         }
         setMessages([...messages, messageObj])
         let messageTemp = [...messages, messageObj]
@@ -95,6 +103,7 @@ const FormChat = ({ openFormHandle }) => {
         let sendObj = {
             text: text
         }
+        setLoading(true)
         ChatbotApi.send(sendObj).then(
             res => {
                 if (res.status == 200) {
@@ -122,14 +131,17 @@ const FormChat = ({ openFormHandle }) => {
                     else {
                         sendMessage = respondMessage
                     }
+
+                    let currentTime = new Date()
+                    const dateFormat = format(currentTime, "PP p");
                     botMessageObj = {
                         type: 'bot',
                         message: sendMessage,
                         listBtn: [],
-                        dateTime: 'May 2, 10:35',
+                        dateTime: dateFormat,
                     }
                     setMessages([...messageTemp, botMessageObj])
-
+                    setLoading(false)
                 }
 
             }
@@ -141,7 +153,7 @@ const FormChat = ({ openFormHandle }) => {
     return (
         <div className='form__container'>
             <Header openFormHandle={openFormHandle} />
-            <MessList messages={messages} />
+            <MessList messages={messages} loading={loading} />
             <SendBox sendMessageHandle={sendMessageHandle} />
         </div>
     )
@@ -166,7 +178,7 @@ const Header = ({ openFormHandle }) => {
     )
 }
 
-const MessList = ({ messages }) => {
+const MessList = ({ messages, loading }) => {
     const messagesEndRef = React.useRef(null)
 
     const scrollToBottom = () => {
@@ -184,6 +196,8 @@ const MessList = ({ messages }) => {
                                 <MessageItem key={i} item={item} />
                             ))
                         }
+
+                        {loading && <TypingAnim style={{ height: 100 }} />}
                         <div ref={messagesEndRef} />
                     </div>
 

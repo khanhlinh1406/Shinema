@@ -51,7 +51,6 @@ const MainNavBar = () => {
             let password = decode(localStorage.getItem(encode("rememberPassword")))
             AccountApi.login(email, password)
                 .then(res => {
-                    console.log(res)
                     if (res.data != "Email not exist" && res.data != "Password incorrect") {
                         AccountApi.getByEmail(email).then(res => {
                             dispatch(userSlice.actions.update(res.data))

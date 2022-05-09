@@ -14,6 +14,7 @@ const Navbar = () => {
                 <p><a href='#popular'>Popular</a></p>
                 <p><a href='#upcoming'>Upcoming</a></p>
                 <p><a href='#top_rated'>Top-rated</a></p>
+
             </div>
 
         </div>
