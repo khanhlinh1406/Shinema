@@ -37,10 +37,15 @@ const Corner = () => {
         setValue(newValue);
     };
 
-    // useEffect(() =>{
-    //   setCurrentURL(window.location.pathname);
-    //     console.log(currentURL);
-    // }, [window.location.pathname])
+    useEffect(() => {
+        setCurrentURL(window.location.pathname);
+        if (window.location.pathname.includes('people')) {
+            setValue(1)
+        }
+        else {
+            setValue(0)
+        }
+    }, [window.location.pathname])
 
     const tabTheme = createTheme({
         palette: {

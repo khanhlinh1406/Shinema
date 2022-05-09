@@ -111,7 +111,6 @@ const FilmCorner = () => {
                         page: 1
                     }
                     const response = await tmdbApi.search('movie', { params: params });
-                    console.log(response.results)
                     //setMovieItems(response.results)
                     setMovieItems(response.results.filter(
                         item =>
