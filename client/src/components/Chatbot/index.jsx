@@ -123,10 +123,21 @@ const FormChat = ({ openFormHandle }) => {
                         sendMessage = "You will be automatically redirected to the search page for `" + actorName + "`"
 
                     }
-                    else if (respondMessage == "Please visit my home page of the application for more details. http://localhost:3000") {
-                        navigate('/')
-                        sendMessage = respondMessage
+                    else if (respondMessage == "popular" || respondMessage == "upcoming" || respondMessage == "top_rated") {
+                        sendMessage = "We are navigating to "
+                        switch (respondMessage) {
+                            case "popular":
+                                sendMessage += "Popular movies page."
+                                break;
+                            case "upcoming":
+                                sendMessage += "Upcoming movies page."
+                                break;
+                            case "top_rated":
+                                sendMessage += "Top-rated movies page."
+                                break;
+                        }
 
+                        navigate(`/corner/movie/${respondMessage}`)
                     }
                     else {
                         sendMessage = respondMessage
