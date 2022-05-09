@@ -42,6 +42,10 @@ export const movieCornerSlice = createSlice({
 
         chooseGenres: (state, action) => {
             state.chooseGenres = action.payload
+        },
+
+        setChosenType: (state, action) => {
+            state.chosenType = action.payload
         }
 
     }

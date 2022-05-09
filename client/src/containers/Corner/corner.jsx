@@ -29,18 +29,32 @@ const Corner = () => {
     const [currentURL, setCurrentURL] = useState(window.location.pathname);
     const { category } = useParams()
     const { type } = useParams()
+    const dispatch = useDispatch()
 
     const movieState = useSelector(movieCornerSelector)
-    const [value, setValue] = React.useState(0);
+    const [value, setValue] = useState('0')
 
     const handleChange = (event, newValue) => {
         setValue(newValue);
+
     };
 
-    // useEffect(() =>{
-    //   setCurrentURL(window.location.pathname);
-    //     console.log(currentURL);
-    // }, [window.location.pathname])
+    useEffect(() => {
+        //   setCurrentURL(window.location.pathname);
+        // console.log(currentURL);
+
+        if (window.location.pathname.includes('/corner/people')) {
+            setValue('1')
+        } else {
+            setValue('0')
+        }
+    }, [window.location.pathname])
+
+    useEffect(() => {
+        if (movieState.chosenType === undefined)
+            dispatch(movieCornerSlice.actions.setChosenType)
+
+    }, [window.location.pathname])
 
     const tabTheme = createTheme({
         palette: {
@@ -59,26 +73,35 @@ const Corner = () => {
                 >
                     <TabContext value={value} >
                         <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
-                            <TabList onChange={handleChange} aria-label="lab API tabs example" centered>
-                                <Tab label="MOVIES"
-                                    value={0}
-                                    component={Link}
-                                    to={'/corner/movie/' + movieState.chosenType}
-                                    sx={{ color: '#fff' }} />
+                            <TabList onChange={handleChange} centered>
+                                {
+                                    movieState.chosenType !== undefined ?
+                                        <Tab label="MOVIES"
+                                            value={'0'}
+                                            component={Link}
+                                            to={'/corner/movie/' + movieState.chosenType}
+                                            sx={{ color: '#fff' }} />
+                                        :
+                                        <Tab label="MOVIES"
+                                            value={'0'}
+                                            component={Link}
+                                            to={'/corner/movie/popular'}
+                                            sx={{ color: '#fff' }} />
+                                }
 
                                 <Tab label="PEOPLE"
-                                    value={1}
+                                    value={'1'}
                                     component={Link}
                                     to={'/corner/people'}
                                     sx={{ color: '#fff' }} />
                             </TabList>
                         </Box>
 
-                        <TabPanel value={0}>
+                        <TabPanel value={'0'}>
                             <FilmCorner />
                         </TabPanel>
 
-                        <TabPanel value={1}>
+                        <TabPanel value={'1'}>
                             <CastCorner />
                         </TabPanel>
                     </TabContext>
