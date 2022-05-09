@@ -31,7 +31,7 @@ const Corner = () => {
     const { type } = useParams()
 
     const movieState = useSelector(movieCornerSelector)
-    const [value, setValue] = React.useState(0);
+    const [value, setValue] = React.useState('0');
 
     const handleChange = (event, newValue) => {
         setValue(newValue);
@@ -40,10 +40,10 @@ const Corner = () => {
     useEffect(() => {
         setCurrentURL(window.location.pathname);
         if (window.location.pathname.includes('people')) {
-            setValue(1)
+            setValue('1')
         }
         else {
-            setValue(0)
+            setValue('0')
         }
     }, [window.location.pathname])
 
@@ -66,24 +66,24 @@ const Corner = () => {
                         <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
                             <TabList onChange={handleChange} aria-label="lab API tabs example" centered>
                                 <Tab label="MOVIES"
-                                    value={0}
+                                    value={'0'}
                                     component={Link}
                                     to={'/corner/movie/' + movieState.chosenType}
                                     sx={{ color: '#fff' }} />
 
                                 <Tab label="PEOPLE"
-                                    value={1}
+                                    value={'1'}
                                     component={Link}
                                     to={'/corner/people'}
                                     sx={{ color: '#fff' }} />
                             </TabList>
                         </Box>
 
-                        <TabPanel value={0}>
+                        <TabPanel value={'0'}>
                             <FilmCorner />
                         </TabPanel>
 
-                        <TabPanel value={1}>
+                        <TabPanel value={'1'}>
                             <CastCorner />
                         </TabPanel>
                     </TabContext>
