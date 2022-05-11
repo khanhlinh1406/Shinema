@@ -39,10 +39,10 @@ const ticketController = {
 
     getBookedSeats: (req, res) => {
         TicketModel.find({
-                    dateOccur: req.params.dateOccur,
-                    timeOccur: req.params.timeOccur,
-                    _theaterId: req.params._theaterId,
-                    _roomId: req.params._roomId,
+                    dateOccur: req.body.date,
+                    timeOccur: req.body.time,
+                    _theaterId: req.body.theaterId,
+                    _roomId: req.body.room,
                 },
                 // {
                 //     "id": 0,
@@ -53,7 +53,14 @@ const ticketController = {
                 if (data === null || data === undefined)
                     res.send("getBookedSeats returns null/ undefined")
                 else {
-                    let result = data.map((item) => item.seatIdArray)
+                    let tmp = data.map((item) => item.seatIdArray)
+                    let result = [];
+
+                    tmp.forEach((array) => {
+                        array.forEach((seatId) => {
+                            result.push(seatId)
+                        })
+                    })
                     res.json(result);
                 }
 

@@ -17,7 +17,12 @@ const TicketApi = {
     },
 
     getBookedSeats: async(theaterId, roomId, date, time) => {
-        const res = await ApiDatabase.get('/ticket/getBookedSeats/' + theaterId + '/' + roomId + '/' + date + '/' + time);
+        const res = await ApiDatabase.get('/ticket/find/bookedSeats/', {
+            theaterId,
+            roomId,
+            date,
+            time
+        });
         return res.data;
     },
 

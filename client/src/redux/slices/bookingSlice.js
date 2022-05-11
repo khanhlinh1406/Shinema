@@ -8,6 +8,7 @@ export const bookingSlice = createSlice({
         selectedDate: '',
         selectedTime: '',
         selectedTheater: '',
+        selectedShowTimeId: '',
         showTimeList: [],
         currentTimeArray: [],
         currentTheaterArray: [],
@@ -39,6 +40,10 @@ export const bookingSlice = createSlice({
 
         setCurrentTheaterArray: (state, action) => {
             state.currentTheaterArray = action.payload
+        },
+
+        setSelectedShowTimeId: (state, action) => {
+            state.selectedShowTimeId = action.payload
         }
 
     }

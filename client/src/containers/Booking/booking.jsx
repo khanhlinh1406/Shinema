@@ -30,9 +30,11 @@ import ShowTimeApi from "../../api/showTimeApi";
 import EmailApi from '../../api/emailApi'
 import mFunction from "../../function";
 
-import BookingForm from '../../components/BookingForm/bookingForm';
-import { useDispatch } from 'react-redux';
+import BookingForm from '../../components/Booking/BookingForm/bookingForm';
+import { useDispatch, useSelector } from 'react-redux';
+import { bookingSelector } from '../../redux/selector';
 import { bookingSlice } from './../../redux/slices/bookingSlice';
+import RoomItem from './../../components/Booking/RoomItem/roomItem';
 
 const Booking = () => {
     const { id } = useParams()
@@ -40,6 +42,9 @@ const Booking = () => {
     const [movieInfo, setMovieInfo] = useState();
     const [showTimeList, setShowTimeList] = useState([]);
     const dispatch = useDispatch()
+    const CURRENT_BOOKING = useSelector(bookingSelector)
+
+    const [data, setData] = useState()
 
     useEffect(() => {
         const getMovie = async () => {
@@ -67,6 +72,13 @@ const Booking = () => {
 
         dispatch(bookingSlice.actions.setSelectedFilm(id))
     }, [id])
+
+    useEffect(() => {
+        if (CURRENT_BOOKING.selectedTheater != null) {
+            setData(CURRENT_BOOKING.selectedTheater)
+        }
+    }, [CURRENT_BOOKING])
+
 
     const navigate = useNavigate()
     const viewDetails = () => {
@@ -110,6 +122,10 @@ const Booking = () => {
                     </div>
 
                     <BookingForm showTimeList={showTimeList} />
+
+                    <RoomItem item={data} />
+
+
 
 
 

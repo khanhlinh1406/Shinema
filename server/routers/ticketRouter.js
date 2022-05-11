@@ -6,7 +6,7 @@ const ticketController = require('../controller/ticket')
 router.get('/', ticketController.getAll)
 router.get('/:id', ticketController.getById)
 router.get('/user/:email', ticketController.getByUser)
-router.get('/bookedSeats/:_theaterId/:_roomId/:dateOccur/:timeOccur', ticketController.getBookedSeats)
+router.get('/find/bookedSeats/', ticketController.getBookedSeats)
 
 router.post('/', ticketController.create)
 

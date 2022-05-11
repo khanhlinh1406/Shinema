@@ -15,12 +15,12 @@ import "swiper/css/pagination";
 import { Pagination } from "swiper";
 
 import format from 'date-fns/format'
-import mFunction from "../../function";
+import mFunction from "../../../function";
 
-import { bookingSelector } from '../../redux/selector'
-import { bookingSlice } from '../../redux/slices/bookingSlice'
+import { bookingSelector } from '../../../redux/selector'
+import { bookingSlice } from '../../../redux/slices/bookingSlice'
 import { useSelector, useDispatch } from 'react-redux';
-import TheaterApi from './../../api/theaterApi';
+import TheaterApi from '../../../api/theaterApi';
 
 const BookingForm = (props) => {
     const [showTimeList, setShowTimeList] = useState([])
@@ -76,7 +76,9 @@ const BookingForm = (props) => {
 
                 <div className="booking-form__container__select__theater">
                     <div className="booking-form__container__select__theater__title">Theater</div>
-                    <div className="booking-form__container__select__theater__picker"></div>
+                    <div className="booking-form__container__select__theater__picker">
+                        <ShowTheaterItem array={CURRENT_BOOKING.currentTheaterArray} />
+                    </div>
                 </div>
             </div>
 
@@ -232,34 +234,60 @@ export const TimeItem = (props) => {
     const dispatch = useDispatch()
 
     const [theaterArray, setTheaterArray] = useState([])
+    const [theaterIdArray, setTheaterIdArray] = useState([])
 
     useEffect(() => {
         if (CURRENT_BOOKING.selectedTime == item) {
             setIsHighlighted(true)
 
-            // const getTheaters = async () => {
-            //     await CURRENT_BOOKING.showTimeList.forEach((showTime) => {
-            //         showTime.listDateTime.forEach((object) => {
-            //             if (object.date == CURRENT_BOOKING.selectedDate) {
-            //                 const [theater, setTheater] = useState() 
-            //                 await TheaterApi.getById(CURRENT_BOOKING.selectedFilm)
-            //                 .then((res) =>
-            //                 {
-            //                     setTheaterArray([...theaterArray, ...res.data])
-            //                 })
-            //             }
-            //         })
+            const getTheatersId = async () => {
+                await CURRENT_BOOKING.showTimeList.forEach((showTime) => {
+                    showTime.listDateTime.forEach((object) => {
+                        if (object.date == CURRENT_BOOKING.selectedDate) {
+                            object.times.forEach((time) => {
+                                if (time == CURRENT_BOOKING.selectedTime) {
+                                    setTheaterIdArray([...theaterIdArray, showTime.theaterId])
+                                }
+                            })
 
-            //     })
+                        }
+                    })
+                })
+                //dispatch(bookingSlice.actions.setCurrentTheaterArray(theaterArray))
+            }
 
-            //     dispatch(bookingSlice.actions.setCurrentTheaterArray(theaterArray))
-            // }
+            getTheatersId();
 
-            // getTheaters();
+            const getTheaters = () => {
+                theaterIdArray.forEach(async (theaterId) => {
+                    await TheaterApi.getById(theaterId)
+                        .then((res) => {
+                            // console.log(res.data)
+                            setTheaterArray([...theaterArray, res.data])
+                        })
+                        .catch((err) => console.log(err))
+                })
+
+                // setTheaterArray(mFunction.removeDuplicates(theaterArray));
+                // console.log(theaterArray)
+                // dispatch(bookingSlice.actions.setCurrentTheaterArray(theaterArray))
+            }
+
+            getTheaters()
         }
         else
             setIsHighlighted(false)
     }, [CURRENT_BOOKING.selectedTime])
+
+    useEffect(() => {
+        if (theaterArray.length != 0) {
+            /// setTheaterArray(mFunction.removeDuplicates(theaterArray));
+            console.log(theaterArray)
+            dispatch(bookingSlice.actions.setCurrentTheaterArray(
+                mFunction.removeDuplicates(theaterArray)
+            ))
+        }
+    }, [theaterArray])
 
     return (
         <div className="time-item__container"
@@ -286,20 +314,19 @@ export const ShowTimeItem = (props) => {
     const CURRENT_BOOKING = useSelector(bookingSelector)
 
     const [display, setDisplay] = useState(false);
-    
-    const [,refresh] = useState();
 
-    useEffect(() =>{
-        refresh()
-    },[display])
+    const [, refresh] = useState();
 
     useEffect(() => {
-        if (timeArray.length !=0)
-        {
+        refresh()
+    }, [display])
+
+    useEffect(() => {
+        if (timeArray.length != 0) {
             setDisplay(true)
         }
         else
-        setDisplay(false)
+            setDisplay(false)
     }, [CURRENT_BOOKING.selectedDate, CURRENT_BOOKING.currentTimeArray])
 
 
@@ -327,7 +354,7 @@ export const ShowTimeItem = (props) => {
                 }
             </Swiper>
 
-            : 
+            :
             <div className="showtime-item-container__require">
                 Please choose the date
             </div>
@@ -336,20 +363,21 @@ export const ShowTimeItem = (props) => {
     )
 }
 
-export const ShowTheaterItem = (props) =>{
+export const ShowTheaterItem = (props) => {
     const theaterArray = props.array
 
     const CURRENT_BOOKING = useSelector(bookingSelector)
 
     const [display, setDisplay] = useState(false);
 
+    const [, refresh] = useState();
+
     useEffect(() => {
-        // if (timeArray.length !=0)
-        // {
-        //     setDisplay(true)
-        // }
-        // else
-        // setDisplay(false)
+        if (theaterArray.length != 0) {
+            setDisplay(true)
+        }
+        else
+            setDisplay(false)
     }, [CURRENT_BOOKING.selectedDate, CURRENT_BOOKING.selectedTime])
 
 
@@ -369,18 +397,72 @@ export const ShowTheaterItem = (props) =>{
                 className="showtime-item-container__swp"
             >
                 {
-                    // timeArray.map((item, i) => (
-                    //     <SwiperSlide key={i}>
-                    //         <TimeItem time={item} />
-                    //     </SwiperSlide>
-                    // ))
+                    theaterArray.map((item, i) => (
+                        <SwiperSlide key={i}>
+                            <TheaterItem theater={item} />
+                        </SwiperSlide>
+                    ))
                 }
             </Swiper>
-
-            : 
+            :
             <div className="showtime-item-container__require">
-                Please choose the date
+                Please choose the showtime
             </div>
+            }
+        </div>
+    )
+}
+
+const TheaterItem = (props) => {
+    const item = props.theater
+    const [isHighlighted, setIsHighlighted] = useState(false)
+    const dispatch = useDispatch()
+    const CURRENT_BOOKING = useSelector(bookingSelector)
+
+    const [selectedShowTime, setSelectedShowTime] = useState({})
+
+    useEffect(() => {
+        if (CURRENT_BOOKING.selectedTheater == item) {
+            console.log(true)
+            setIsHighlighted(true)
+
+            const getSelectedShowTime = () => {
+                CURRENT_BOOKING.showTimeList.forEach((showTime) => {
+                    if (showTime.theaterId == item.theaterId) {
+                        showTime.listDateTime.forEach((dateTime) => {
+                            if (dateTime.date == CURRENT_BOOKING.selectedDate) {
+                                dateTime.times.forEach((time) => {
+                                    if (time == CURRENT_BOOKING.selectedTime) {
+                                        setSelectedShowTime(showTime)
+                                    }
+                                })
+                            }
+                        })
+                    }
+                })
+            }
+
+            getSelectedShowTime()
+        }
+        else
+            setIsHighlighted(false)
+    }, [CURRENT_BOOKING.selectedTheater])
+
+    return (
+        <div className="theater-item__container"
+            onClick={() => dispatch(bookingSlice.actions.setSelectedTheater(item))}
+        >{
+                !isHighlighted ?
+                    <div className="theater-item__container__content">
+                        <div className="theater-item__container__content__name">{item.name}</div>
+                        <div className="theater-item__container__content__address">{item.address}</div>
+                    </div>
+
+                    :
+                    <div className="theater-item__container__content_red">
+                        <div className="theater-item__container__content__name_red">{item.name}</div>
+                        <div className="theater-item__container__content__address_red">{item.address}</div>
+                    </div>
             }
         </div>
     )
