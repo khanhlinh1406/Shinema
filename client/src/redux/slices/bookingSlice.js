@@ -1,5 +1,6 @@
 import { createSlice } from "@reduxjs/toolkit";
 import { movieType } from '../../api/tmdbApi'
+import TheaterApi from "../../api/theaterApi";
 
 export const bookingSlice = createSlice({
     name: 'booking',
@@ -11,7 +12,8 @@ export const bookingSlice = createSlice({
         selectedShowTimeId: '',
         showTimeList: [],
         currentTimeArray: [],
-        currentTheaterArray: [],
+        currentTheaterIdArray: [],
+        currentTheaterArray: []
     },
     reducers: {
         setSelectedFilm: (state, action) => {
@@ -20,10 +22,40 @@ export const bookingSlice = createSlice({
 
         setDate: (state, action) => {
             state.selectedDate = action.payload
+
+            //set Time Array
+            const tmp = state.showTimeList
+            let timeTmp = []
+            tmp.forEach((showTime) => {
+                showTime.listDateTime.forEach((object) => {
+                    if (object.date == state.selectedDate) {
+                        object.times.forEach((time) => {
+                            timeTmp.push(time)
+                        })
+                    }
+                })
+            })
+
+            state.currentTimeArray = timeTmp
         },
 
         setTime: (state, action) => {
             state.selectedTime = action.payload
+
+            const tmp = state.showTimeList
+            let theaterIdArray = []
+            tmp.forEach((showTime) => {
+                showTime.listDateTime.forEach((object) => {
+                    if (object.date == state.selectedDate) {
+                        object.times.forEach((time) => {
+                            if (time == state.selectedTime) {
+                                theaterIdArray.push(showTime.theaterId)
+                            }
+                        })
+                    }
+                })
+            })
+            state.currentTheaterIdArray = theaterIdArray
         },
 
         setShowTimeList: (state, action) => {
@@ -36,6 +68,26 @@ export const bookingSlice = createSlice({
 
         setSelectedTheater: (state, action) => {
             state.selectedTheater = action.payload
+
+
+            state.showTimeList.forEach((showTime) => {
+                console.log(showTime)
+                if (showTime.theaterId == state.selectedTheater._id) {
+                    showTime.listDateTime.forEach((dateTime) => {
+                        if (dateTime.date == state.selectedDate) {
+                            dateTime.times.forEach((time) => {
+                                if (time == state.selectedTime) {
+                                    state.selectedShowTimeId = showTime._id
+                                }
+                            })
+                        }
+                    })
+                }
+            })
+        },
+
+        setCurrentTheaterIdArray: (state, action) => {
+            state.currentTheaterIdArray = action.payload
         },
 
         setCurrentTheaterArray: (state, action) => {

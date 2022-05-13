@@ -66,6 +66,7 @@ const Booking = () => {
                 .then(res => {
                     setShowTimeList(res.data)
                 })
+
         }
 
         fetchShowTimeByFilmId()
@@ -123,7 +124,9 @@ const Booking = () => {
 
                     <BookingForm showTimeList={showTimeList} />
 
-                    <RoomItem item={data} />
+                    {/* {
+                        data && <RoomItem item={data} />
+                    } */}
 
 
 
