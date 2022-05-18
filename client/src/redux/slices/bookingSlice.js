@@ -1,6 +1,7 @@
 import { createSlice } from "@reduxjs/toolkit";
 import { movieType } from '../../api/tmdbApi'
 import TheaterApi from "../../api/theaterApi";
+import { StaticDateTimePicker } from "@mui/lab";
 
 export const bookingSlice = createSlice({
     name: 'booking',
@@ -13,7 +14,9 @@ export const bookingSlice = createSlice({
         showTimeList: [],
         currentTimeArray: [],
         currentTheaterIdArray: [],
-        currentTheaterArray: []
+        currentTheaterArray: [],
+        currentRoomIdArray: [],
+        check: false
     },
     reducers: {
         setSelectedFilm: (state, action) => {
@@ -69,9 +72,7 @@ export const bookingSlice = createSlice({
         setSelectedTheater: (state, action) => {
             state.selectedTheater = action.payload
 
-
             state.showTimeList.forEach((showTime) => {
-                console.log(showTime)
                 if (showTime.theaterId == state.selectedTheater._id) {
                     showTime.listDateTime.forEach((dateTime) => {
                         if (dateTime.date == state.selectedDate) {
@@ -96,6 +97,29 @@ export const bookingSlice = createSlice({
 
         setSelectedShowTimeId: (state, action) => {
             state.selectedShowTimeId = action.payload
+        },
+
+        setCheck: (state, action) => {
+            state.check = action.payload
+
+            let arr = []
+
+            state.showTimeList.forEach(showTime => {
+                console.log(showTime.theaterId)
+                console.log(state.selectedTheater._id)
+                console.log(showTime.theaterId === state.selectedTheater._id)
+                if (showTime.theaterId === state.selectedTheater._id) {
+                    console.log(showTime.roomId)
+                    arr.push(showTime.roomId)
+                }
+            })
+
+            state.currentRoomIdArray = arr
+                //console.log(arr)
+        },
+
+        setCurrentRoomIdArray: (state, action) => {
+            state.currentRoomIdArray = action.payload
         }
 
     }

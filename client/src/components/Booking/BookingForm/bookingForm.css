@@ -20,6 +20,7 @@
     line-height: 100%;
     font-size: 0.8rem;
     font-weight: bold;
+    color: black
 }
 
 .booking-form__container__select__date__swiper {
@@ -39,6 +40,7 @@
     font-size: 0.8rem;
     font-weight: bold;
     width: 100%;
+    color: black;
 }
 
 .booking-form__container__select__time__swiper {
@@ -56,6 +58,7 @@
     padding-top: 1rem;
     font-size: 0.8rem;
     font-weight: bold;
+    color: black;
 }
 
 .booking-form__container__select__theater__picker {}

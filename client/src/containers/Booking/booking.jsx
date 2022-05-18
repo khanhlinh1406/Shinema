@@ -75,10 +75,9 @@ const Booking = () => {
     }, [id])
 
     useEffect(() => {
-        if (CURRENT_BOOKING.selectedTheater != null) {
+        if (CURRENT_BOOKING.check === true)
             setData(CURRENT_BOOKING.selectedTheater)
-        }
-    }, [CURRENT_BOOKING])
+    }, [CURRENT_BOOKING.check])
 
 
     const navigate = useNavigate()
@@ -123,14 +122,11 @@ const Booking = () => {
                     </div>
 
                     <BookingForm showTimeList={showTimeList} />
+                   
 
-                    {/* {
+                    {
                         data && <RoomItem item={data} />
-                    } */}
-
-
-
-
+                    }
 
 
                 </>
@@ -141,3 +137,26 @@ const Booking = () => {
 
 export default Booking
 
+export const CheckBtn = () => {
+    const btnTheme = createTheme({
+        shape: {
+            borderRadius: 20
+        },
+        palette: {
+            primary: red
+        },
+    })
+
+    const navigate = useNavigate();
+
+    const onClick = () => {
+    }
+
+    return (
+        <div >
+            <ThemeProvider theme={btnTheme} >
+                <Button sx={{ paddingX: 5, paddingY: 0.8 }} variant="contained" onClick={onClick} >CHECK</Button>
+            </ThemeProvider>
+        </div >
+    )
+}
