@@ -34,20 +34,20 @@ mongoose.connect(process.env.MONGODB_URI)
         console.log('err', err)
     })
 
-var emailRouter = require('./routers/emailRouter')
+var emailRouter = require('./routers/email.router')
 app.use('/api/sendMail', emailRouter)
 
-var accountRouter = require('./routers/accountRouter')
+var accountRouter = require('./routers/account.router')
 app.use('/api/account/', accountRouter)
 
-var showTimeRouter = require('./routers/showTimeRouter')
+var showTimeRouter = require('./routers/showTime.router')
 app.use('/api/showTime/', showTimeRouter)
 
-var theaterRouter = require('./routers/theaterRouter')
+var theaterRouter = require('./routers/theater.router')
 app.use('/api/theater/', theaterRouter)
 
-var ticketRouter = require('./routers/ticketRouter')
+var ticketRouter = require('./routers/ticket.router')
 app.use('/api/ticket/', ticketRouter)
 
-var dialogFlow = require('./routers/dialogFlowRouter')
+var dialogFlow = require('./routers/dialogFlow.router')
 app.use('/api/dialogFlow/', dialogFlow)

@@ -37,7 +37,7 @@ export const CustomerMenu = ({ accountToggleHandle }) => {
                 user.rank == "Customer"
                 &&
                 <div className='menu__item'>
-                    <p onClick={() => { accountToggleHandle(); navigate('/manager') }}>Movies review</p>
+                    <p onClick={() => { accountToggleHandle(); navigate('/reviews') }}>Movies review</p>
                     <BiCommentDetail className='menu__item__icon' color={defaultColor} size={25} />
                 </div>
             }

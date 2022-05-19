@@ -1,4 +1,4 @@
-const TheaterModel = require('../models/theater')
+const TheaterModel = require('../models/theater.model')
 const mFunction = require('../../client/src/function')
 
 const theaterController = {

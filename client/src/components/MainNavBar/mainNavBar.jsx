@@ -3,8 +3,7 @@ import './mainNavBar.css'
 import { Link } from 'react-router-dom'
 import { useNavigate } from 'react-router-dom';
 
-import { decode } from 'base-64'
-import { encode } from 'base-64'
+
 
 import { AiOutlineUser, AiOutlineMenu } from 'react-icons/ai'
 import { BsBell } from 'react-icons/bs'
@@ -28,7 +27,7 @@ const MainNavBar = () => {
     let navigate = useNavigate();
     const dispatch = useDispatch()
 
-    const [logged, setLogged] = useState(false);
+    let logged = localStorage.getItem('logged')
     const [accountToggle, setAccountToggle] = useState(false)
 
     const [menuToggle, setMenuToggle] = useState(false)
@@ -38,34 +37,7 @@ const MainNavBar = () => {
     const accountToggleHandle = () => {
         setAccountToggle(!accountToggle)
     }
-    const checkLogged = () => {
-        let logged = localStorage.getItem('logged')
-        let remember = localStorage.getItem('rememberAccount')
 
-        setLogged(logged)
-        // console.log(remember == 'true')
-        // console.log(logged == 'true')
-        // console.log(user == null)
-        if (remember == 'true' && logged == 'true' && (user == '' || user == null)) {
-            let email = decode(localStorage.getItem(encode("rememberEmail")))
-            let password = decode(localStorage.getItem(encode("rememberPassword")))
-            AccountApi.login(email, password)
-                .then(res => {
-                    if (res.data != "Email not exist" && res.data != "Password incorrect") {
-                        AccountApi.getByEmail(email).then(res => {
-                            dispatch(userSlice.actions.update(res.data))
-                        }).catch(err => console.log(err))
-                    }
-                    else {
-                        localStorage.setItem("logged", false)
-                        navigate('/login')
-                    }
-                })
-                .catch(err => console.log(err))
-        }
-    }
-
-    useEffect((checkLogged), [])
 
     const goToCorner = () => {
         navigate(`/corner/movie/popular`);

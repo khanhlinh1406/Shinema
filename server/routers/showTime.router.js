@@ -1,8 +1,8 @@
 const express = require('express')
 var router = express.Router()
 
-const showTimeController = require('../controller/showTime')
-const { authenToken } = require('../controller/authen')
+const showTimeController = require('../controllers/showTime.controller')
+const { authenToken } = require('../controllers/authen.controller')
 
 router.get('/', authenToken, showTimeController.getAll)
 router.get('/:id', authenToken, showTimeController.getById)
