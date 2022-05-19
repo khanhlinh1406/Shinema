@@ -122,10 +122,8 @@ const Booking = () => {
                     </div>
 
                     <BookingForm showTimeList={showTimeList} />
-                   
-
                     {
-                        data && <RoomItem item={data} />
+                        data && <RoomItem theater={data} />
                     }
 
 

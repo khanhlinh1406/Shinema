@@ -219,7 +219,7 @@ export const ShowDateItem = (props) => {
                 //     clickable: true,
                 // }}
                 //modules={[Pagination]}
-                clickable={true}
+               /// clickable={true}
                 className="mySwiper"
             >
                 {
@@ -314,7 +314,7 @@ export const ShowTimeItem = (props) => {
                 centeredSlides={true}
                 spaceBetween={10}
                 // grabCursor={true}
-                clickable={true}
+               /// clickable={true}
                 // pagination={{
                 //     clickable: true,
                 // }}
@@ -379,7 +379,7 @@ export const ShowTheaterItem = (props) => {
                 centeredSlides={true}
                 spaceBetween={10}
                 // grabCursor={true}
-                clickable={true}
+               // clickable={true}
                 // pagination={{
                 //     clickable: true,
                 // }}

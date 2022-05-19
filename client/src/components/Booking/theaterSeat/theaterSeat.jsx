@@ -1,4 +1,4 @@
-import * as React from 'react';
+import React, {useState, useEffect} from 'react';
 import styles from './styles'
 
 import Box from '@mui/material/Box';
@@ -6,6 +6,10 @@ import Typography from '@mui/material/Typography';
 import { styled } from '@mui/material/styles';
 import Paper from '@mui/material/Paper';
 import Grid from '@mui/material/Grid';
+import TicketApi from './../../../api/ticketApi';
+import { bookingSelector } from '../../../redux/selector'
+import { bookingSlice } from '../../../redux/slices/bookingSlice'
+import { useSelector, useDispatch } from 'react-redux';
 
 const Item = styled(Paper)(({ theme }) => ({
     backgroundColor: theme.palette.mode === 'dark' ? '#1A2027' : '#fff',
@@ -29,7 +33,35 @@ function FormRow({ row }) {
 }
 
 
+
+
 const TheaterSeat = ({ item }) => {
+    const [bookedSeats, setBookedSeats] = useState([])
+    const CURRENT_BOOKING = useSelector(bookingSelector)
+    useEffect(async() =>{
+        const getBookedSeats = async() =>
+        {
+            await TicketApi.getBookedSeats(
+                CURRENT_BOOKING.selectedTheater._id,
+                item.id,
+                CURRENT_BOOKING.selectedDate,
+                CURRENT_BOOKING.selectedTime
+            )
+            .then(res=>{
+                console.log(res)
+                setBookedSeats(res.data)
+            })
+            .catch(err => console.log(err))
+        }
+
+        await getBookedSeats()
+    }, [])
+
+    useEffect(() => {
+        console.log('hhh')
+        console.log(bookedSeats)
+    },[bookedSeats])
+
     return (
         <Box sx={styles.boxContainer}>
             <p style={styles.text}>{item.name}</p>

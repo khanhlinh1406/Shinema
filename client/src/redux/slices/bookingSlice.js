@@ -105,9 +105,6 @@ export const bookingSlice = createSlice({
             let arr = []
 
             state.showTimeList.forEach(showTime => {
-                console.log(showTime.theaterId)
-                console.log(state.selectedTheater._id)
-                console.log(showTime.theaterId === state.selectedTheater._id)
                 if (showTime.theaterId === state.selectedTheater._id) {
                     console.log(showTime.roomId)
                     arr.push(showTime.roomId)

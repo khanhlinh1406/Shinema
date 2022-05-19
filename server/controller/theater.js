@@ -14,7 +14,7 @@ const theaterController = {
 
     getById: (req, res) => {
         TheaterModel.findOne({
-                id: req.params.id
+                _id: req.params.id
             })
             .then(data => {
                 res.json(data)

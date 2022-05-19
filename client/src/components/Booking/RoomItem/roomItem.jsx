@@ -11,25 +11,36 @@ import { bookingSelector } from '../../../redux/selector'
 import { bookingSlice } from '../../../redux/slices/bookingSlice'
 import { useSelector, useDispatch } from 'react-redux';
 
-const RoomItem = ({ item }) => {
+const RoomItem = ({ theater }) => {
     const CURRENT_BOOKING = useSelector(bookingSelector)
-    const [theaterFilmAvailable, setTheaterFilmAvailable] = useState(item)
-    const [_theaterFilmAvailable, _setTheaterFilmAvailable] = useState(item)
+    const [theaterFilmAvailable, setTheaterFilmAvailable] = useState(theater)
     const [listRoomId, setListRoomId] = useState(CURRENT_BOOKING.currentRoomIdArray)
 
     useEffect(() => {
+        let tmpList = []
         listRoomId.forEach(roomId => {
-            setTheaterFilmAvailable({
-                theaterFilmAvailable,
-                listRoom: theaterFilmAvailable.listRoom.filter((e) => {
-                    return e.id === roomId
+            theaterFilmAvailable.listRoom.forEach((room)=>
+            {
+                if (roomId == room.id) {
+                    tmpList.push(room)
                 }
-                )
-            })
+            }) 
         })
+
+        setTheaterFilmAvailable({...theaterFilmAvailable, listRoom: tmpList})
+    }, [listRoomId])
+
+    useEffect(() => {
+        setListRoomId(CURRENT_BOOKING.currentRoomIdArray)
     }, [CURRENT_BOOKING.currentRoomIdArray])
 
-    useEffect(() => {console.log(theaterFilmAvailable)},[theaterFilmAvailable])
+    useEffect(() => {
+        setTheaterFilmAvailable(theater)
+    }, [theater])
+
+    useEffect(() => {
+        console.log(theaterFilmAvailable)
+    }, [theaterFilmAvailable])
 
     useEffect(() => {
         setTheaterFilmAvailable(theaterFilmAvailable)
@@ -37,14 +48,14 @@ const RoomItem = ({ item }) => {
 
     return (
         <Box sx={styles.boxContainer}>
-            <h2 style={styles.text}>{item.name}</h2>
-            <p style={styles.text}>{item.address}</p>
-            <p style={styles.text}>Contact: {item.contact}</p>
+            <h2 style={styles.text}>{theater.name}</h2>
+            <p style={styles.text}>{theater.address}</p>
+            <p style={styles.text}>Contact: {theater.contact}</p>
 
             {
-                theaterFilmAvailable.listRoom.map((item, index) => (
-                    <TheaterSeat key={index} item={item} />
-                ))
+                theaterFilmAvailable.listRoom.map((theater, index) => (
+                    <TheaterSeat key={index} item={theater} />
+                )) 
             }
 
         </Box>
