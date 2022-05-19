@@ -1,4 +1,4 @@
-const AccountModel = require('../models/account')
+const AccountModel = require('../models/account.model')
 const mFunction = require('../../client/src/function')
 const { decode } = require('base-64');
 const { encode } = require('base-64');

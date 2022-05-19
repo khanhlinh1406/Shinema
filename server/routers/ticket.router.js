@@ -1,7 +1,7 @@
 const express = require('express')
 var router = express.Router()
 
-const ticketController = require('../controller/ticket')
+const ticketController = require('../controllers/ticket.controller')
 
 router.get('/', ticketController.getAll)
 router.get('/:id', ticketController.getById)

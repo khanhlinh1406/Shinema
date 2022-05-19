@@ -1,5 +1,11 @@
 import './App.css';
 import { Routes, Route } from 'react-router-dom';
+import React, { useState, useEffect } from 'react';
+
+import { decode } from 'base-64'
+import { encode } from 'base-64'
+
+import { useNavigate } from 'react-router-dom';
 
 import {
   Actor, Censor, Genre, Home, Manager, Review, Profile, Login, Register, ForgotPassword,
@@ -11,22 +17,74 @@ import {
 import { MainNavBar, Footer } from './components';
 import ChatBot from './components/Chatbot';
 
+import AccountApi from './api/accountApi'
+import { useSelector, useDispatch } from 'react-redux';
+import { userSlice } from './redux/slices/userSlice'
+
 function App() {
+  let navigate = useNavigate();
+  const dispatch = useDispatch()
+
+  const _currentUser = useSelector(state => state.users.instance)
+
+  const checkLogged = () => {
+    let logged = localStorage.getItem('logged')
+    let remember = localStorage.getItem('rememberAccount')
+
+    // console.log(remember == 'true')
+    // console.log(logged == 'true')
+    // console.log(user == null)
+    if (remember == 'true' && logged == 'true' && (_currentUser == '' || _currentUser == null)) {
+      let email = decode(localStorage.getItem(encode("rememberEmail")))
+      let password = decode(localStorage.getItem(encode("rememberPassword")))
+      AccountApi.login(email, password)
+        .then(res => {
+          if (res.data != "Email not exist" && res.data != "Password incorrect") {
+            AccountApi.getByEmail(email).then(res => {
+              dispatch(userSlice.actions.update(res.data))
+            }).catch(err => console.log(err))
+          }
+          else {
+            localStorage.setItem("logged", false)
+            navigate('/login')
+          }
+        })
+        .catch(err => console.log(err))
+    }
+  }
+
+  useEffect((checkLogged), [])
+
   return (
     <div className="App">
-      <ChatBot />
+
 
       <Routes>
-        <Route path="/" element={
+        {_currentUser != "" &&
+          <Route path="*" element={
+            _currentUser != "" && _currentUser.rank != 'Customer' ?
+              <Manager />
+              :
+              <div>
+                <ChatBot />
+                <MainNavBar />
+                <Home />
+                <Footer />
+              </div>
+          } />
+        }
+
+        {/* <Route path="/" element={
           <div>
             <MainNavBar />
             <Home />
             <Footer />
           </div>
-        } />
+        } /> */}
 
         <Route path="/actors" element={
           <div>
+
             <MainNavBar />
             <Actor />
             <Footer />
@@ -45,13 +103,6 @@ function App() {
             <Review />
             <Footer />
           </div>} />
-
-        <Route path="/manager" element={
-          <div>
-            <MainNavBar />
-            <Manager />
-          </div>} />
-
 
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />

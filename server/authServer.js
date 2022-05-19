@@ -37,5 +37,5 @@ mongoose.connect(process.env.MONGODB_URI)
         console.log('err', err)
     })
 
-var jwtRouter = require('./routers/jwtRouter')
+var jwtRouter = require('./routers/jwt.router')
 app.use('/auth', jwtRouter)

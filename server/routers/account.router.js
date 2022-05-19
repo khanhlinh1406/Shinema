@@ -1,8 +1,8 @@
 const express = require('express')
 var router = express.Router()
 
-const accountController = require('../controller/account')
-const { authenToken } = require('../controller/authen')
+const accountController = require('../controllers/account.controller')
+const { authenToken } = require('../controllers/authen.controller')
 
 router.get('/', authenToken, accountController.getAll)
 router.get('/:email', accountController.getByEmail)

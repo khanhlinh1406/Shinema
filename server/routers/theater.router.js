@@ -1,8 +1,8 @@
 const express = require('express')
 var router = express.Router()
 
-const theaterController = require('../controller/theater')
-const { authenToken } = require('../controller/authen')
+const theaterController = require('../controllers/theater.controller')
+const { authenToken } = require('../controllers/authen.controller')
 
 router.get('/', authenToken, theaterController.getAll)
 router.get('/:id', theaterController.getById)

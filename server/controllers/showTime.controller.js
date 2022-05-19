@@ -1,4 +1,4 @@
-const ShowTimeModel = require('../models/showTime')
+const ShowTimeModel = require('../models/showTime.model')
 const mFunction = require('../../client/src/function')
 
 const showTimeController = {

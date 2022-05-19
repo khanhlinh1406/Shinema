@@ -1,4 +1,4 @@
-const TicketModel = require('../models/ticket')
+const TicketModel = require('../models/ticket.model')
 const mFunction = require('../../client/src/function')
 
 

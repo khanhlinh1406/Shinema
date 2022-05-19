@@ -3,8 +3,8 @@ var router = express.Router()
 const jwt = require('jsonwebtoken')
 const { encode } = require('base-64');
 
-const JWTModel = require('../models/JWTRefToken')
-const AccountModel = require('../models/account')
+const JWTModel = require('../models/JWTRefToken.model')
+const AccountModel = require('../models/account.model')
 
 router.post('/refreshToken', (req, res) => {
     //const refreshToken = req.cookies.refresh_token;

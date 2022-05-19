@@ -1,9 +1,9 @@
-const TheaterModel = require('../models/theater')
+const ReviewModel = require('../models/review.model')
 const mFunction = require('../../client/src/function')
 
-const theaterController = {
+const reviewController = {
     getAll: (req, res) => {
-        TheaterModel.find({})
+        ReviewModel.find({})
             .then(data => {
                 res.json(data)
             })
@@ -13,8 +13,8 @@ const theaterController = {
     },
 
     getById: (req, res) => {
-        TheaterModel.findOne({
-                _id: req.params.id
+        ReviewModel.findOne({
+                id: req.params.id
             })
             .then(data => {
                 res.json(data)
@@ -26,14 +26,14 @@ const theaterController = {
 
     create: (req, res) => {
         const newTheater = {
-            name: req.body.name,
-            address: req.body.address,
-            contact: req.body.contact,
-            managerId: req.body.managerId,
+            title: req.body.title,
+            description: req.body.description,
+            star: req.body.star,
+            voteNum: req.body.voteNum,
             price: req.body.price,
             listRoom: req.body.listRoom
         }
-        TheaterModel.create(newTheater)
+        ReviewModel.create(newTheater)
             .then(data => {
                 res.send("Successful")
             })
@@ -44,7 +44,7 @@ const theaterController = {
 
     update: (req, res) => {
 
-        TheaterModel.updateOne({ id: req.params.id }, {
+        ReviewModel.updateOne({ id: req.params.id }, {
                 name: req.body.name,
                 address: req.body.address,
                 contact: req.body.contact,
@@ -61,7 +61,7 @@ const theaterController = {
     },
 
     deleteById: (req, res) => {
-        TheaterModel.deleteOne({
+        ReviewModel.deleteOne({
                 id: req.params.id
             })
             .then(data => {
@@ -72,4 +72,4 @@ const theaterController = {
             })
     },
 }
-module.exports = theaterController
+module.exports = reviewController
