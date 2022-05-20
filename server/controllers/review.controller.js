@@ -29,9 +29,9 @@ const reviewController = {
             title: req.body.title,
             description: req.body.description,
             star: req.body.star,
-            voteNum: req.body.voteNum,
-            price: req.body.price,
-            listRoom: req.body.listRoom
+            isVisible: req.body.isVisible,
+            _censorshipId: req.body._censorshipId,
+            _userId: req.body._userId
         }
         ReviewModel.create(newTheater)
             .then(data => {
@@ -43,14 +43,13 @@ const reviewController = {
     },
 
     update: (req, res) => {
-
-        ReviewModel.updateOne({ id: req.params.id }, {
-                name: req.body.name,
-                address: req.body.address,
-                contact: req.body.contact,
-                managerId: req.body.managerId,
-                price: req.body.price,
-                listRoom: req.body.listRoom
+        ReviewModel.updateOne({ id: req.body._id }, {
+                title: req.body.title,
+                description: req.body.description,
+                star: req.body.star,
+                isVisible: req.body.isVisible,
+                _censorshipId: req.body._censorshipId,
+                _userId: req.body._userId
             }, { new: 'true' })
             .then(data => {
                 res.json("Update successful")
