@@ -1,4 +1,4 @@
-import React, {useState, useEffect} from 'react';
+import React, { useState, useEffect } from 'react';
 import styles from './styles'
 
 import Box from '@mui/material/Box';
@@ -17,14 +17,49 @@ const Item = styled(Paper)(({ theme }) => ({
     padding: theme.spacing(1),
     textAlign: 'center',
     color: theme.palette.text.secondary,
+    cursor: 'pointer'
 }));
 
-function FormRow({ row }) {
+const BookedItem = styled(Paper)(({ theme }) => ({
+    backgroundColor: '#07162b',
+    border: '1px solid #fff',
+    ...theme.typography.body2,
+    padding: theme.spacing(1),
+    textAlign: 'center',
+    color: '#fff',
+}));
+
+function FormRow({ row, list }) {
+    const [choseSeats, setChoseSeats] = useState([]);
+
+    let tmp = [];
+    const chooseSeats = (item) => {
+        if (choseSeats !== []) {
+            if (choseSeats.includes(item)) {
+                tmp = choseSeats.filter((e) => { return e !== item })
+            }
+        }
+        else if (!choseSeats.includes(item))
+            tmp.push(item)
+
+            console.log(tmp)
+        ///setChoseSeats(tmp)
+    }
+
+    useEffect(() => {
+        console.log(choseSeats)
+    }, [choseSeats])
+
     return (
         <React.Fragment>
             {row.map((item, index) => (
                 <Grid item xs={1} key={index}>
-                    <Item>{item}</Item>
+                    {
+                        list.includes(item) ?
+                            <BookedItem >{item}</BookedItem>
+                            :
+                            <Item onClick={() => chooseSeats(item)}>{item}</Item>
+                    }
                 </Grid>
             ))}
 
@@ -38,29 +73,23 @@ function FormRow({ row }) {
 const TheaterSeat = ({ item }) => {
     const [bookedSeats, setBookedSeats] = useState([])
     const CURRENT_BOOKING = useSelector(bookingSelector)
-    useEffect(async() =>{
-        const getBookedSeats = async() =>
-        {
+    useEffect(async () => {
+        const getBookedSeats = async () => {
             await TicketApi.getBookedSeats(
                 CURRENT_BOOKING.selectedTheater._id,
                 item.id,
                 CURRENT_BOOKING.selectedDate,
                 CURRENT_BOOKING.selectedTime
             )
-            .then(res=>{
-                console.log(res)
-                setBookedSeats(res.data)
-            })
-            .catch(err => console.log(err))
+                .then((res) => {
+
+                    setBookedSeats(res.data)
+                })
+                .catch(err => console.log(err))
         }
 
         await getBookedSeats()
     }, [])
-
-    useEffect(() => {
-        console.log('hhh')
-        console.log(bookedSeats)
-    },[bookedSeats])
 
     return (
         <Box sx={styles.boxContainer}>
@@ -79,7 +108,7 @@ const TheaterSeat = ({ item }) => {
             <Grid container spacing={1}>
                 {item.listSeat.map((row, index) => (
                     <Grid container item spacing={3} key={index}>
-                        <FormRow row={row} />
+                        <FormRow row={row} list={bookedSeats} />
                     </Grid>
                 ))}
 

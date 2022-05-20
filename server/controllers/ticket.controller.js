@@ -39,16 +39,11 @@ const ticketController = {
 
     getBookedSeats: (req, res) => {
         TicketModel.find({
-                    dateOccur: req.body.date,
-                    timeOccur: req.body.time,
-                    _theaterId: req.body.theaterId,
-                    _roomId: req.body.room,
-                },
-                // {
-                //     "id": 0,
-                //     "seatIdArray": 1
-                // }
-            )
+                dateOccur: req.body.date,
+                timeOccur: req.body.time,
+                _theaterId: req.body.theaterId,
+                _roomId: req.body.room,
+            })
             .then(data => {
                 if (data === null || data === undefined)
                     res.send("getBookedSeats returns null/ undefined")
