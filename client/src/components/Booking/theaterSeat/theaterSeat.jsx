@@ -29,26 +29,42 @@ const BookedItem = styled(Paper)(({ theme }) => ({
     color: '#fff',
 }));
 
-function FormRow({ row, list }) {
-    const [choseSeats, setChoseSeats] = useState([]);
+const ChooseItem = styled(Paper)(({ theme }) => ({
+    backgroundColor: '#eb4034',
+    ...theme.typography.body2,
+    padding: theme.spacing(1),
+    textAlign: 'center',
+    color: '#fff',
+    cursor: 'pointer',
+    fontWeight: 'bold',
+}));
 
-    let tmp = [];
+const FormRow = ({ row, list }) => {
+    const CURRENT_BOOKING = useSelector(bookingSelector)
+    const dispatch = useDispatch()
+
+    const [chosenSeats, setChosenSeats] = useState(CURRENT_BOOKING.selectedSeats)
     const chooseSeats = (item) => {
-        if (choseSeats !== []) {
-            if (choseSeats.includes(item)) {
-                tmp = choseSeats.filter((e) => { return e !== item })
-            }
-        }
-        else if (!choseSeats.includes(item))
-            tmp.push(item)
+        if (list.includes(item)) {return;}
 
-            console.log(tmp)
-        ///setChoseSeats(tmp)
+        if (CURRENT_BOOKING.selectedSeats.length > 0) {
+            if (CURRENT_BOOKING.selectedSeats.includes(item)) {
+                dispatch(bookingSlice.actions.setSelectedSeats(
+                    CURRENT_BOOKING.selectedSeats.filter((e) => { return e != item })
+                ))
+            }
+            else
+                dispatch(bookingSlice.actions.pushSelectedSeats(item))
+        }
+        else {
+            dispatch(bookingSlice.actions.pushSelectedSeats(item))
+        }
     }
 
     useEffect(() => {
-        console.log(choseSeats)
-    }, [choseSeats])
+        setChosenSeats(CURRENT_BOOKING.selectedSeats)
+    }, [CURRENT_BOOKING.selectedSeats])
+
 
     return (
         <React.Fragment>
@@ -58,7 +74,9 @@ function FormRow({ row, list }) {
                         list.includes(item) ?
                             <BookedItem >{item}</BookedItem>
                             :
-                            <Item onClick={() => chooseSeats(item)}>{item}</Item>
+                            (!chosenSeats.includes(item) ?
+                                <Item onClick={() => chooseSeats(item)}>{item}</Item>
+                                : <ChooseItem onClick={() => chooseSeats(item)}>{item}</ChooseItem>)
                     }
                 </Grid>
             ))}

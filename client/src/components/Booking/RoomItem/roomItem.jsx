@@ -32,7 +32,7 @@ const RoomItem = ({ theater }) => {
         setTheaterFilmAvailable({ ...theaterFilmAvailable, listRoom: tmpList })
     }, [])
 
-    useEffect(() => { console.log(theaterFilmAvailable) }, [theaterFilmAvailable]);
+    //useEffect(() => { console.log(theaterFilmAvailable) }, [theaterFilmAvailable]);
 
     const Item = styled(Paper)(({ theme }) => ({
         backgroundColor: theme.palette.mode === 'dark' ? '#1A2027' : '#fff',
@@ -40,7 +40,7 @@ const RoomItem = ({ theater }) => {
         padding: theme.spacing(1),
         textAlign: 'center',
         color: theme.palette.text.secondary,
-        cursor: 'pointer'
+        cursor: 'pointer',
     }));
 
     const BookedItem = styled(Paper)(({ theme }) => ({
