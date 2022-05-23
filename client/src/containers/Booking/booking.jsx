@@ -202,7 +202,7 @@ const Booking = () => {
                                                 data && <RoomItem theater={data} />
                                             }
                                         </div>
-                                    ) : (<BuyerInformation></BuyerInformation>)
+                                    ) : (<BuyerInformation movieInfo = {movieInfo}></BuyerInformation>)
 
                                 }
                             </React.Fragment>

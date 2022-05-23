@@ -107,7 +107,6 @@ export const bookingSlice = createSlice({
 
             state.showTimeList.forEach(showTime => {
                 if (showTime.theaterId === state.selectedTheater._id) {
-                    console.log(showTime.roomId)
                     arr.push(showTime.roomId)
                 }
             })
@@ -121,13 +120,10 @@ export const bookingSlice = createSlice({
         },
 
         setSelectedSeats: (state, action) => {
-            console.log('set')
             state.selectedSeats = action.payload
         },
 
         pushSelectedSeats: (state, action) => {
-            console.log('pushSelectedSeats')
-            console.log(action.payload)
             state.selectedSeats.push(action.payload)
         }
 
