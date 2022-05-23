@@ -4,7 +4,16 @@ const reviewSchema = new mongoose.Schema({
     title: {
         type: String,
     },
-    description: {
+    pilot: {
+        type: String,
+    },
+    advantage: {
+        type: String,
+    },
+    defect: {
+        type: String,
+    },
+    overview: {
         type: String,
     },
     star: {
@@ -16,10 +25,10 @@ const reviewSchema = new mongoose.Schema({
     isVisible: {
         type: Boolean
     },
-    _censorshipId: {
+    _userId: {
         type: String
     },
-    _userId: {
+    _filmId: {
         type: String
     },
 

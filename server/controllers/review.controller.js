@@ -1,5 +1,4 @@
 const ReviewModel = require('../models/review.model')
-const mFunction = require('../../client/src/function')
 
 const reviewController = {
     getAll: (req, res) => {
@@ -14,7 +13,7 @@ const reviewController = {
 
     getById: (req, res) => {
         ReviewModel.findOne({
-                id: req.params.id
+                _id: req.params.id
             })
             .then(data => {
                 res.json(data)
@@ -28,10 +27,14 @@ const reviewController = {
         const newTheater = {
             title: req.body.title,
             description: req.body.description,
+            pilot: req.body.pilot,
+            advantage: req.body.advantage,
+            defect: req.body.defect,
+            overview: req.body.overview,
             star: req.body.star,
-            voteNum: req.body.voteNum,
-            price: req.body.price,
-            listRoom: req.body.listRoom
+            isVisible: req.body.isVisible,
+            _userId: req.body._userId,
+            _filmId: req.body._filmId
         }
         ReviewModel.create(newTheater)
             .then(data => {
@@ -43,14 +46,18 @@ const reviewController = {
     },
 
     update: (req, res) => {
-
-        ReviewModel.updateOne({ id: req.params.id }, {
-                name: req.body.name,
-                address: req.body.address,
-                contact: req.body.contact,
-                managerId: req.body.managerId,
-                price: req.body.price,
-                listRoom: req.body.listRoom
+        ReviewModel.updateOne({ id: req.body._id }, {
+                title: req.body.title,
+                description: req.body.description,
+                pilot: req.body.pilot,
+                advantage: req.body.advantage,
+                defect: req.body.defect,
+                overview: req.body.overview,
+                star: req.body.star,
+                isVisible: req.body.isVisible,
+                _censorshipId: req.body._censorshipId,
+                _userId: req.body._userId,
+                _filmId: req.body._filmId
             }, { new: 'true' })
             .then(data => {
                 res.json("Update successful")
