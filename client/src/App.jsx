@@ -60,17 +60,16 @@ function App() {
 
 
       <Routes>
-        {_currentUser != "" &&
-          <Route path="*" element={
-            _currentUser != "" && _currentUser.rank != 'Customer' ?
-              <Manager />
-              :
-              <div>
-                <ChatBot />
-                <MainNavBar />
-                <Home />
-                <Footer />
-              </div>
+        {
+          <Route path="/" element={_currentUser != '' && _currentUser.rank != 'Customer' ?
+            <Manager />
+            :
+            <div>
+              <ChatBot />
+              <MainNavBar />
+              <Home />
+              <Footer />
+            </div>
           } />
         }
 
@@ -84,7 +83,7 @@ function App() {
 
         <Route path="/actors" element={
           <div>
-
+            <ChatBot />
             <MainNavBar />
             <Actor />
             <Footer />
@@ -92,13 +91,15 @@ function App() {
         } />
 
         <Route path="/genres" element={<div>
+          <ChatBot />
           <MainNavBar />
           <Genre />
           <Footer />
         </div>} />
 
-        <Route path="/reviews" element={
+        <Route path="/reviews/*" element={
           <div>
+            <ChatBot />
             <MainNavBar />
             <Review />
             <Footer />
@@ -111,6 +112,7 @@ function App() {
         {/* Chi tiết phim */}
         <Route path="/filmDetails/:id" element={
           <div>
+            <ChatBot />
             <FilmDetails />
             <Footer />
           </div>
@@ -119,6 +121,7 @@ function App() {
         {/* Chi tiết người */}
         <Route path="/peopleDetails/:id" element={
           <div>
+            <ChatBot />
             <PeopleDetails />
             <Footer />
           </div>
@@ -127,12 +130,14 @@ function App() {
         {/* Góc phim ảnh */}
         <Route path="corner/movie/search/:keyword" element={
           <div>
+            <ChatBot />
             <Corner />
             <Footer />
           </div>
         } />
         <Route path="/corner/movie/:type" element={
           <div>
+            <ChatBot />
             <Corner />
             <Footer />
           </div>
@@ -141,6 +146,7 @@ function App() {
         {/* Góc diễn viên */}
         <Route path="/corner/people" element={
           <div>
+            <ChatBot />
             <Corner />
             <Footer />
           </div>
@@ -148,6 +154,7 @@ function App() {
 
         <Route path="/corner/people/search/:keyword" element={
           <div>
+            <ChatBot />
             <Corner />
             <Footer />
           </div>
@@ -166,6 +173,7 @@ function App() {
         {/* Đặt vé */}
         <Route path="/booking/:id" element={
           <div>
+            <ChatBot />
             <MainNavBar />
             <Booking />
             <Footer />
