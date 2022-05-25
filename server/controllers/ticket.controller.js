@@ -68,7 +68,7 @@ const ticketController = {
 
     create: (req, res) => {
         TicketModel.findOne({
-                id: req.body.id
+                _id: req.body.id
             })
             .then(data => {
                 if (data) {
@@ -76,7 +76,6 @@ const ticketController = {
                     return
                 } else {
                     const newTicket = {
-                        id: req.body.id,
                         _filmId: req.body._filmId,
                         _theaterId: req.body._theaterId,
                         _roomId: req.body._roomId,
@@ -87,7 +86,6 @@ const ticketController = {
                         bookedTime: req.body.bookedTime,
                         isCancelled: req.body.isCancelled,
                         invoice: {
-                            id: req.body.id,
                             quantity: req.body.invoice.quantity,
                             price: req.body.invoice.price,
                             total: req.body.invoice.total,

@@ -31,10 +31,17 @@ import { bookingSelector } from '../../../redux/selector';
 import apiConfig from "../../../api/apiConfig";
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import { red } from '@mui/material/colors'
+import PayPal from '../Paypal/paypal'
+import format from 'date-fns/format'
+import TicketApi from './../../../api/ticketApi';
+import Loading from '../../Loading/loading'
+import { Success, Error } from '../../Alert/alert'
 
 const BuyerInformation = ({ movieInfo }) => {
     const currentUser = useSelector(userSelector);
     const dispatch = useDispatch();
+    const CURRENT_BOOKING = useSelector(bookingSelector)
+    const [isLoading, setIsLoading] = useState(false)
 
     const [values, setValues] = useState({
         name: currentUser.name,
@@ -78,11 +85,6 @@ const BuyerInformation = ({ movieInfo }) => {
         })
     }
 
-    const [updateSucceeded, setUpdateSucceeded] = useState({
-        status: false,
-        message: '',
-        display: false
-    })
 
     const [errorNotification, setErrorNotification] = useState({
         status: false,
@@ -93,6 +95,11 @@ const BuyerInformation = ({ movieInfo }) => {
 
     const handleChangeInformation = (prop) => (event) => {
         setValues({ ...values, [prop]: event.target.value });
+        setUpdateSucceeded({
+            status: false,
+            message: '',
+            display: false,
+        })
     };
 
     const [addressShip, setAddressShip] = useState('')
@@ -112,46 +119,70 @@ const BuyerInformation = ({ movieInfo }) => {
     //get province
     useEffect(() => {
         const getProvinceList = async () => {
-            const resProvince = await fetch('https://sheltered-anchorage-60344.herokuapp.com/province')
-            const resProv = resProvince.json()
-            setProvinceList(await resProv)
+            //const resProvince = 
+            await fetch('https://sheltered-anchorage-60344.herokuapp.com/province')
+                .then(res => res.json()).then((data) => setProvinceList(data))
+
+            // setProvinceList(await resProv)
+
+            //console.log(resProv)
         }
         getProvinceList()
     }, [])
 
     function handleChangeProvince(event) {
         setProvince(event.target.value)
+        setUpdateSucceeded({
+            status: false,
+            message: '',
+            display: false,
+        })
     }
     //get district
     useEffect(() => {
         const getDistrict = async () => {
-            const resDistrict = await fetch(`https://sheltered-anchorage-60344.herokuapp.com/district/?idProvince=${province.idProvince}`)
-            const resDis = resDistrict.json()
-            setDistrictList(await resDis)
+            await fetch(`https://sheltered-anchorage-60344.herokuapp.com/district/?idProvince=${province.idProvince}`)
+                .then(res => res.json())
+                .then((data) => setDistrictList(data))
         }
         getDistrict()
     }, [province])
 
     function handleChangeDistrict(event) {
         setDistrict(event.target.value)
+        setUpdateSucceeded({
+            status: false,
+            message: '',
+            display: false,
+        })
     }
 
     //get commune
     useEffect(() => {
         const getCommune = async () => {
-            const reCommune = await fetch(`https://sheltered-anchorage-60344.herokuapp.com/commune/?idDistrict=${district.idDistrict}`)
-            const resCom = reCommune.json()
-            setCommuneList(await resCom)
+            await fetch(`https://sheltered-anchorage-60344.herokuapp.com/commune/?idDistrict=${district.idDistrict}`)
+                .then(res => res.json())
+                .then((data) => setCommuneList(data))
         }
         getCommune()
     }, [district])
 
     async function handleChangeCommune(event) {
         setCommune(event.target.value)
+        setUpdateSucceeded({
+            status: false,
+            message: '',
+            display: false,
+        })
     }
 
     function handleChangeHouse(event) {
         setHouse(event.target.value)
+        setUpdateSucceeded({
+            status: false,
+            message: '',
+            display: false,
+        })
     }
 
     const validate = () => {
@@ -201,54 +232,121 @@ const BuyerInformation = ({ movieInfo }) => {
             flag = false;
         }
 
+        console.log(province.idProvince == null)
 
-        if (values.house === undefined || values.house === '') {
+        if (house === undefined || house === '') {
             setValidAdress({
                 check: false,
                 alert: 'Please enter address'
             })
             flag = false;
         }
-        else if (province == {}) {
+        else if (province.idProvince == null) {
+
             setValidAdress({
                 check: false,
                 alert: 'Please choose province'
             })
             flag = false;
+
+            console.log('a')
         }
-        else if (district == {}) {
+        else if (district.idDistrict == null) {
             setValidAdress({
                 check: false,
                 alert: 'Please choose district'
             })
             flag = false;
+
+            console.log('b')
         }
-        else if (commune == {}) {
+        else if (commune.idCommune == null) {
             setValidAdress({
                 check: false,
                 alert: 'Please choose commune'
             })
             flag = false;
+
+            console.log('c')
         }
         else {
-            console.log(commune)
-            // setBigAddress(house + ", " + commune + ", " + district + ", " + province)
-            //  console.log(bigAddress)
+            const communeName = commune.name
+            const districtName = district.name
+            const provinceName = province.name
+
+            console.log('d')
+
+            ///// setBigAddress(house + ", " + communeName + ", " + districtName + ", " + provinceName)
         }
         return flag;
     }
 
-    const order = async()=>{
-        if (validate()){
+    useEffect(() => {
+        setBigAddress(house + ", " + commune.name + ", " + district.name + ", " + province.name)
+    }, [house, province, district, commune])
 
+
+    const [updateSucceeded, setUpdateSucceeded] = useState({
+        status: false,
+        message: ''
+    })
+
+    const navigate = useNavigate()
+
+    const order = async () => {
+
+        if (validate()) {
+            let currentTime = new Date()
+            const dateFormat = format(currentTime, "PP p");
+            const data = {
+                _filmId: movieInfo.id,
+                _theaterId: CURRENT_BOOKING.selectedTheater._id,
+                _roomId: CURRENT_BOOKING.selectedRoom,
+                seatIdArray: CURRENT_BOOKING.selectedSeats,
+                dateOccur: CURRENT_BOOKING.selectedDate,
+                timeOccur: CURRENT_BOOKING.selectedTime,
+                _userEmail: currentUser.email,
+                bookedTime: dateFormat,
+                isCancelled: false,
+                invoice: {
+                    quantity: CURRENT_BOOKING.selectedSeats.length,
+                    price: CURRENT_BOOKING.selectedTheater.price,
+                    total: CURRENT_BOOKING.selectedSeats.length * CURRENT_BOOKING.selectedTheater.price,
+                    method: "Cash"
+                }
+
+            }
+
+            await TicketApi.create(data)
+                .then((res) => {
+                    setUpdateSucceeded({
+                        status: true,
+                        message: 'Buy ticket successfully!'
+                    })
+
+                })
+                .catch((err) => {
+                    console.log(err)
+                    setErrorNotification({
+                        status: true,
+                        message: 'Sorry! There are something wrong with your request'
+                    })
+                })
+
+            console.log(data)
         }
     }
+
+    const [checkOutPaypal, setCheckOutPaypal] = useState(false)
+    const paypal = () => {
+        setCheckOutPaypal(true)
+    }
     return (
-        <div>
-            <Grid container spacing={2}>
-                <Grid item xs={6} style={{}}>
+        <div style={{marginTop: 24}}>
+            <Grid container spacing={3}>
+                <Grid item xs={6} >
                     {/* Name */}
-                    <Grid item container >
+                    <Grid item container sx={{ p: 2, pl: 4 }} >
                         <Grid item xs={4}>
                             <Typography style={{ color: 'rgb(196, 196, 196)', fontSize: 15, fontStyle: 'italic' }}>Name: </Typography>
                         </Grid>
@@ -286,7 +384,7 @@ const BuyerInformation = ({ movieInfo }) => {
                     </Grid>
 
                     {/* Contact */}
-                    <Grid item container >
+                    <Grid item container sx={{ p: 2, pl: 4 }}>
                         <Grid item xs={4}>
                             <Typography style={{ color: 'rgb(196, 196, 196)', fontSize: 15, fontStyle: 'italic' }}>Contact: </Typography>
                         </Grid>
@@ -323,7 +421,7 @@ const BuyerInformation = ({ movieInfo }) => {
                     </Grid>
 
                     {/* Email */}
-                    <Grid item container >
+                    <Grid item container sx={{ p: 2, pl: 4 }}>
                         <Grid item xs={4}>
                             <Typography style={{ color: 'rgb(196, 196, 196)', fontSize: 15, fontStyle: 'italic' }}>Email: </Typography>
                         </Grid>
@@ -361,7 +459,7 @@ const BuyerInformation = ({ movieInfo }) => {
                     </Grid>
 
                     {/* Address */}
-                    <Grid item container>
+                    <Grid item container sx={{ p: 2, pl: 4 }}>
                         <AddressInput
                             province={province}
                             provinceList={provinceList}
@@ -374,20 +472,30 @@ const BuyerInformation = ({ movieInfo }) => {
                             handleChangeDistrict={handleChangeDistrict}
                             handleChangeCommune={handleChangeCommune}
                         />
-                        {validEmail.check && <Typography style={{ fontSize: 12, color: 'red', fontStyle: 'italic' }}>{validAdress.alert}</Typography>}
+                        {!validAdress.check && <Typography style={{ fontSize: 12, color: 'red', fontStyle: 'italic' }} sx={{ pt: 1 }}>{validAdress.alert}</Typography>}
                     </Grid>
 
                 </Grid>
 
-                <Grid item xs={6} style={{ backgroundColor: '#fff' }}>
+                <Grid item xs={6} style={{ backgroundColor: 'rgba(4, 12, 24, 1)' }}>
                     <TicketInformation movie={movieInfo} />
                 </Grid>
 
             </Grid>
 
-            <Box textAlign="center">
-                <OrderBtn onClick={order}>ORDER</OrderBtn>
+            <Box textAlign="center" sx={{ p: 2 }}>
+                <OrderBtn onClick={order} >ORDER</OrderBtn>
+                {
+                    checkOutPaypal ? (<PayPal />) :
+                        <PaypalBtn onClick={paypal}>PAYPAL</PaypalBtn>
+                }
             </Box>
+
+            {updateSucceeded.status && <Success message={updateSucceeded.message} status={updateSucceeded.status} />}
+            {errorNotification.status && <Error message={errorNotification.message} status={errorNotification.status} />}
+
+            {isLoading &&
+                <Loading />}
         </div>
     )
 }
@@ -401,13 +509,12 @@ const AddressInput = ({ province, district, commune,
                 fullWidth
                 id="outlined-basic"
                 label="Your address"
-                variant="outlined"
+                variant="standard"
                 onChange={handleChangeHouse}
                 sx={{
                     borderRadius: '0.5',
                     input: { color: 'white', marginLeft: 10, marginX: 0.4 },
                     icons: { color: 'white' },
-                    ///backgroundColor: 'rgb(9, 24, 48)',
                     label: { color: 'rgb(153, 153, 153)', fontSize: 15 },
                     border: { color: 'rgb(153, 153, 153)' }
                 }}
@@ -483,33 +590,50 @@ const AddressInput = ({ province, district, commune,
 const TicketInformation = ({ movie }) => {
     const CURRENT_BOOKING = useSelector(bookingSelector)
     const [movieInfo, setMovieInfo] = useState(movie)
+    const [total, setTotal] = useState(0)
+
+
+
+    useEffect(() => {
+        const amount = CURRENT_BOOKING.selectedSeats.length
+        const price = CURRENT_BOOKING.selectedTheater.price
+        setTotal(amount * price)
+    }, [])
+
 
     return (
-        <Grid item container style={{ background: '#ffa' }}>
-            <Grid item xs={5} style={{ background: '#982' }}>
-                {/* <div className="booking-container__movie-cover__poster"
-                            style={{ backgroundImage: `url(${apiConfig.originalImage(movieInfo.poster_path)})` }}></div> */}
+        <Grid item container spacing={2}>
+            <Grid item xs={3} style={{}}>
+                <div className="poster"
+                    style={{ backgroundImage: `url(${apiConfig.originalImage(movieInfo.poster_path)})`, width: '100%', height: '100%', backgroundPosition: 'center', backgroundSize: 'cover' }}>
+                </div>
             </Grid>
 
             <Grid item xs={7}>
                 <Stack direction="column">
-                    <Typography>{movieInfo.title}</Typography>
-                    <Typography>{CURRENT_BOOKING.selectedTheater.name}</Typography>
-                    <Typography>{CURRENT_BOOKING.selectedTheater.address}</Typography>
+                    <Typography variant="h5" style={{ fontWeight: 'bold', p: 2, color: 'red' }}>{movieInfo.title}</Typography>
+                    <Typography variant='subtitle1' style={{ fontWeight: 'bold', p: 2, color: 'gray' }}>{CURRENT_BOOKING.selectedTheater.name}</Typography>
+                    <Typography variant='subtitle2' style={{ fontStyle: 'italic', p: 2, color: 'gray' }}>{CURRENT_BOOKING.selectedTheater.address}</Typography>
+                    <Typography variant='subtitle2' style={{ fontWeight: 'bold', color: 'red', p: 2 }}>Price: {CURRENT_BOOKING.selectedTheater.price} VND</Typography>
                     <Typography>{CURRENT_BOOKING.selectedDate} - {CURRENT_BOOKING.selectedTime}</Typography>
-                    <Typography>Seats: </Typography>
-                    {
-                        CURRENT_BOOKING.selectedSeats.map((item) => (
-                            <Typography>{item} </Typography>
-                        ))
-                    }
+                    <Typography variant='subtitle1' style={{ fontStyle: 'italic', p: 2 }}>Seats: </Typography>
+                    <Stack direction="row" sx={{ pl: 2 }}>
+                        {
+                            CURRENT_BOOKING.selectedSeats.map((item) => (
+                                <Typography sx={{ pr: 0.5 }}>{item} </Typography>
+                            ))
+                        }
+                    </Stack>
+
+
+                    <Typography sx={{ fontWeight: 'bold', color: 'red' }}>Total: {total} VND</Typography>
                 </Stack>
             </Grid>
         </Grid>
     )
 }
 
-const OrderBtn = ({onClick})=>{
+const OrderBtn = ({ onClick }) => {
     const btnTheme = createTheme({
         shape: {
             borderRadius: 20
@@ -522,7 +646,26 @@ const OrderBtn = ({onClick})=>{
     return (
         <div >
             <ThemeProvider theme={btnTheme} >
-                <Button sx={{ paddingX: 5, paddingY: 0.8 }} variant="contained" onClick={onClick} >CHECK</Button>
+                <Button sx={{ paddingX: 5, paddingY: 0.8, mb: 2 }} variant="contained" onClick={onClick} >order</Button>
+            </ThemeProvider>
+        </div >
+    )
+}
+
+const PaypalBtn = ({ onClick }) => {
+    const btnTheme = createTheme({
+        shape: {
+            borderRadius: 20
+        },
+        palette: {
+            primary: red
+        },
+    })
+
+    return (
+        <div >
+            <ThemeProvider theme={btnTheme} >
+                <Button sx={{ paddingX: 5, paddingY: 0.8 }} variant="contained" onClick={onClick} >Paypal</Button>
             </ThemeProvider>
         </div >
     )

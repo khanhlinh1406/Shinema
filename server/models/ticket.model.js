@@ -2,11 +2,6 @@ const mongoose = require('mongoose')
 const Schema = mongoose.Schema;
 
 const TicketSchema = new Schema({
-    id: {
-        type: String,
-        required: true
-    },
-
     _filmId: {
         type: String,
         required: true
@@ -54,11 +49,6 @@ const TicketSchema = new Schema({
     },
 
     invoice: {
-        id: {
-            type: String,
-            required: true
-        },
-
         quantity: {
             type: Number,
             required: true

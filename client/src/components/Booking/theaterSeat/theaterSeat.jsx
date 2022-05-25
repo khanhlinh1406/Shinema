@@ -39,13 +39,22 @@ const ChooseItem = styled(Paper)(({ theme }) => ({
     fontWeight: 'bold',
 }));
 
-const FormRow = ({ row, list }) => {
+const FormRow = ({ row, list, room }) => {
     const CURRENT_BOOKING = useSelector(bookingSelector)
     const dispatch = useDispatch()
 
+    // if (CURRENT_BOOKING.selectedRoom !== room.id) {
+    //     dispatch(bookingSlice.actions.setSelectedRoom(room.id))
+    //     dispatch(bookingSlice.actions.setChosenSeats([]))
+    // }
+
     const [chosenSeats, setChosenSeats] = useState(CURRENT_BOOKING.selectedSeats)
     const chooseSeats = (item) => {
-        if (list.includes(item)) {return;}
+        if (CURRENT_BOOKING.selectedRoom !== room.id) {
+            dispatch(bookingSlice.actions.setSelectedRoom(room.id))
+            dispatch(bookingSlice.actions.setSelectedSeats([]))
+        }
+        if (list.includes(item)) { return; }
 
         if (CURRENT_BOOKING.selectedSeats.length > 0) {
             if (CURRENT_BOOKING.selectedSeats.includes(item)) {
@@ -126,7 +135,7 @@ const TheaterSeat = ({ item }) => {
             <Grid container spacing={1}>
                 {item.listSeat.map((row, index) => (
                     <Grid container item spacing={3} key={index}>
-                        <FormRow row={row} list={bookedSeats} />
+                        <FormRow row={row} list={bookedSeats} room={item} />
                     </Grid>
                 ))}
 

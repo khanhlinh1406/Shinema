@@ -140,9 +140,9 @@ const Booking = () => {
     return (
         <div className="booking-container" >
             <MovieInformation movieInfo={movieInfo} />
-            <Box sx={{ width: '100%', mt: 15 }}>
+            <Box sx={{ width: '70%', mt: 15, ml: 25 }}>
                 <div>
-                    <Typography variant="h5">Booking tickets</Typography>
+                    <Typography variant="h5" sx={{p: 2}}>Booking tickets</Typography>
                     <Stepper nonLinear activeStep={activeStep} sx={{ width: '80%' }}>
                         {steps.map((label, index) => (
                             <Step key={label} completed={completed[index]}>
@@ -196,7 +196,7 @@ const Booking = () => {
 
                                 {
                                     activeStep == 0 ? (
-                                        <div>
+                                        <div >
                                             <BookingForm showTimeList={showTimeList} />
                                             {
                                                 data && <RoomItem theater={data} />
