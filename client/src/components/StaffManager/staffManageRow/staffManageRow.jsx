@@ -41,13 +41,13 @@ import { useDispatch } from 'react-redux';
 
 export const createData = (staff) => {
   const email = staff.email
-  const phoneNumber = staff.phoneNumber
+  const contact = staff.contact
   const name = staff.name
   const address = staff.address
   const gender = staff.gender
   const birthday = staff.birthday
   return {
-    email, name, phoneNumber, gender, address, birthday
+    email, name, contact, gender, address, birthday
   };
 }
 
@@ -100,9 +100,9 @@ Row.propTypes = {
   row: PropTypes.shape({
     name: PropTypes.string.isRequired,
     email: PropTypes.string.isRequired,
-    phoneNumber: PropTypes.string.isRequired,
+    contact: PropTypes.string.isRequired,
     address: PropTypes.string.isRequired,
-    gender: PropTypes.string.isRequired,
+    //gender: PropTypes.string.isRequired,
     birthday: PropTypes.string.isRequired,
   }).isRequired,
 };

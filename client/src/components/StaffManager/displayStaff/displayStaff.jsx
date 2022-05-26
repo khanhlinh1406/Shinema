@@ -3,6 +3,7 @@ import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router";
 import accountApi from '../../../api/accountApi';
 
+
 import { styled } from '@mui/material/styles';
 import Table from '@mui/material/Table';
 import TableBody from '@mui/material/TableBody';
@@ -19,8 +20,10 @@ import Row from '../staffManageRow/staffManageRow'
 import { createData } from '../staffManageRow/staffManageRow'
 import { CustomFillButton } from '../index'
 import { CustomOutlineButton } from '../index'
+import { createTheme, ThemeProvider } from '@mui/material/styles';
 
 import { styles } from "./styles";
+import { grey, red } from '@mui/material/colors';
 import { getAllStaff } from "../../../redux/slices/staffSlice";
 import { useDispatch, useSelector } from "react-redux";
 import { currentStaffList } from "../../../redux/selector";
@@ -92,26 +95,38 @@ const DisplayStaff = () => {
         return counter
     }
 
+    const tfTheme = createTheme({
+        shape: {
+            borderRadius: 55
+        },
+        palette: {
+            primary: grey
+        },
+        text: grey
+    })
+
     return (
         <div>
-            <Box sx={{mt: 2, ml: 16, }}>
-                
-            <Grid container spacing={2} >
-                <Grid xs={10} item>
-                    <Box textAlign="left">
-                        <TextField id="standard-basic" label="Search name..." variant="standard" onChange={handleChange} />
-                    </Box>
+            <Box sx={{ mt: 2, ml: 16, }}>
 
-                    <Box textAlign="right">
-                        <CustomFillButton onClick={() => { navigate('/manager/staff/add') }}>New</CustomFillButton>
-                    </Box>
+                <Grid container spacing={2} >
+                    <Grid xs={10} item>
+                        <Box textAlign="left">
+                            <ThemeProvider theme={tfTheme}>
+                                <TextField id="standard-basic" label="Search name..." variant="standard" onChange={handleChange} />
+                            </ThemeProvider>
+                        </Box>
 
-                    {staffList &&
-                        <StaffTable data={staffList} />
-                    }
-                </Grid>
+                        <Box textAlign="right">
+                            <CustomFillButton onClick={() => { navigate('/manager/staff/add') }}>New</CustomFillButton>
+                        </Box>
 
-                {/* <Grid xs={4} item>
+                        {staffList &&
+                            <StaffTable data={staffList} />
+                        }
+                    </Grid>
+
+                    {/* <Grid xs={4} item>
                     <Paper style={{ top: 0,}}>
                         <Grid container spacing={2}>
                             <Grid xs={6} item>
@@ -135,7 +150,7 @@ const DisplayStaff = () => {
                 </Grid> 
             */}
 
-            </Grid>
+                </Grid>
 
             </Box>
         </div>

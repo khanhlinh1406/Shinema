@@ -44,7 +44,7 @@ const Booking = () => {
     const [activeStep, setActiveStep] = React.useState(0);
     const [completed, setCompleted] = React.useState({});
     const steps = ["Firstly, let choose your ideal seats!",
-        "Secondly, let fill out your personal information!"]
+        "Secondly, let fill out your personal information and choose the paying method!"]
 
     const totalSteps = () => {
         return steps.length;
@@ -134,52 +134,53 @@ const Booking = () => {
             setData(CURRENT_BOOKING.selectedTheater)
     }, [CURRENT_BOOKING.check])
 
-
-
     return (
         <div className="booking-container" >
             <MovieInformation movieInfo={movieInfo} />
-                <Box sx={{ width: '70%', mt: 15, ml: 25 }}>
-                    <div>
-                        <Typography variant="h5" sx={{ p: 2 }}>Booking tickets</Typography>
-                        <Stepper nonLinear activeStep={activeStep} sx={{ width: '80%' }}>
-                            {steps.map((label, index) => (
-                                <Step key={label} completed={completed[index]}>
-                                    <StepButton color="inherit" onClick={handleStep(index)}>
+            <Box sx={{ width: '70%', mt: 15, ml: 25 }}>
+                <div>
+                    <Typography variant="h5" sx={{ p: 2 }}>Booking tickets</Typography>
+                    <Stepper nonLinear activeStep={activeStep} sx={{ width: '90%', ml: 4 }}>
+                        {steps.map((label, index) => (
+                            <Step key={label} completed={completed[index]}>
+                                    <StepButton color="inherit" onClick={handleStep(index)} >
                                         {label}
                                     </StepButton>
-                                </Step>
-                            ))}
-                        </Stepper>
-                        <div>
-                            {allStepsCompleted() ? (
-                                <React.Fragment>
-                                    <Typography sx={{ mt: 2, mb: 1 }}>
-                                        All steps completed - you&apos;re finished
-                                    </Typography>
-                                    <Box sx={{ display: 'flex', flexDirection: 'row', pt: 2 }}>
-                                        <Box sx={{ flex: '1 1 auto' }} />
-                                        <Button onClick={handleReset}>Reset</Button>
-                                    </Box>
-                                </React.Fragment>
-                            ) : (
-                                <React.Fragment>
-                                    <Box sx={{ display: 'flex', flexDirection: 'row', pt: 2 }}>
-                                        <Button
-                                            color="inherit"
-                                            disabled={activeStep === 0}
-                                            onClick={handleBack}
-                                            sx={{ mr: 1 }}
-                                        >
-                                            Back
-                                        </Button>
-                                        <Box sx={{ flex: '1 1 auto' }} />
-                                        {CURRENT_BOOKING.selectedSeats.length != 0 &&
-                                            <Button onClick={handleNext} sx={{ mr: 1 }}>
+                            </Step>
+                        ))}
+                    </Stepper>
+                    <div>
+                        {allStepsCompleted() ? (
+                            <React.Fragment>
+                                <Typography sx={{ mt: 2, mb: 1 }}>
+                                    All steps completed - you&apos;re finished
+                                </Typography>
+                                <Box sx={{ display: 'flex', flexDirection: 'row', pt: 2 }}>
+                                    <Box sx={{ flex: '1 1 auto' }} />
+                                    <Button onClick={handleReset}>Reset</Button>
+                                </Box>
+                            </React.Fragment>
+                        ) : (
+                            <React.Fragment>
+                                <Box sx={{ display: 'flex', flexDirection: 'row', pt: 2 }}>
+                                    <Button
+                                        color="inherit"
+                                        disabled={activeStep === 0}
+                                        onClick={handleBack}
+                                        sx={{ mr: 1, color: 'red', fontWeight: 'bold' }}
+                                    >
+                                        Back
+                                    </Button>
+                                    <Box sx={{ flex: '1 1 auto' }} />
+                                    {
+                                        (CURRENT_BOOKING.selectedSeats.length != 0 &&
+                                            activeStep != totalSteps() - 1) ?
+                                            <Button onClick={handleNext} sx={{ mr: 1, color: 'red', fontWeight: 'bold' }}>
                                                 Next
                                             </Button>
-                                        }
-                                        {/* {activeStep !== steps.length &&
+                                            : null
+                                    }
+                                    {/* {activeStep !== steps.length &&
                                         (completed[activeStep] ? (
                                             <Typography variant="caption" sx={{ display: 'inline-block' }}>
                                                 Step {activeStep + 1} already completed
@@ -191,24 +192,24 @@ const Booking = () => {
                                                     : 'Complete Step'}
                                             </Button>
                                         ))} */}
-                                    </Box>
+                                </Box>
 
-                                    {
-                                        activeStep == 0 ? (
-                                            <div >
-                                                <BookingForm showTimeList={showTimeList} />
-                                                {
-                                                    data && <RoomItem theater={data} />
-                                                }
-                                            </div>
-                                        ) : (<BuyerInformation movieInfo={movieInfo}></BuyerInformation>)
+                                {
+                                    activeStep == 0 ? (
+                                        <div >
+                                            <BookingForm showTimeList={showTimeList} />
+                                            {
+                                                data && <RoomItem theater={data} />
+                                            }
+                                        </div>
+                                    ) : (<BuyerInformation movieInfo={movieInfo}></BuyerInformation>)
 
-                                    }
-                                </React.Fragment>
-                            )}
-                        </div>
+                                }
+                            </React.Fragment>
+                        )}
                     </div>
-                </Box>
+                </div>
+            </Box>
         </div>
 
         //         <BookingForm showTimeList={showTimeList} />

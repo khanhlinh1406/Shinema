@@ -9,7 +9,7 @@ import { Switch } from '@mui/material';
 import Button from '@mui/material/Button';
 
 import { styled } from '@mui/material/styles';
-import { grey } from '@mui/material/colors';
+import { grey, red } from '@mui/material/colors';
 import mFunction from '../../../function';
 import accountApi from './../../../api/accountApi';
 import { useNavigate } from 'react-router';
@@ -366,28 +366,27 @@ const NewStaff = () => {
 export default NewStaff
 
 const CustomFillButton = styled(Button)(({ theme }) => ({
-  color: theme.palette.getContrastText(grey[900]),
-  backgroundColor: grey[900],
+  color: theme.palette.getContrastText('#fff'),
+  backgroundColor: red[600],
   '&:hover': {
-    backgroundColor: grey[700],
+      backgroundColor: red[700],
   },
   padding: '6px 35px',
   marginLeft: '20px',
-  borderRadius: '10px'
-
+  borderRadius: '20px'
 }));
 
 const CustomOutlineButton = styled(Button)(({ theme }) => ({
-  color: grey[900],
-  borderColor: grey[900],
+  color: red[700],
+  borderColor: red[700],
   borderWidth: 1,
   borderStyle: 'solid',
   '&:hover': {
-    backgroundColor: grey[900],
-    color: theme.palette.getContrastText(grey[900]),
+      backgroundColor: red[900],
+      color: theme.palette.getContrastText(red[900]),
   },
   padding: '6px 35px',
   marginLeft: '20px',
-  borderRadius: '10px'
+  borderRadius: '20px'
 
 }));

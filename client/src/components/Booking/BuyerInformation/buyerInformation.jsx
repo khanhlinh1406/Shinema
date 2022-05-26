@@ -348,9 +348,9 @@ const BuyerInformation = ({ movieInfo }) => {
                 `Phone: ${currentUser.contact} \n` +
                 // `COD Address: ${bigAddress}` + "\n" +
                 "-------------------------------------------------------- \n" +
-                `Movie: ${movieInfo.title} \n`+
+                `Movie: ${movieInfo.title} \n` +
                 `Theater: ${CURRENT_BOOKING.selectedTheater.name + " - Room: " + CURRENT_BOOKING.selectedRoom} \n` +
-                `Seats: ${data.seatIdArray} \n`+ 
+                `Seats: ${data.seatIdArray} \n` +
                 "-------------------------------------------------------- \n" +
                 `Total: ${data.invoice.total} VND` + "\n" +
                 `Method: Cash` + "\n" +
@@ -359,7 +359,7 @@ const BuyerInformation = ({ movieInfo }) => {
         }).then(data => {
 
         })
-        .catch(err => console.log(err))
+            .catch(err => console.log(err))
     }
 
     const [methodVisible, setMethodVisible] = useState(false)
@@ -418,7 +418,8 @@ const BuyerInformation = ({ movieInfo }) => {
                         <Grid item xs={8}>
                             {
                                 validName.check === true ?
-                                    <TextField className="profile-information__item__content"
+                                    <TextField 
+                                    fullWidth
                                         variant="standard"
                                         sx={{
                                             borderRadius: '0.5',
@@ -430,7 +431,7 @@ const BuyerInformation = ({ movieInfo }) => {
                                         defaultValue={currentUser.name}
                                         onChange={handleChangeInformation('name')}
                                     /> :
-                                    <TextField className="profile-information__item__content"
+                                    <TextField fullWidth
                                         variant="standard"
                                         sx={{
                                             borderRadius: '0.5',
@@ -456,7 +457,7 @@ const BuyerInformation = ({ movieInfo }) => {
                         <Grid item xs={8}>
                             {
                                 validContact.check === true ?
-                                    <TextField className="profile-information__item__content"
+                                    <TextField fullWidth
                                         variant="standard"
                                         sx={{
                                             borderRadius: '0.5',
@@ -493,7 +494,7 @@ const BuyerInformation = ({ movieInfo }) => {
                         <Grid item xs={8}>
                             {
                                 validEmail.check === true ?
-                                    <TextField className="profile-information__item__content"
+                                    <TextField fullWidth
                                         variant="standard"
                                         sx={{
                                             borderRadius: '0.5',
@@ -505,7 +506,7 @@ const BuyerInformation = ({ movieInfo }) => {
                                         defaultValue={currentUser.email}
                                         onChange={handleChangeInformation('email')}
                                     /> :
-                                    <TextField className="profile-information__item__content"
+                                    <TextField fullWidth
                                         variant="standard"
                                         sx={{
                                             borderRadius: '0.5',
@@ -542,7 +543,7 @@ const BuyerInformation = ({ movieInfo }) => {
 
                 </Grid>
 
-                <Grid item xs={6} style={{ backgroundColor: 'rgba(4, 12, 24, 1)' }}>
+                <Grid item xs={6} >
                     <TicketInformation movie={movieInfo} />
                 </Grid>
 
@@ -562,7 +563,7 @@ const BuyerInformation = ({ movieInfo }) => {
                             <FormControlLabel value="cash" control={<Radio />} label="Cash" />
                             {cash && <OrderBtn onClick={order} />}
                             <FormControlLabel value="paypal" control={<Radio />} label="Paypal" />
-                            {pp && <PayPal purcharses={purchasesUnit} ticket={data} movieInfo={movieInfo}/>}
+                            {pp && <PayPal purcharses={purchasesUnit} ticket={data} movieInfo={movieInfo} />}
                         </RadioGroup>
                     </FormControl>
                 }
@@ -610,8 +611,9 @@ const AddressInput = ({ province, district, commune,
                             label="Province/City"
                             onChange={handleChangeProvince}
                             sx={{
-                                label: { color: 'rgb(153, 153, 153)', fontSize: 15 },
-                                input: { color: 'white', marginLeft: 10, marginX: 0.4 },
+                                svg: { color: '#fff' },
+                                input: { color: '#fff' },
+                                label: { color: '#fff' },
                             }}
                         >
                             {provinceList.map((province) => (
@@ -632,7 +634,9 @@ const AddressInput = ({ province, district, commune,
                             label="District"
                             onChange={handleChangeDistrict}
                             sx={{
-
+                                svg: { color: '#fff' },
+                                input: { color: '#fff' },
+                                label: { color: '#fff' },
                             }}
                         >
                             {districtList.map((district) => (
@@ -652,7 +656,11 @@ const AddressInput = ({ province, district, commune,
                             value={commune}
                             label="Commune"
                             onChange={handleChangeCommune}
-                            sx={{}}
+                            sx={{
+                                svg: { color: '#fff' },
+                                input: { color: '#fff' },
+                                label: { color: '#fff' },
+                            }}
                         >
                             {communeList.map((commune) => (
                                 <MenuItem value={commune}>{commune.name}</MenuItem>
@@ -682,34 +690,41 @@ const TicketInformation = ({ movie }) => {
 
 
     return (
-        <Grid item container spacing={2}>
-            <Grid item xs={3} style={{}}>
-                <div className="poster"
-                    style={{ backgroundImage: `url(${apiConfig.originalImage(movieInfo.poster_path)})`, width: '100%', height: '100%', backgroundPosition: 'center', backgroundSize: 'cover' }}>
-                </div>
-            </Grid>
+        <Box style={{ backgroundColor: '#cfcfcf', boxShadow: '#fff 0px 5px 15px;' }} sx={{ p: 2 }}>
+            <Grid container spacing={2}>
+                <Grid item xs={4} style={{}}>
+                    <div className="poster"
+                        style={{ backgroundImage: `url(${apiConfig.originalImage(movieInfo.poster_path)})`, width: '100%', height: '100%', backgroundPosition: 'center', backgroundSize: 'cover' }}>
+                    </div>
+                </Grid>
 
-            <Grid item xs={7}>
-                <Stack direction="column">
-                    <Typography variant="h5" style={{ fontWeight: 'bold', p: 2, color: 'red' }}>{movieInfo.title}</Typography>
-                    <Typography variant='subtitle1' style={{ fontWeight: 'bold', p: 2, color: 'gray' }}>{CURRENT_BOOKING.selectedTheater.name}</Typography>
-                    <Typography variant='subtitle2' style={{ fontStyle: 'italic', p: 2, color: 'gray' }}>{CURRENT_BOOKING.selectedTheater.address}</Typography>
-                    <Typography variant='subtitle2' style={{ fontWeight: 'bold', color: 'red', p: 2 }}>Price: {CURRENT_BOOKING.selectedTheater.price} VND</Typography>
-                    <Typography>{CURRENT_BOOKING.selectedDate} - {CURRENT_BOOKING.selectedTime}</Typography>
-                    <Typography variant='subtitle1' style={{ fontStyle: 'italic', p: 2 }}>Seats: </Typography>
-                    <Stack direction="row" sx={{ pl: 2 }}>
-                        {
-                            CURRENT_BOOKING.selectedSeats.map((item) => (
-                                <Typography sx={{ pr: 0.5 }}>{item} </Typography>
-                            ))
-                        }
+                <Grid item xs={7}>
+                    <Stack direction="column">
+                        <Typography variant="h5" style={{ fontWeight: 'bold', p: 2, color: 'red' }}>{movieInfo.title}</Typography>
+                        <Typography variant='subtitle1' style={{ fontWeight: 'bold', p: 2, color: 'black' }}>{CURRENT_BOOKING.selectedTheater.name}</Typography>
+                        <Typography variant='caption' style={{ fontStyle: 'italic', p: 2, color: 'black' }}>{CURRENT_BOOKING.selectedTheater.address}</Typography>
+                        <Typography variant='subtitle2' style={{ fontWeight: 'bold', color: 'black', p: 2 }}>Price: {CURRENT_BOOKING.selectedTheater.price}$</Typography>
+                        <Typography variant='subtitle2' style={{ color: 'black', p: 2 }}>Date - Time: {CURRENT_BOOKING.selectedDate} - {CURRENT_BOOKING.selectedTime}</Typography>
+                        <Typography variant='subtitle2' style={{ fontStyle: 'italic', fontWeight: 'bold', p: 2, color: 'black' }}>Seats: </Typography>
+                        <Stack direction="row" sx={{ pl: 2 }}>
+                            {
+                                CURRENT_BOOKING.selectedSeats.map((item) => (
+                                    <Typography variant="subtitle2" sx={{ pr: 0.5, color: 'black' }}>{item} </Typography>
+                                ))
+                            }
+                        </Stack>
+
+
+                        <Typography variant="subtitle2"sx={{ fontWeight: 'bold', color: 'red' }}>Total: {total}$</Typography>
                     </Stack>
-
-
-                    <Typography sx={{ fontWeight: 'bold', color: 'red' }}>Total: {total} VND</Typography>
-                </Stack>
+                </Grid>
             </Grid>
-        </Grid>
+
+            <Typography variant="caption" sx={{pt: 1, color: 'black', fontStyle: 'italic', fontWeight: 800}}>
+                * We will send the booked ticket information to your email right after you order it! Please give this email for our staff before enter the room. Let enjoy the movie!
+                </Typography>
+        </Box>
+
     )
 }
 
