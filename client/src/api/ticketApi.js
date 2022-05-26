@@ -16,9 +16,15 @@ const TicketApi = {
         return res.data
     },
 
-    getBookedSeats: async(theaterId, roomId, date, time) => {
-        const res = await ApiDatabase.get('/ticket/getBookedSeats/' + theaterId + '/' + roomId + '/' + date + '/' + time);
-        return res.data;
+    getBookedSeats: async(theaterId, room, date, time) => {
+
+        const res = await ApiDatabase.post('/ticket/find/bookedSeats', {
+            room: room,
+            theaterId: theaterId,
+            date: date,
+            time: time
+        });
+        return res;
     },
 
     create: async(ticket) => {
@@ -38,3 +44,5 @@ const TicketApi = {
         return res
     }
 }
+
+export default TicketApi

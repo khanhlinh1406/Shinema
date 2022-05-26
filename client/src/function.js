@@ -86,6 +86,16 @@ const mFunction = {
         return Math.abs((h1 - h2) * 60 + (m1 - m2))
     },
 
+    subDate: (date1, date2) => {
+        let d1 = new Date(date1)
+        let d2 = new Date(date2)
+
+        let Difference_In_Time = d1.getTime() - d2.getTime()
+        let Difference_In_Days = Difference_In_Time / (1000 * 3600 * 24);
+
+        return Difference_In_Days
+    },
+
     availableSeat: (listBookedSeats, listRoomSeats, currentSeat) => {
         if (listRoomSeats.contains(currentSeat)) {
             if (listBookedSeats.contains(currentSeat)) {
@@ -99,6 +109,14 @@ const mFunction = {
 
     removeDuplicates: (array) => {
         return Array.from(new Set(array))
+    },
+
+    containNumeric: (string) => {
+        return /\d/.test(string)
+    },
+
+    onlyLettersAndSpaces: (str) => {
+        return /^[A-Za-z\s]*$/.test(str);
     }
 
 }

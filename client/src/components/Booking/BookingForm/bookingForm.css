@@ -1,5 +1,7 @@
 .booking-form__container {
     margin-top: 8rem;
+    display: flex;
+    width: 1200px;
 }
 
 .booking-form__container__select {
@@ -20,6 +22,7 @@
     line-height: 100%;
     font-size: 0.8rem;
     font-weight: bold;
+    color: black
 }
 
 .booking-form__container__select__date__swiper {
@@ -29,7 +32,7 @@
 }
 
 .booking-form__container__select__time {
-    width: 30%;
+    width: 25%;
     height: 100%;
 }
 
@@ -39,6 +42,7 @@
     font-size: 0.8rem;
     font-weight: bold;
     width: 100%;
+    color: black;
 }
 
 .booking-form__container__select__time__swiper {
@@ -47,7 +51,7 @@
 }
 
 .booking-form__container__select__theater {
-    width: 30%;
+    width: 35%;
     height: 100%;
 }
 
@@ -56,6 +60,7 @@
     padding-top: 1rem;
     font-size: 0.8rem;
     font-weight: bold;
+    color: black;
 }
 
 .booking-form__container__select__theater__picker {}
@@ -166,3 +171,51 @@
     color: rgb(126, 126, 126);
     font-weight: bold;
 }
+
+.theater-item__container {
+    height: 5rem;
+    width: 14rem;
+    color: black;
+    text-align: center;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+}
+
+.theater-item__container__content {
+    padding-top: 1rem;
+    background-color: rgb(6, 20, 53);
+    width: 14rem;
+    height: 5rem;
+    font-size: 0.9rem;
+    text-align: center;
+    font-weight: bold;
+}
+
+.theater-item__container__content__address {
+    font-size: 0.6rem;
+}
+
+.theater-item__container__content_red {
+    padding-top: 1rem;
+    background-color: rgb(3, 11, 29);
+    width: 14rem;
+    height: 5rem;
+    color: red;
+    font-size: 0.9rem;
+    text-align: center;
+    font-weight: bold;
+}
+
+.theater-item__container__content__address_red {
+    color: red;
+    font-size: 0.6rem;
+}
+
+.theater-item__container__content__name_red {
+    color: red;
+}
+
+
+/* .theater-item__container__content__name_red
+.theater-item__container__content__address_red */

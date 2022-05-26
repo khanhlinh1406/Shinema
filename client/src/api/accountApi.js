@@ -56,6 +56,19 @@ const AccountApi = {
     updatePassword: async(account) => {
         const res = await ApiDatabase.put('/account/password', account)
         return res;
+    },
+
+    getAllStaff: async(data) => {
+        const res = DatabaseClient.get("/account/staff/all")
+            .catch(err => { return err.response })
+        return res
+    },
+
+    getById: async(id) => {
+        const res = DatabaseClient.get("/account/" + id)
+            .catch(err => { return err.response })
+
+        return res
     }
 
 }

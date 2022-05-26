@@ -39,21 +39,23 @@ const ticketController = {
 
     getBookedSeats: (req, res) => {
         TicketModel.find({
-                    dateOccur: req.params.dateOccur,
-                    timeOccur: req.params.timeOccur,
-                    _theaterId: req.params._theaterId,
-                    _roomId: req.params._roomId,
-                },
-                // {
-                //     "id": 0,
-                //     "seatIdArray": 1
-                // }
-            )
+                dateOccur: req.body.date,
+                timeOccur: req.body.time,
+                _theaterId: req.body.theaterId,
+                _roomId: req.body.room,
+            })
             .then(data => {
                 if (data === null || data === undefined)
                     res.send("getBookedSeats returns null/ undefined")
                 else {
-                    let result = data.map((item) => item.seatIdArray)
+                    let tmp = data.map((item) => item.seatIdArray)
+                    let result = [];
+
+                    tmp.forEach((array) => {
+                        array.forEach((seatId) => {
+                            result.push(seatId)
+                        })
+                    })
                     res.json(result);
                 }
 
@@ -66,7 +68,7 @@ const ticketController = {
 
     create: (req, res) => {
         TicketModel.findOne({
-                id: req.body.id
+                _id: req.body.id
             })
             .then(data => {
                 if (data) {
@@ -74,7 +76,6 @@ const ticketController = {
                     return
                 } else {
                     const newTicket = {
-                        id: req.body.id,
                         _filmId: req.body._filmId,
                         _theaterId: req.body._theaterId,
                         _roomId: req.body._roomId,
@@ -85,7 +86,6 @@ const ticketController = {
                         bookedTime: req.body.bookedTime,
                         isCancelled: req.body.isCancelled,
                         invoice: {
-                            id: req.body.id,
                             quantity: req.body.invoice.quantity,
                             price: req.body.invoice.price,
                             total: req.body.invoice.total,

@@ -1,6 +1,6 @@
 import React from 'react'
 import './bookingForm.css'
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useCallback } from 'react';
 import { useNavigate } from 'react-router';
 
 import Button from '@mui/material/Button';
@@ -15,29 +15,39 @@ import "swiper/css/pagination";
 import { Pagination } from "swiper";
 
 import format from 'date-fns/format'
-import mFunction from "../../function";
+import mFunction from "../../../function";
 
-import { bookingSelector } from '../../redux/selector'
-import { bookingSlice } from '../../redux/slices/bookingSlice'
+import { bookingSelector } from '../../../redux/selector'
+import { bookingSlice } from '../../../redux/slices/bookingSlice'
 import { useSelector, useDispatch } from 'react-redux';
-import TheaterApi from './../../api/theaterApi';
+import TheaterApi from '../../../api/theaterApi';
+import { Card } from '@mui/material';
+import Typography from '@mui/material/Typography';
 
 const BookingForm = (props) => {
     const [showTimeList, setShowTimeList] = useState([])
     const [dateArray, setDateArray] = useState([])
-    const [theaterArray, setTheaterArray] = useState([])
+    const [theaterIdArray, setTheaterIdArray] = useState([])
+    const [timeArray, setTimeArray] = useState([])
 
     const CURRENT_BOOKING = useSelector(bookingSelector)
     const dispatch = useDispatch()
 
+    dispatch(bookingSlice.actions.setShowTimeList(props.showTimeList))
 
     useEffect(() => {
-        dispatch(bookingSlice.actions.setShowTimeList(props.showTimeList))
 
         const getDate = async () => {
+            let day = new Date().getDate()
+            let month = new Date().getMonth()
+            let year = new Date().getFullYear()
+      
+            let current = month +"/"+ day +"/"+ year
+
             await props.showTimeList.forEach((showTime) => {
                 showTime.listDateTime.forEach((object) => {
-                    dateArray.push(object.date)
+                    if (mFunction.subDate(object.date, current) >= 1)
+                        dateArray.push(object.date)
                     ///setDateArray([...dateArray, object.date])
                 })
             })
@@ -48,37 +58,53 @@ const BookingForm = (props) => {
         getDate();
     }, [props])
 
+    useEffect(() => {
+        setTimeArray(CURRENT_BOOKING.currentTimeArray)
+        setTheaterIdArray(CURRENT_BOOKING.currentTheaterIdArray)
+    }, [CURRENT_BOOKING.currentTimeArray])
+
+    useEffect(() => {
+        setTheaterIdArray(CURRENT_BOOKING.currentTheaterIdArray)
+    }, [CURRENT_BOOKING.currentTheaterIdArray])
+
 
 
     return (
         <div className="booking-form__container">
-            <div className="booking-form__container__check">
-                <Box textAlign="right">
-                    <CheckBtn />
-                </Box>
-            </div>
+            <Card sx={{ width: '80%', color: '#e3e4e8', borderRadius: 5, padding: 2 }}>
+                <Typography textAlign="left" variant="h6" sx={{ fontWeight: 'bold', color: '#000' }}>
+                    Choose the showtime here!
+                </Typography>
+                <div className="booking-form__container__check">
+                    <Box textAlign="right">
+                        <CheckBtn />
+                    </Box>
+                </div>
 
-            <div className="booking-form__container__select">
-                <div className="booking-form__container__select__date">
-                    <div className="booking-form__container__select__date__title">Date</div>
-                    <div className="booking-form__container__select__date__swiper">
-                        <ShowDateItem array={dateArray} />
+                <div className="booking-form__container__select">
+                    <div className="booking-form__container__select__date">
+                        <div className="booking-form__container__select__date__title">Date</div>
+                        <div className="booking-form__container__select__date__swiper">
+                            <ShowDateItem array={dateArray} />
 
+                        </div>
+                    </div>
+
+                    <div className="booking-form__container__select__time">
+                        <div className="booking-form__container__select__time__title">Time</div>
+                        <div className="booking-form__container__select__time__swiper">
+                            <ShowTimeItem array={timeArray} />
+                        </div>
+                    </div>
+
+                    <div className="booking-form__container__select__theater">
+                        <div className="booking-form__container__select__theater__title">Theater</div>
+                        <div className="booking-form__container__select__theater__picker">
+                            <ShowTheaterItem array={theaterIdArray} />
+                        </div>
                     </div>
                 </div>
-
-                <div className="booking-form__container__select__time">
-                    <div className="booking-form__container__select__time__title">Time</div>
-                    <div className="booking-form__container__select__time__swiper">
-                        <ShowTimeItem array={CURRENT_BOOKING.currentTimeArray} />
-                    </div>
-                </div>
-
-                <div className="booking-form__container__select__theater">
-                    <div className="booking-form__container__select__theater__title">Theater</div>
-                    <div className="booking-form__container__select__theater__picker"></div>
-                </div>
-            </div>
+            </Card>
 
         </div>
     )
@@ -96,9 +122,15 @@ export const CheckBtn = () => {
         },
     })
 
+    const CURRENT_BOOKING = useSelector(bookingSelector)
+    const dispatch = useDispatch()
+
     const navigate = useNavigate();
 
     const onClick = () => {
+        if (CURRENT_BOOKING.selectedDate !== '' && CURRENT_BOOKING.selectedTime !== '' && CURRENT_BOOKING.selectedTheater !== {}) {
+            dispatch(bookingSlice.actions.setCheck(true))
+        }
     }
 
     return (
@@ -116,30 +148,16 @@ export const DateItem = (props) => {
     const current = new Date(year, month, date);
     const CURRENT_BOOKING = useSelector(bookingSelector)
     const [isHighlighted, setIsHighlighted] = useState(false)
-    const [timeArray, setTimeArray] = useState([])
+    const [timeArray, setTimeArray] = useState(CURRENT_BOOKING.currentTimeArray)
     const dispatch = useDispatch()
 
     useEffect(() => {
         if (CURRENT_BOOKING.selectedDate == item) {
             setIsHighlighted(true)
-
-            const getTime = async () => {
-                await CURRENT_BOOKING.showTimeList.forEach((showTime) => {
-                    showTime.listDateTime.forEach((object) => {
-                        if (object.date == CURRENT_BOOKING.selectedDate) {
-                            setTimeArray(object.times)
-                        }
-                    })
-
-                })
-
-                dispatch(bookingSlice.actions.setCurrentTimeArray(timeArray))
-            }
-
-            getTime();
         }
         else
             setIsHighlighted(false)
+
     }, [CURRENT_BOOKING.selectedDate])
 
     const dayArr = [
@@ -173,18 +191,18 @@ export const DateItem = (props) => {
         >{
                 !isHighlighted ?
                     <div className="date-item__container__content">
-                        <div className="date-item__container__content__day">{dayArr[current.getDay()]}</div>
+                        <div className="date-item__container__content__day">{dayArr[current.getDay() - 1]}</div>
                         <div className="date-item__container__content__date">{current.getDate()}</div>
-                        <div className="date-item__container__content__month">{monthArr[current.getMonth()]}</div>
+                        <div className="date-item__container__content__month">{monthArr[current.getMonth() -1]}</div>
                         <div className="date-item__container__content__year">{current.getFullYear()}</div>
                     </div>
 
                     :
 
                     <div className="date-item__container__content_red">
-                        <div className="date-item__container__content__day">{dayArr[current.getDay()]}</div>
+                        <div className="date-item__container__content__day">{dayArr[current.getDay()-1]}</div>
                         <div className="date-item__container__content__date">{current.getDate()}</div>
-                        <div className="date-item__container__content__month">{monthArr[current.getMonth()]}</div>
+                        <div className="date-item__container__content__month">{monthArr[current.getMonth()-1]}</div>
                         <div className="date-item__container__content__year">{current.getFullYear()}</div>
                     </div>
             }
@@ -208,7 +226,7 @@ export const ShowDateItem = (props) => {
                 //     clickable: true,
                 // }}
                 //modules={[Pagination]}
-                clickable={true}
+                /// clickable={true}
                 className="mySwiper"
             >
                 {
@@ -225,41 +243,25 @@ export const ShowDateItem = (props) => {
 }
 
 export const TimeItem = (props) => {
-    const item = props.time;
+    const item = props.time
 
     const CURRENT_BOOKING = useSelector(bookingSelector)
     const [isHighlighted, setIsHighlighted] = useState(false)
     const dispatch = useDispatch()
 
     const [theaterArray, setTheaterArray] = useState([])
+    const [theaterIdArray, setTheaterIdArray] = useState([])
+
 
     useEffect(() => {
         if (CURRENT_BOOKING.selectedTime == item) {
             setIsHighlighted(true)
-
-            // const getTheaters = async () => {
-            //     await CURRENT_BOOKING.showTimeList.forEach((showTime) => {
-            //         showTime.listDateTime.forEach((object) => {
-            //             if (object.date == CURRENT_BOOKING.selectedDate) {
-            //                 const [theater, setTheater] = useState() 
-            //                 await TheaterApi.getById(CURRENT_BOOKING.selectedFilm)
-            //                 .then((res) =>
-            //                 {
-            //                     setTheaterArray([...theaterArray, ...res.data])
-            //                 })
-            //             }
-            //         })
-
-            //     })
-
-            //     dispatch(bookingSlice.actions.setCurrentTheaterArray(theaterArray))
-            // }
-
-            // getTheaters();
         }
         else
             setIsHighlighted(false)
+
     }, [CURRENT_BOOKING.selectedTime])
+
 
     return (
         <div className="time-item__container"
@@ -281,26 +283,33 @@ export const TimeItem = (props) => {
 }
 
 export const ShowTimeItem = (props) => {
-    const timeArray = props.array
+    const [timeArray, setTimeArray] = useState(props.array)
 
     const CURRENT_BOOKING = useSelector(bookingSelector)
 
     const [display, setDisplay] = useState(false);
-    
-    const [,refresh] = useState();
 
-    useEffect(() =>{
-        refresh()
-    },[display])
+    const [, refresh] = useState();
+
+    const dispatch = useDispatch()
+
 
     useEffect(() => {
-        if (timeArray.length !=0)
-        {
+        setTimeArray(props.array)
+    }, [props.array])
+
+    useEffect(() => {
+        dispatch(bookingSlice.actions.setTime(''))
+    }, [CURRENT_BOOKING.selectedDate])
+
+    useEffect(() => {
+        if (timeArray.length != 0) {
             setDisplay(true)
         }
         else
-        setDisplay(false)
-    }, [CURRENT_BOOKING.selectedDate, CURRENT_BOOKING.currentTimeArray])
+            setDisplay(false)
+    }, [timeArray])
+
 
 
     return (
@@ -312,7 +321,7 @@ export const ShowTimeItem = (props) => {
                 centeredSlides={true}
                 spaceBetween={10}
                 // grabCursor={true}
-                clickable={true}
+                /// clickable={true}
                 // pagination={{
                 //     clickable: true,
                 // }}
@@ -327,7 +336,7 @@ export const ShowTimeItem = (props) => {
                 }
             </Swiper>
 
-            : 
+            :
             <div className="showtime-item-container__require">
                 Please choose the date
             </div>
@@ -336,21 +345,36 @@ export const ShowTimeItem = (props) => {
     )
 }
 
-export const ShowTheaterItem = (props) =>{
-    const theaterArray = props.array
+export const ShowTheaterItem = (props) => {
+    const [theaterIdArray, setTheaterIdArray] = useState(props.array)
 
+    const dispatch = useDispatch()
     const CURRENT_BOOKING = useSelector(bookingSelector)
 
     const [display, setDisplay] = useState(false);
 
+    const [, refresh] = useState();
+
     useEffect(() => {
-        // if (timeArray.length !=0)
-        // {
-        //     setDisplay(true)
-        // }
-        // else
-        // setDisplay(false)
-    }, [CURRENT_BOOKING.selectedDate, CURRENT_BOOKING.selectedTime])
+        if (theaterIdArray.length != 0) {
+            setDisplay(true)
+        }
+        else
+            setDisplay(false)
+    }, [theaterIdArray])
+
+    useEffect(() => {
+        setTheaterIdArray(props.array)
+    }, [props.array])
+
+    useEffect(() => {
+        setDisplay(false)
+        dispatch(bookingSlice.actions.setSelectedTheater({}))
+    }, [CURRENT_BOOKING.selectedDate])
+
+    useEffect(() => {
+        dispatch(bookingSlice.actions.setSelectedTheater({}))
+    }, [CURRENT_BOOKING.currentTimeArray])
 
 
     return (
@@ -362,25 +386,72 @@ export const ShowTheaterItem = (props) =>{
                 centeredSlides={true}
                 spaceBetween={10}
                 // grabCursor={true}
-                clickable={true}
+                // clickable={true}
                 // pagination={{
                 //     clickable: true,
                 // }}
                 className="showtime-item-container__swp"
             >
                 {
-                    // timeArray.map((item, i) => (
-                    //     <SwiperSlide key={i}>
-                    //         <TimeItem time={item} />
-                    //     </SwiperSlide>
-                    // ))
+                    theaterIdArray.map((item, i) => (
+                        <SwiperSlide key={i}>
+                            <TheaterItem theaterId={item} />
+                        </SwiperSlide>
+                    ))
                 }
             </Swiper>
-
-            : 
+            :
             <div className="showtime-item-container__require">
-                Please choose the date
+                Please choose the showtime
             </div>
+            }
+        </div>
+    )
+}
+
+const TheaterItem = (props) => {
+    const [itemId, setItemId] = useState(props.theaterId)
+    const [isHighlighted, setIsHighlighted] = useState(false)
+    const dispatch = useDispatch()
+    const CURRENT_BOOKING = useSelector(bookingSelector)
+    const [item, setItem] = useState({})
+
+    const [selectedShowTime, setSelectedShowTime] = useState({})
+
+    useEffect(async () => {
+        const getTheater = async () => {
+            await TheaterApi.getById(itemId)
+                .then((res) => {
+                    setItem(res.data)
+                })
+                .catch((err) => { console.log(err) })
+        }
+        await getTheater()
+    }, [])
+
+    useEffect(() => {
+        if (CURRENT_BOOKING.selectedTheater == item) {
+            setIsHighlighted(true)
+        }
+        else
+            setIsHighlighted(false)
+    }, [CURRENT_BOOKING.selectedTheater])
+
+
+    return (
+        <div className="theater-item__container"
+            onClick={() => dispatch(bookingSlice.actions.setSelectedTheater(item))}
+        >{
+                !isHighlighted ?
+                    <div className="theater-item__container__content">
+                        <div className="theater-item__container__content__name">{item.name}</div>
+                        <div className="theater-item__container__content__address">{item.address}</div>
+                    </div>
+                    :
+                    <div className="theater-item__container__content_red">
+                        <div className="theater-item__container__content__name_red">{item.name}</div>
+                        <div className="theater-item__container__content__address_red">{item.address}</div>
+                    </div>
             }
         </div>
     )

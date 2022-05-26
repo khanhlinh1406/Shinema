@@ -50,3 +50,5 @@ export const theaterRemainingSelector = createSelector(
 
 export const bookingSelector = (state) => state.booking
 export const movieCornerSelector = (state) => state.corner__movie
+
+export const currentStaffList = (state) => state.staff.staffList

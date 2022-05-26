@@ -5,7 +5,7 @@ const theaterController = require('../controllers/theater.controller')
 const { authenToken } = require('../controllers/authen.controller')
 
 router.get('/', authenToken, theaterController.getAll)
-router.get('/:id', authenToken, theaterController.getById)
+router.get('/:id', theaterController.getById)
 
 router.post('/', authenToken, theaterController.create)
 
