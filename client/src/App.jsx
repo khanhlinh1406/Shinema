@@ -27,6 +27,8 @@ function App() {
 
   const _currentUser = useSelector(state => state.users.instance)
 
+  const [loaded, setLoaded] = useState(false)
+
   const checkLogged = () => {
     let logged = localStorage.getItem('logged')
     let remember = localStorage.getItem('rememberAccount')
@@ -42,6 +44,7 @@ function App() {
           if (res.data != "Email not exist" && res.data != "Password incorrect") {
             AccountApi.getByEmail(email).then(res => {
               dispatch(userSlice.actions.update(res.data))
+              setLoaded(true)
             }).catch(err => console.log(err))
           }
           else {
@@ -51,6 +54,9 @@ function App() {
         })
         .catch(err => console.log(err))
     }
+    else {
+      setLoaded(true)
+    }
   }
 
   useEffect((checkLogged), [])
@@ -58,130 +64,124 @@ function App() {
   return (
     <div className="App">
 
+      {
+        loaded &&
+        <Routes>
 
-      <Routes>
-        {
-          <Route path="/" element={_currentUser != '' && _currentUser.rank != 'Customer' ?
-            <Manager />
-            :
+          {
+            <Route path="*" element={_currentUser != '' && _currentUser.rank != 'Customer' ?
+              <Manager />
+              :
+              <div>
+                <ChatBot />
+                <MainNavBar />
+                <Home />
+                <Footer />
+              </div>
+            } />
+          }
+
+          <Route path="/actors" element={
             <div>
               <ChatBot />
               <MainNavBar />
-              <Home />
+              <Actor />
               <Footer />
             </div>
           } />
-        }
 
-        {/* <Route path="/" element={
-          <div>
-            <MainNavBar />
-            <Home />
-            <Footer />
-          </div>
-        } /> */}
-
-        <Route path="/actors" element={
-          <div>
+          <Route path="/genres" element={<div>
             <ChatBot />
             <MainNavBar />
-            <Actor />
-            <Footer />
-          </div>
-        } />
-
-        <Route path="/genres" element={<div>
-          <ChatBot />
-          <MainNavBar />
-          <Genre />
-          <Footer />
-        </div>} />
-
-        <Route path="/reviews/*" element={
-          <div>
-            <ChatBot />
-            <MainNavBar />
-            <Review />
+            <Genre />
             <Footer />
           </div>} />
 
-        <Route path="/login" element={<Login />} />
-        <Route path="/register" element={<Register />} />
-        <Route path="/forgotPassword" element={<ForgotPassword />} />
+          <Route path="/reviews/*" element={
+            <div>
+              <ChatBot />
+              <MainNavBar />
+              <Review />
+              <Footer />
+            </div>} />
 
-        {/* Chi tiết phim */}
-        <Route path="/filmDetails/:id" element={
-          <div>
-            <ChatBot />
-            <FilmDetails />
-            <Footer />
-          </div>
-        } />
+          <Route path="/login" element={<Login />} />
+          <Route path="/register" element={<Register />} />
+          <Route path="/forgotPassword" element={<ForgotPassword />} />
 
-        {/* Chi tiết người */}
-        <Route path="/peopleDetails/:id" element={
-          <div>
-            <ChatBot />
-            <PeopleDetails />
-            <Footer />
-          </div>
-        } />
+          {/* Chi tiết phim */}
+          <Route path="/filmDetails/:id" element={
+            <div>
+              <ChatBot />
+              <FilmDetails />
+              <Footer />
+            </div>
+          } />
 
-        {/* Góc phim ảnh */}
-        <Route path="corner/movie/search/:keyword" element={
-          <div>
-            <ChatBot />
-            <Corner />
-            <Footer />
-          </div>
-        } />
-        <Route path="/corner/movie/:type" element={
-          <div>
-            <ChatBot />
-            <Corner />
-            <Footer />
-          </div>
-        } />
+          {/* Chi tiết người */}
+          <Route path="/peopleDetails/:id" element={
+            <div>
+              <ChatBot />
+              <PeopleDetails />
+              <Footer />
+            </div>
+          } />
 
-        {/* Góc diễn viên */}
-        <Route path="/corner/people" element={
-          <div>
-            <ChatBot />
-            <Corner />
-            <Footer />
-          </div>
-        } />
+          {/* Góc phim ảnh */}
+          <Route path="corner/movie/search/:keyword" element={
+            <div>
+              <ChatBot />
+              <Corner />
+              <Footer />
+            </div>
+          } />
+          <Route path="/corner/movie/:type" element={
+            <div>
+              <ChatBot />
+              <Corner />
+              <Footer />
+            </div>
+          } />
 
-        <Route path="/corner/people/search/:keyword" element={
-          <div>
-            <ChatBot />
-            <Corner />
-            <Footer />
-          </div>
-        } />
+          {/* Góc diễn viên */}
+          <Route path="/corner/people" element={
+            <div>
+              <ChatBot />
+              <Corner />
+              <Footer />
+            </div>
+          } />
 
-        {/* Thông tin cá nhân */}
-        <Route path="/profile" element={
-          <div>
-            <MainNavBar />
-            <Profile />
-            <Footer />
-          </div>
-        }
-        />
+          <Route path="/corner/people/search/:keyword" element={
+            <div>
+              <ChatBot />
+              <Corner />
+              <Footer />
+            </div>
+          } />
 
-        {/* Đặt vé */}
-        <Route path="/booking/:id" element={
-          <div>
-            <ChatBot />
-            <MainNavBar />
-            <Booking />
-            <Footer />
-          </div>
-        }
-        />
-      </Routes>
+          {/* Thông tin cá nhân */}
+          <Route path="/profile" element={
+            <div>
+              <MainNavBar />
+              <Profile />
+              <Footer />
+            </div>
+          }
+          />
 
+          {/* Đặt vé */}
+          <Route path="/booking/:id" element={
+            <div>
+              <ChatBot />
+              <MainNavBar />
+              <Booking />
+              <Footer />
+            </div>
+          }
+          />
+        </Routes>
+      }
 
     </div>
   );

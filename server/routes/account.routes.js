@@ -6,6 +6,7 @@ const { authenToken } = require('../controllers/authen.controller')
 
 router.get('/', authenToken, accountController.getAll)
 router.get('/:email', accountController.getByEmail)
+router.get('/id/:id', accountController.getById)
 
 router.post('/', accountController.create)
 router.post('/checkEmail/:email', accountController.checkEmail)

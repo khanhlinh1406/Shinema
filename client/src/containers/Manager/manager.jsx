@@ -33,7 +33,6 @@ const Manager = () => {
         checkAuth()
     }, [user])
 
-    const color = "#c44242";
     const tabTheme = createTheme({
         palette: {
             primary: red,
@@ -44,7 +43,27 @@ const Manager = () => {
 
     const handleChange = (event, newValue) => {
         setValue(newValue);
+        if (newValue == 0) {
+            navigate('/manager/showtime')
+        }
+        else if (newValue == 1) {
+            navigate('/manager/statistic')
+        }
+        else if (newValue == 2) {
+            navigate('/manager/theater')
+        }
     };
+
+    useEffect(() => {
+        let path = window.location.pathname
+
+        if (path.includes('manager/statistic')) {
+            setValue(1)
+        }
+        else if (path.includes('manager/theater')) {
+            setValue(2)
+        }
+    }, [])
 
     return (
         <div>

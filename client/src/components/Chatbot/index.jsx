@@ -75,12 +75,13 @@ const FormChat = ({ openFormHandle }) => {
     }
 
     const [loading, setLoading] = useState(false)
+    let today = format(new Date(), "PP p");
     const [messages, setMessages] = useState([
         {
             type: 'bot',
             message: 'Hi, ' + userName + 'nice to meet you. I am Alex and I am a virtual assistant of Shenima to help you with your support needs. What are your looking for?',
             listBtn: [],
-            dateTime: 'May 2, 10:20',
+            dateTime: today,
         },
 
     ])

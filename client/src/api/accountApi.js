@@ -39,10 +39,14 @@ const AccountApi = {
         const res = await ApiDatabase.post('/account',
             account
         )
-        return res 
+        return res
     },
     getByEmail: async(email) => {
         const res = await ApiDatabase.get('/account/' + email)
+        return res
+    },
+    getById: async(_userId) => {
+        const res = await ApiDatabase.get('/account/id/' + _userId)
         return res
     },
     update: async(account) => {

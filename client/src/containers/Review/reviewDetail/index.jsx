@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { Helmet } from "react-helmet";
 import { Route, Routes, useNavigate, useParams } from "react-router-dom";
 import ReviewApi from './../../../api/reviewApi';
+import AccountApi from './../../../api/accountApi';
 
 import CastList from "../../../components/CastList/castList";
 
@@ -10,10 +11,12 @@ import apiConfig from "../../../api/apiConfig";
 import { movieType, category } from '../../../api/tmdbApi'
 
 import Grid from '@mui/material/Grid';
-import Stack from '@mui/material/Stack';
 import { Typography } from "@mui/material";
 import Button from '@mui/material/Button';
 import Box from '@mui/material/Box';
+
+import Avatar from '@mui/material/Avatar';
+import Stack from '@mui/material/Stack';
 
 const ReviewDetail = () => {
     const { reviewId } = useParams();
@@ -24,7 +27,6 @@ const ReviewDetail = () => {
     useEffect(() => {
         ReviewApi.getById(reviewId).then(res => {
             if (res.status == 200) {
-                console.log(res)
                 setReviewIns(res.data)
             }
         }).catch(err => console.log(err))
@@ -40,7 +42,6 @@ const ReviewDetail = () => {
 
                 try {
                     const response = await tmdbApi.detail(category.movie, reviewIns._filmId, { params: params });
-                    console.log(response)
                     setFilmIns(response)
                     //setImg(apiConfig.originalImage(response.backdrop_path ? response.backdrop_path : response.poster_path))            
 
@@ -99,10 +100,73 @@ const ReviewDetail = () => {
                             </div>
                         </div>
 
+                        <Content item={reviewIns} />
                     </>
                 )
             }
         </div>
+    )
+}
+
+const Content = ({ item }) => {
+    return (
+        <div style={{ margin: '0 160px', paddingBottom: "20px" }}>
+            <Typography variant="h3" sx={{ marginTop: '10px' }}>{item.title}</Typography>
+
+            <Typography sx={{ fontWeight: 'lighter' }}>{item.overview}</Typography>
+
+            <Typography sx={{ fontWeight: 'bold', marginTop: '20px', fontSize: '23px' }}>Advantage</Typography>
+            <Typography sx={{ fontWeight: 'lighter' }}>{item.advantage}</Typography>
+
+            <Typography sx={{ fontWeight: 'bold', marginTop: '10px', fontSize: '23px' }}>Defect</Typography>
+            <Typography sx={{ fontWeight: '1' }}>{item.defect}</Typography>
+
+            <Typography sx={{ fontWeight: 'bold', marginTop: '10px', fontSize: '23px' }}>Overview</Typography>
+            <Typography>{item.overview}</Typography>
+
+            <ListComment data={item.listComments} />
+        </div>
+    )
+}
+
+const ListComment = ({ data }) => {
+    const [listCmt, setListCmt] = useState()
+    useEffect(() => {
+        let listObjCtm = []
+
+        data.map((item, index) => (
+            AccountApi.getById(item._userId).then(res => {
+                let objCmt = { ...item, user: res.data }
+                listObjCtm.push(objCmt)
+                if (index == data.length - 1) setListCmt(listObjCtm)
+            }).catch(err => console.log(err))
+        ))
+
+    }, [])
+
+    useEffect(() => {
+        console.log(listCmt)
+    }, [listCmt])
+    return (
+        <Stack>
+            {
+                listCmt.map((item, index) => (
+                    <CmtItem item={item} />
+                ))
+            }
+        </Stack>
+    )
+}
+
+const CmtItem = ({ item }) => {
+
+    return (
+        <Stack>
+            <Stack direction='row' sx={{ alignItems: 'center' }}>
+                <Avatar sx={{ bgcolor: "#FF4820" }}>{item.user.name.charAt(0)}</Avatar>
+                <Typography sx={{ marginLeft: 2 }}>{item.user.name}</Typography>
+            </Stack>
+        </Stack>
     )
 }
 

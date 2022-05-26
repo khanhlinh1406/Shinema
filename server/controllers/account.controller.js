@@ -27,6 +27,18 @@ const accountController = {
             })
     },
 
+    getById: (req, res) => {
+        AccountModel.findOne({
+                _id: req.params.id
+            })
+            .then(data => {
+                res.json(data)
+            })
+            .catch(err => {
+                res.status(500).json({ Err: err })
+            })
+    },
+
     create: (req, res) => {
         AccountModel.findOne({
                 email: req.body.email

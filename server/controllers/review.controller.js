@@ -33,6 +33,7 @@ const reviewController = {
             overview: req.body.overview,
             star: req.body.star,
             isVisible: req.body.isVisible,
+            lisComments: req.body.lisComments,
             _userId: req.body._userId,
             _filmId: req.body._filmId
         }
@@ -55,6 +56,7 @@ const reviewController = {
                 overview: req.body.overview,
                 star: req.body.star,
                 isVisible: req.body.isVisible,
+                listComments: req.body.listComments,
                 _censorshipId: req.body._censorshipId,
                 _userId: req.body._userId,
                 _filmId: req.body._filmId

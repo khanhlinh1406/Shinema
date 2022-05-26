@@ -25,6 +25,9 @@ const reviewSchema = new mongoose.Schema({
     isVisible: {
         type: Boolean
     },
+    listComments: {
+        type: Array
+    },
     _userId: {
         type: String
     },
