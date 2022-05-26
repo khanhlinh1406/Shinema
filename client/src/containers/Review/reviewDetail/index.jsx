@@ -165,7 +165,10 @@ const CmtItem = ({ item }) => {
             <Stack direction='row' sx={{ alignItems: 'center' }}>
                 <Avatar sx={{ bgcolor: "#FF4820" }}>{item.user.name.charAt(0)}</Avatar>
                 <Typography sx={{ marginLeft: 2 }}>{item.user.name}</Typography>
+                <Typography sx={{ marginLeft: 2 }}>{item.user.time}</Typography>
             </Stack>
+
+            <Typography sx={{ marginLeft: 2 }}>{item.message}</Typography>
         </Stack>
     )
 }

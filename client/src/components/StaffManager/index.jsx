@@ -15,9 +15,9 @@ export const StaffManager = () => {
     return (
         <div>
             <Routes>
-                <Route path="staff/" element={<DisplayStaff />}></Route>
-                <Route path="staff/add" element={<NewStaff />}></Route>
-                <Route path="staff/edit/:id" element={<EditStaff />}></Route>
+                <Route path="manager/staff/" element={<DisplayStaff />}></Route>
+                <Route path="manager/staff/add" element={<NewStaff />}></Route>
+                <Route path="manager/staff/edit/:id" element={<EditStaff />}></Route>
             </Routes>
         </div>
     )

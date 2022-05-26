@@ -59,13 +59,13 @@ const AccountApi = {
     },
 
     getAllStaff: async(data) => {
-        const res = DatabaseClient.get("/account/staff/all")
+        const res = ApiDatabase.get("/account/staff/all")
             .catch(err => { return err.response })
         return res
     },
 
     getById: async(id) => {
-        const res = DatabaseClient.get("/account/" + id)
+        const res = ApiDatabase.get("/account/" + id)
             .catch(err => { return err.response })
 
         return res
