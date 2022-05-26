@@ -46,7 +46,7 @@ const AccountApi = {
         return res
     },
     getById: async(_userId) => {
-        const res = await ApiDatabase.get('/account/id/' + _userId)
+        const res = await ApiDatabase.get('/account/getById/' + _userId)
         return res
     },
     update: async(account) => {
@@ -63,13 +63,6 @@ const AccountApi = {
             .catch(err => { return err.response })
         return res
     },
-
-    getById: async(id) => {
-        const res = ApiDatabase.get("/account/" + id)
-            .catch(err => { return err.response })
-
-        return res
-    }
 
 }
 

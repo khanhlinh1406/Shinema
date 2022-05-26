@@ -150,7 +150,7 @@ const ListComment = ({ data }) => {
     return (
         <Stack>
             {
-                listCmt.map((item, index) => (
+                listCmt && listCmt.map((item, index) => (
                     <CmtItem item={item} />
                 ))
             }
@@ -159,7 +159,7 @@ const ListComment = ({ data }) => {
 }
 
 const CmtItem = ({ item }) => {
-
+    console.log(item)
     return (
         <Stack>
             <Stack direction='row' sx={{ alignItems: 'center' }}>
