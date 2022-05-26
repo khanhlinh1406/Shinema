@@ -37,11 +37,18 @@ import TicketApi from './../../../api/ticketApi';
 import Loading from '../../Loading/loading'
 import { Success, Error } from '../../Alert/alert'
 
+import RadioGroup from '@mui/material/RadioGroup';
+import FormControlLabel from '@mui/material/FormControlLabel';
+import FormLabel from '@mui/material/FormLabel';
+
+import emailApi from '../../../api/emailApi'
+
 const BuyerInformation = ({ movieInfo }) => {
     const currentUser = useSelector(userSelector);
     const dispatch = useDispatch();
     const CURRENT_BOOKING = useSelector(bookingSelector)
     const [isLoading, setIsLoading] = useState(false)
+    const [data, setData] = useState({})
 
     const [values, setValues] = useState({
         name: currentUser.name,
@@ -129,6 +136,7 @@ const BuyerInformation = ({ movieInfo }) => {
         }
         getProvinceList()
     }, [])
+
 
     function handleChangeProvince(event) {
         setProvince(event.target.value)
@@ -293,12 +301,91 @@ const BuyerInformation = ({ movieInfo }) => {
 
     const navigate = useNavigate()
 
-    const order = async () => {
+    const [purchasesUnit, setPurchasesUnit] = useState([])
+    const makePurchases = () => {
+        let unitAmountObj = {
+            currency_code: 'USD',
+            value: CURRENT_BOOKING.selectedTheater.price
+        }
 
+        const name = movieInfo.title
+        const datetime = CURRENT_BOOKING.selectedDate + " " + CURRENT_BOOKING.selectedTime
+        const place = CURRENT_BOOKING.selectedTheater.name + " " + CURRENT_BOOKING.selectedRoom
+        const seats = CURRENT_BOOKING.selectedSeats
+
+        let sample = {
+            name: name + " - " + datetime + " - " + place + " - " + seats,
+            unit_amount: unitAmountObj,
+            quantity: CURRENT_BOOKING.selectedSeats.length
+        }
+
+        setPurchasesUnit([...purchasesUnit, sample])
+    }
+
+    const order = async () => {
+        await TicketApi.create(data)
+            .then((res) => {
+                setUpdateSucceeded({
+                    status: true,
+                    message: 'Buy ticket successfully!'
+                })
+
+            })
+            .catch((err) => {
+                console.log(err)
+                setErrorNotification({
+                    status: true,
+                    message: 'Sorry! There are something wrong with your request'
+                })
+            })
+
+        emailApi.sendVerify({
+            to: currentUser.email,
+            subject: "Your order information",
+            text: "Thank for buying movie ticket in Shinema site. \n" +
+                "Your order: \n" +
+                `Name: ${currentUser.name} \n` +
+                `Phone: ${currentUser.contact} \n` +
+                // `COD Address: ${bigAddress}` + "\n" +
+                "-------------------------------------------------------- \n" +
+                `Movie: ${movieInfo.title} \n`+
+                `Theater: ${CURRENT_BOOKING.selectedTheater.name + " - Room: " + CURRENT_BOOKING.selectedRoom} \n` +
+                `Seats: ${data.seatIdArray} \n`+ 
+                "-------------------------------------------------------- \n" +
+                `Total: ${data.invoice.total} VND` + "\n" +
+                `Method: Cash` + "\n" +
+                "-------------------------------------------------------- \n" +
+                "Any wondered things. Please contact with our shop with contact below site: shinema.com"
+        }).then(data => {
+
+        })
+        .catch(err => console.log(err))
+    }
+
+    const [methodVisible, setMethodVisible] = useState(false)
+    const [cash, setCash] = useState(true)
+    const [pp, setPp] = useState(false)
+    const [methodValue, setMethodValue] = useState('cash')
+    const handleChangeMethod = (event) => {
+        console.log(event.target.value)
+        if (event.target.value == "paypal") {
+            setPp(true)
+            setCash(false)
+            makePurchases()
+        }
+        if (event.target.value == "cash") {
+            setCash(true)
+            setPp(false)
+        }
+
+        setMethodValue(event.target.value)
+    }
+
+    const chooseMethod = () => {
         if (validate()) {
             let currentTime = new Date()
             const dateFormat = format(currentTime, "PP p");
-            const data = {
+            setData({
                 _filmId: movieInfo.id,
                 _theaterId: CURRENT_BOOKING.selectedTheater._id,
                 _roomId: CURRENT_BOOKING.selectedRoom,
@@ -314,35 +401,13 @@ const BuyerInformation = ({ movieInfo }) => {
                     total: CURRENT_BOOKING.selectedSeats.length * CURRENT_BOOKING.selectedTheater.price,
                     method: "Cash"
                 }
-
-            }
-
-            await TicketApi.create(data)
-                .then((res) => {
-                    setUpdateSucceeded({
-                        status: true,
-                        message: 'Buy ticket successfully!'
-                    })
-
-                })
-                .catch((err) => {
-                    console.log(err)
-                    setErrorNotification({
-                        status: true,
-                        message: 'Sorry! There are something wrong with your request'
-                    })
-                })
-
-            console.log(data)
+            })
+            setMethodVisible(true)
         }
     }
 
-    const [checkOutPaypal, setCheckOutPaypal] = useState(false)
-    const paypal = () => {
-        setCheckOutPaypal(true)
-    }
     return (
-        <div style={{marginTop: 24}}>
+        <div style={{ marginTop: 24 }}>
             <Grid container spacing={3}>
                 <Grid item xs={6} >
                     {/* Name */}
@@ -484,11 +549,24 @@ const BuyerInformation = ({ movieInfo }) => {
             </Grid>
 
             <Box textAlign="center" sx={{ p: 2 }}>
-                <OrderBtn onClick={order} >ORDER</OrderBtn>
-                {
-                    checkOutPaypal ? (<PayPal />) :
-                        <PaypalBtn onClick={paypal}>PAYPAL</PaypalBtn>
+                <ChooseMethodBtn onClick={chooseMethod} />
+                {methodVisible &&
+                    <FormControl>
+                        <FormLabel id="demo-controlled-radio-buttons-group">Paying method</FormLabel>
+                        <RadioGroup
+                            aria-labelledby="demo-controlled-radio-buttons-group"
+                            name="controlled-radio-buttons-group"
+                            value={methodValue}
+                            onChange={handleChangeMethod}
+                        >
+                            <FormControlLabel value="cash" control={<Radio />} label="Cash" />
+                            {cash && <OrderBtn onClick={order} />}
+                            <FormControlLabel value="paypal" control={<Radio />} label="Paypal" />
+                            {pp && <PayPal purcharses={purchasesUnit} ticket={data} movieInfo={movieInfo}/>}
+                        </RadioGroup>
+                    </FormControl>
                 }
+
             </Box>
 
             {updateSucceeded.status && <Success message={updateSucceeded.message} status={updateSucceeded.status} />}
@@ -498,7 +576,9 @@ const BuyerInformation = ({ movieInfo }) => {
                 <Loading />}
         </div>
     )
+
 }
+
 
 const AddressInput = ({ province, district, commune,
     handleChangeProvince, handleChangeDistrict, handleChangeCommune, handleChangeHouse,
@@ -633,6 +713,25 @@ const TicketInformation = ({ movie }) => {
     )
 }
 
+const ChooseMethodBtn = ({ onClick }) => {
+    const btnTheme = createTheme({
+        shape: {
+            borderRadius: 20
+        },
+        palette: {
+            primary: red
+        },
+    })
+
+    return (
+        <div >
+            <ThemeProvider theme={btnTheme} >
+                <Button sx={{ paddingX: 5, paddingY: 0.8, mb: 2 }} variant="text" style={{ fontWeight: 'bold' }} onClick={onClick} >Choose paying method</Button>
+            </ThemeProvider>
+        </div >
+    )
+}
+
 const OrderBtn = ({ onClick }) => {
     const btnTheme = createTheme({
         shape: {
@@ -647,25 +746,6 @@ const OrderBtn = ({ onClick }) => {
         <div >
             <ThemeProvider theme={btnTheme} >
                 <Button sx={{ paddingX: 5, paddingY: 0.8, mb: 2 }} variant="contained" onClick={onClick} >order</Button>
-            </ThemeProvider>
-        </div >
-    )
-}
-
-const PaypalBtn = ({ onClick }) => {
-    const btnTheme = createTheme({
-        shape: {
-            borderRadius: 20
-        },
-        palette: {
-            primary: red
-        },
-    })
-
-    return (
-        <div >
-            <ThemeProvider theme={btnTheme} >
-                <Button sx={{ paddingX: 5, paddingY: 0.8 }} variant="contained" onClick={onClick} >Paypal</Button>
             </ThemeProvider>
         </div >
     )

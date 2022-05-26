@@ -18,7 +18,9 @@ export const bookingSlice = createSlice({
         currentTheaterArray: [],
         currentRoomIdArray: [],
         check: false,
-        selectedSeats: []
+        selectedSeats: [],
+
+        purchases: [],
     },
     reducers: {
         setSelectedFilm: (state, action) => {
@@ -130,6 +132,10 @@ export const bookingSlice = createSlice({
 
         setSelectedRoom: (state, action) => {
             state.selectedRoom = action.payload
+        },
+
+        setPurchases: (state, action) => {
+            state.purchases = action.payload
         }
 
     }

@@ -10,6 +10,8 @@ import { useState, useEffect } from "react";
 import tmdbApi from "../../api/tmdbApi";
 import { movieType, category } from '../../api/tmdbApi'
 import apiConfig from "../../api/apiConfig";
+import ShowTimeApi from "../../api/showTimeApi";
+import mFunction from "../../function";
 
 import CastList from "../../components/CastList/castList";
 import VideoList from "../../components/VideoList/videoList";
@@ -21,11 +23,14 @@ import Box from '@mui/material/Box';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import { red } from '@mui/material/colors'
 
+import format from 'date-fns/format'
+
 const FilmDetails = () => {
 
   const { id } = useParams();
   const [film, setFilm] = useState();
-
+  const [showTimeList, setShowTimeList] = useState([]);
+  const [dateArray, setDateArray] = useState([])
   useEffect(() => {
     const getMovie = async () => {
       const params = {
@@ -40,7 +45,41 @@ const FilmDetails = () => {
     }
 
     getMovie();
-  })
+
+    const fetchShowTimeByFilmId = async () => {
+      await ShowTimeApi.getByFilmId(id)
+        .then(res => {
+          setShowTimeList(res.data)
+        })
+
+    }
+
+    fetchShowTimeByFilmId()
+  }, [])
+
+  useEffect(() => {
+
+    const getDate = async () => {
+      let day = new Date().getDate()
+      let month = new Date().getMonth()
+      let year = new Date().getFullYear()
+
+      let current = month +"/"+ day +"/"+ year
+      
+      await showTimeList.forEach((showTime) => {
+        showTime.listDateTime.forEach((object) => {
+          console.log(object.date)
+          if (mFunction.subDate(object.date, current) >= 1)
+            dateArray.push(object.date)
+          setDateArray([...dateArray, object.date])
+        })
+      })
+
+      setDateArray(mFunction.removeDuplicates(dateArray));
+    }
+
+    getDate();
+  }, [showTimeList])
 
   useEffect(() => {
     window.scrollTo(0, 0)
@@ -66,11 +105,14 @@ const FilmDetails = () => {
                 <div className="movie-content__poster__img" style={{ backgroundImage: `url(${apiConfig.originalImage(film.poster_path)})` }}>
                 </div>
 
-                <div className="movie-content__booking">
-                  <Box textAlign="center">
-                    <BookingBtn id={id} />
-                  </Box>
-                </div>
+                {
+                  dateArray.length > 0 &&
+                  <div className="movie-content__booking">
+                    <Box textAlign="center">
+                      <BookingBtn id={id} />
+                    </Box>
+                  </div>
+                }
 
               </div>
 

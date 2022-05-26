@@ -39,7 +39,7 @@ const AccountApi = {
         const res = await ApiDatabase.post('/account',
             account
         )
-        return res 
+        return res
     },
     getByEmail: async(email) => {
         const res = await ApiDatabase.get('/account/' + email)
@@ -52,6 +52,19 @@ const AccountApi = {
     updatePassword: async(account) => {
         const res = await ApiDatabase.put('/account/password', account)
         return res;
+    },
+
+    getAllStaff: async(data) => {
+        const res = DatabaseClient.get("/account/staff/all")
+            .catch(err => { return err.response })
+        return res
+    },
+
+    getById: async(id) => {
+        const res = DatabaseClient.get("/account/" + id)
+            .catch(err => { return err.response })
+
+        return res
     }
 
 }

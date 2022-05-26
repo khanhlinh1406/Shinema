@@ -38,9 +38,16 @@ const BookingForm = (props) => {
     useEffect(() => {
 
         const getDate = async () => {
+            let day = new Date().getDate()
+            let month = new Date().getMonth()
+            let year = new Date().getFullYear()
+      
+            let current = month +"/"+ day +"/"+ year
+
             await props.showTimeList.forEach((showTime) => {
                 showTime.listDateTime.forEach((object) => {
-                    dateArray.push(object.date)
+                    if (mFunction.subDate(object.date, current) >= 1)
+                        dateArray.push(object.date)
                     ///setDateArray([...dateArray, object.date])
                 })
             })
@@ -184,18 +191,18 @@ export const DateItem = (props) => {
         >{
                 !isHighlighted ?
                     <div className="date-item__container__content">
-                        <div className="date-item__container__content__day">{dayArr[current.getDay()]}</div>
+                        <div className="date-item__container__content__day">{dayArr[current.getDay() - 1]}</div>
                         <div className="date-item__container__content__date">{current.getDate()}</div>
-                        <div className="date-item__container__content__month">{monthArr[current.getMonth()]}</div>
+                        <div className="date-item__container__content__month">{monthArr[current.getMonth() -1]}</div>
                         <div className="date-item__container__content__year">{current.getFullYear()}</div>
                     </div>
 
                     :
 
                     <div className="date-item__container__content_red">
-                        <div className="date-item__container__content__day">{dayArr[current.getDay()]}</div>
+                        <div className="date-item__container__content__day">{dayArr[current.getDay()-1]}</div>
                         <div className="date-item__container__content__date">{current.getDate()}</div>
-                        <div className="date-item__container__content__month">{monthArr[current.getMonth()]}</div>
+                        <div className="date-item__container__content__month">{monthArr[current.getMonth()-1]}</div>
                         <div className="date-item__container__content__year">{current.getFullYear()}</div>
                     </div>
             }
@@ -219,7 +226,7 @@ export const ShowDateItem = (props) => {
                 //     clickable: true,
                 // }}
                 //modules={[Pagination]}
-               /// clickable={true}
+                /// clickable={true}
                 className="mySwiper"
             >
                 {
@@ -314,7 +321,7 @@ export const ShowTimeItem = (props) => {
                 centeredSlides={true}
                 spaceBetween={10}
                 // grabCursor={true}
-               /// clickable={true}
+                /// clickable={true}
                 // pagination={{
                 //     clickable: true,
                 // }}
@@ -379,7 +386,7 @@ export const ShowTheaterItem = (props) => {
                 centeredSlides={true}
                 spaceBetween={10}
                 // grabCursor={true}
-               // clickable={true}
+                // clickable={true}
                 // pagination={{
                 //     clickable: true,
                 // }}

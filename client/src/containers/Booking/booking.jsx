@@ -136,51 +136,50 @@ const Booking = () => {
 
 
 
-
     return (
         <div className="booking-container" >
             <MovieInformation movieInfo={movieInfo} />
-            <Box sx={{ width: '70%', mt: 15, ml: 25 }}>
-                <div>
-                    <Typography variant="h5" sx={{p: 2}}>Booking tickets</Typography>
-                    <Stepper nonLinear activeStep={activeStep} sx={{ width: '80%' }}>
-                        {steps.map((label, index) => (
-                            <Step key={label} completed={completed[index]}>
-                                <StepButton color="inherit" onClick={handleStep(index)}>
-                                    {label}
-                                </StepButton>
-                            </Step>
-                        ))}
-                    </Stepper>
+                <Box sx={{ width: '70%', mt: 15, ml: 25 }}>
                     <div>
-                        {allStepsCompleted() ? (
-                            <React.Fragment>
-                                <Typography sx={{ mt: 2, mb: 1 }}>
-                                    All steps completed - you&apos;re finished
-                                </Typography>
-                                <Box sx={{ display: 'flex', flexDirection: 'row', pt: 2 }}>
-                                    <Box sx={{ flex: '1 1 auto' }} />
-                                    <Button onClick={handleReset}>Reset</Button>
-                                </Box>
-                            </React.Fragment>
-                        ) : (
-                            <React.Fragment>
-                                <Box sx={{ display: 'flex', flexDirection: 'row', pt: 2 }}>
-                                    <Button
-                                        color="inherit"
-                                        disabled={activeStep === 0}
-                                        onClick={handleBack}
-                                        sx={{ mr: 1 }}
-                                    >
-                                        Back
-                                    </Button>
-                                    <Box sx={{ flex: '1 1 auto' }} />
-                                    {CURRENT_BOOKING.selectedSeats.length != 0 &&
-                                        <Button onClick={handleNext} sx={{ mr: 1 }}>
-                                            Next
+                        <Typography variant="h5" sx={{ p: 2 }}>Booking tickets</Typography>
+                        <Stepper nonLinear activeStep={activeStep} sx={{ width: '80%' }}>
+                            {steps.map((label, index) => (
+                                <Step key={label} completed={completed[index]}>
+                                    <StepButton color="inherit" onClick={handleStep(index)}>
+                                        {label}
+                                    </StepButton>
+                                </Step>
+                            ))}
+                        </Stepper>
+                        <div>
+                            {allStepsCompleted() ? (
+                                <React.Fragment>
+                                    <Typography sx={{ mt: 2, mb: 1 }}>
+                                        All steps completed - you&apos;re finished
+                                    </Typography>
+                                    <Box sx={{ display: 'flex', flexDirection: 'row', pt: 2 }}>
+                                        <Box sx={{ flex: '1 1 auto' }} />
+                                        <Button onClick={handleReset}>Reset</Button>
+                                    </Box>
+                                </React.Fragment>
+                            ) : (
+                                <React.Fragment>
+                                    <Box sx={{ display: 'flex', flexDirection: 'row', pt: 2 }}>
+                                        <Button
+                                            color="inherit"
+                                            disabled={activeStep === 0}
+                                            onClick={handleBack}
+                                            sx={{ mr: 1 }}
+                                        >
+                                            Back
                                         </Button>
-                                    }
-                                    {/* {activeStep !== steps.length &&
+                                        <Box sx={{ flex: '1 1 auto' }} />
+                                        {CURRENT_BOOKING.selectedSeats.length != 0 &&
+                                            <Button onClick={handleNext} sx={{ mr: 1 }}>
+                                                Next
+                                            </Button>
+                                        }
+                                        {/* {activeStep !== steps.length &&
                                         (completed[activeStep] ? (
                                             <Typography variant="caption" sx={{ display: 'inline-block' }}>
                                                 Step {activeStep + 1} already completed
@@ -192,24 +191,24 @@ const Booking = () => {
                                                     : 'Complete Step'}
                                             </Button>
                                         ))} */}
-                                </Box>
+                                    </Box>
 
-                                {
-                                    activeStep == 0 ? (
-                                        <div >
-                                            <BookingForm showTimeList={showTimeList} />
-                                            {
-                                                data && <RoomItem theater={data} />
-                                            }
-                                        </div>
-                                    ) : (<BuyerInformation movieInfo = {movieInfo}></BuyerInformation>)
+                                    {
+                                        activeStep == 0 ? (
+                                            <div >
+                                                <BookingForm showTimeList={showTimeList} />
+                                                {
+                                                    data && <RoomItem theater={data} />
+                                                }
+                                            </div>
+                                        ) : (<BuyerInformation movieInfo={movieInfo}></BuyerInformation>)
 
-                                }
-                            </React.Fragment>
-                        )}
+                                    }
+                                </React.Fragment>
+                            )}
+                        </div>
                     </div>
-                </div>
-            </Box>
+                </Box>
         </div>
 
         //         <BookingForm showTimeList={showTimeList} />

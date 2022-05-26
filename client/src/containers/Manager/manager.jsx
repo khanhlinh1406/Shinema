@@ -14,7 +14,8 @@ import Box from '@mui/material/Box';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import { red, grey } from "@mui/material/colors";
 
-import { ShowTimeManager, TheaterManager, Statistics } from '../../components'
+import { ShowTimeManager, TheaterManager, Statistics} from '../../components'
+import { StaffManager } from '../../components/StaffManager';
 import { Helmet } from 'react-helmet';
 
 const Manager = () => {
@@ -44,7 +45,18 @@ const Manager = () => {
 
     const handleChange = (event, newValue) => {
         setValue(newValue);
+        if (newValue == 3) {
+            navigate('/staff')
+        }
     };
+
+    useEffect(() => {
+        let path = window.location.pathname
+        if (path.includes('/staff')) {
+            setValue(3)
+            console.log('uuuuuuu')
+        }
+    }, [])
 
     return (
         <div>
@@ -60,6 +72,7 @@ const Manager = () => {
                             <Tab label="Show time" {...a11yProps(0)} sx={{ color: '#fff' }} />
                             <Tab label="Statistic" {...a11yProps(1)} sx={{ color: '#fff' }} />
                             <Tab label="Theater" {...a11yProps(2)} sx={{ color: '#fff' }} />
+                            <Tab label="Staff" {...a11yProps(3)} sx={{color: '#fff' }} />
                         </Tabs>
                     </Box>
 
@@ -71,6 +84,9 @@ const Manager = () => {
                     </TabPanel>
                     <TabPanel value={value} index={2}>
                         <TheaterManager />
+                    </TabPanel>
+                    <TabPanel value={value} index={3}>
+                        <StaffManager />
                     </TabPanel>
 
                 </Box>
