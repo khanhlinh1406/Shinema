@@ -24,7 +24,7 @@ export const StaffManager = () => {
 }
 
 export const CustomFillButton = styled(Button)(({ theme }) => ({
-    color: theme.palette.getContrastText('#fff'),
+    color: '#fff',
     backgroundColor: red[600],
     '&:hover': {
         backgroundColor: red[700],

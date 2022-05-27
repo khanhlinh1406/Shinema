@@ -20,6 +20,7 @@ import ChatBot from './components/Chatbot';
 import AccountApi from './api/accountApi'
 import { useSelector, useDispatch } from 'react-redux';
 import { userSlice } from './redux/slices/userSlice'
+import TransactionHistory from './containers/TransactionHistory/transactionHistory';
 
 function App() {
   let navigate = useNavigate();
@@ -180,6 +181,15 @@ function App() {
             </div>
           }
           />
+
+        <Route path="/transactions" element={
+          <div>
+            <MainNavBar />
+            <TransactionHistory/>
+            <Footer/>
+          </div>
+        }
+        />
         </Routes>
       }
 

@@ -400,7 +400,10 @@ const BuyerInformation = ({ movieInfo }) => {
                     price: CURRENT_BOOKING.selectedTheater.price,
                     total: CURRENT_BOOKING.selectedSeats.length * CURRENT_BOOKING.selectedTheater.price,
                     method: "Cash"
-                }
+                },
+                address: bigAddress,
+                contact: values.contact,
+                name: values.name
             })
             setMethodVisible(true)
         }

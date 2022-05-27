@@ -75,7 +75,7 @@ const PayPal = ({ purcharses, ticket, movieInfo }) => {
                 const tmp = {
                     ...ticket, invoice: {
                         ...ticket.invoice,
-                        method: 'paypal'
+                        method: 'Paypal'
                     }
                 }
 

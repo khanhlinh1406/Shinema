@@ -15,11 +15,13 @@ export const styles = {
 
     TextField: {
         width: '80%',
-        height: 80
+        height: 80,
+        color: 'black',
     },
 
     typo: {
-        marginTop: 20
+        marginTop: 20,
+        color: 'black'
     }
 
 }

@@ -13,7 +13,7 @@ const TicketApi = {
 
     getByUser: async(email) => {
         const res = await ApiDatabase.get('/ticket/user/' + email)
-        return res.data
+        return res
     },
 
     getBookedSeats: async(theaterId, room, date, time) => {

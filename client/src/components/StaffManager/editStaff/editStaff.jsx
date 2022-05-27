@@ -24,7 +24,7 @@ const EditStaff = () => {
   const [isLoading, setIsLoading] = useState(false)
 
   useEffect(async () => {
-    await accountApi.getAccountWithID(id)
+    await accountApi.getById(id)
       .then((res) => {
         console.log(res.data)
         setStaff(res.data)
@@ -214,7 +214,7 @@ const EditStaff = () => {
   return (
     <div>
       <div style={styles.container}>
-        <Typography variant="h5" style={{fontWeight: 'bold'}}>Modify staff</Typography>
+        <Typography variant="h5" style={{fontWeight: 'bold', color: 'red' }}>Modify staff</Typography>
         <Stack direction="column">
 
           <Grid container sx={{ p: 2, ml: 2, mr: 2 }}>
@@ -324,7 +324,7 @@ const EditStaff = () => {
               }
             </Grid>
 
-            <Grid xs={4} item >
+            {/* <Grid xs={4} item >
               <Typography variant="body1" style={styles.typo}>Male: </Typography>
             </Grid>
             <Grid xs={8} item>
@@ -334,7 +334,7 @@ const EditStaff = () => {
                 staff.gender === 'male' ? true: false
               }
               />
-            </Grid>
+            </Grid> */}
           </Grid>
 
           <Stack direction="row" sx={{ width: '100%', mt: 3, p: 1, justifyContent: 'center', alignItems: 'center' }}>

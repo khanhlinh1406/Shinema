@@ -52,3 +52,5 @@ export const bookingSelector = (state) => state.booking
 export const movieCornerSelector = (state) => state.corner__movie
 
 export const currentStaffList = (state) => state.staff.staffList
+
+export const currentTicketList = (state) => state.ticket.ticketList

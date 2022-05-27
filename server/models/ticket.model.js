@@ -48,6 +48,24 @@ const TicketSchema = new Schema({
         default: false
     },
 
+    address: {
+        type: String,
+        required: true,
+        default: '',
+    },
+
+    contact: {
+        type: String,
+        required: true,
+        default: '',
+    },
+
+    name: {
+        type: String,
+        required: true,
+        default: '',
+    },
+
     invoice: {
         quantity: {
             type: Number,

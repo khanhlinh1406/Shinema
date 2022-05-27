@@ -19,7 +19,8 @@ export const styles = {
     },
 
     typo: {
-        marginTop: 20
+        marginTop: 20,
+        color: 'black'
     }
 
 }

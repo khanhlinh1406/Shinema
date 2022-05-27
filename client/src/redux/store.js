@@ -7,6 +7,7 @@ import { theaterSlice } from './slices/theaterSlice'
 import { movieCornerSlice } from './slices/movieCornerSlice';
 import { bookingSlice } from './slices/bookingSlice'
 import { staffSlice } from './slices/staffSlice'
+import { ticketSlice } from './slices/ticketSlice'
 
 const Store = configureStore({
     reducer: {
@@ -16,7 +17,8 @@ const Store = configureStore({
         theaters: theaterSlice.reducer,
         corner__movie: movieCornerSlice.reducer,
         booking: bookingSlice.reducer,
-        staff: staffSlice.reducer
+        staff: staffSlice.reducer,
+        ticket: ticketSlice.reducer
     },
 });
 

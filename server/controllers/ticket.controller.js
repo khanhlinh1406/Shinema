@@ -27,7 +27,7 @@ const ticketController = {
 
     getByUser: (req, res) => {
         TicketModel.find({
-                email: req.params.email
+                _userEmail: req.params.email
             })
             .then(data => {
                 res.json(data);
@@ -90,7 +90,10 @@ const ticketController = {
                             price: req.body.invoice.price,
                             total: req.body.invoice.total,
                             method: req.body.invoice.method
-                        }
+                        },
+                        address: req.body.address,
+                        name: req.body.name,
+                        contact: req.body.contact
                     }
 
                     if (newTicket.id === null || newTicket.id == '')
@@ -126,6 +129,12 @@ const ticketController = {
                     if (newTicket.invoice.method === null || newTicket.invoice.method == '')
                         return res.send('Invoice Method null')
 
+                    if (newTicket.address === null || newTicket.address === undefined)
+                        return res.send('Address null')
+                    if (newTicket.contact === null || newTicket.contact === undefined)
+                        return res.send('Contact null')
+                    if (newTicket.name === null || newTicket.name === undefined)
+                        return res.send('Name null')
                     return TicketModel.create(newTicket)
                 }
             })
@@ -149,7 +158,10 @@ const ticketController = {
                 _userEmail: req.body._userEmail,
                 bookedTime: req.body.bookedTime,
                 isCancelled: req.body.isCancelled,
-                invoice: req.body.invoice
+                invoice: req.body.invoice,
+                name: req.body.name,
+                contact: req.body.contact,
+                address: req.body.address
             }, { new: 'true' })
             .then(data => {
                 res.json("Update successful")

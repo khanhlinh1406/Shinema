@@ -73,8 +73,8 @@ const Row = (props) => {
         <TableCell align="left" style={{fontStyle: 'italic'}}>{row.email}</TableCell>
         <TableCell align="left" style={{fontStyle: 'italic'}}>{row.contact}</TableCell>
         {/* <TableCell align="center">
-          {row.gender=='male' ? 
-          <MaleIcon  style={{color: "#180c75"}} /> 
+          {row.gender=='male' ?
+          <MaleIcon  style={{color: "#180c75"}} />
           : <FemaleIcon style={{color: "#ba0666"}}/>
           }</TableCell> */}
       </TableRow>
@@ -83,7 +83,7 @@ const Row = (props) => {
         <TableCell style={{ paddingBottom: 0, paddingTop: 0 }} colSpan={6}>
           <Collapse in={open} timeout="auto" unmountOnExit>
             <Box sx={{ mt: 1, ml: 20, p: 2 }}>
-              <Typography variant="subtitle1" gutterBottom component="div">
+              <Typography variant="subtitle1" gutterBottom component="div" style={{color: 'red', fontWeight: 'bold'}}>
                 Staff information:
               </Typography >
 
@@ -127,7 +127,7 @@ const StaffInformation = (props) => {
     <Box sx={{ width: '70%' }}>
       <Grid container spacing={2} sx={{ alignItems: 'center', justifyContent: "center", p: 2 }}>
         <Grid xs={1} rowSpacing={2} item>
-          <PersonIcon />
+          <PersonIcon style={styles.icon} />
         </Grid>
         <Grid xs={4} item>
           <Typography sx={styles.title}>Name: </Typography>
@@ -137,7 +137,7 @@ const StaffInformation = (props) => {
         </Grid>
 
         <Grid xs={1} item>
-          <EmailIcon />
+          <EmailIcon style={styles.icon} />
         </Grid>
         <Grid xs={4} item>
           <Typography sx={styles.title}>Email:</Typography>
@@ -146,7 +146,7 @@ const StaffInformation = (props) => {
           <Typography sx={styles.item}>{data.email}</Typography>
         </Grid>
         <Grid xs={1} item>
-          <PhoneIcon />
+          <PhoneIcon style={styles.icon}/>
         </Grid>
         <Grid xs={4} item>
           <Typography sx={styles.title}>Phone:</Typography>
@@ -156,7 +156,7 @@ const StaffInformation = (props) => {
         </Grid>
 
         <Grid item xs={1}>
-          <HomeIcon />
+          <HomeIcon style={styles.icon}/>
         </Grid>
         <Grid xs={4} item>
           <Typography sx={styles.title}>Address:</Typography>
@@ -165,17 +165,18 @@ const StaffInformation = (props) => {
           <Typography sx={styles.item}>{data.address}</Typography>
         </Grid>
 
-        <Grid xs={1} item>
+        {/*<Grid xs={1} item>
           <PersonIcon />
         </Grid>
-        {/* <Grid xs={4} item>
+         <Grid xs={4} item>
           <Typography sx={styles.title}>Gender:</Typography>
         </Grid>
         <Grid xs={7} item>
           <Typography sx={styles.item}>{data.gender}</Typography>
         </Grid> */}
+
         <Grid xs={1} item>
-          <CakeIcon />
+          <CakeIcon style={styles.icon}/>
         </Grid>
         <Grid xs={4} item>
           <Typography sx={styles.title}>Birthday:</Typography>

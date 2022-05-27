@@ -12,3 +12,4 @@ export { default as PeopleDetails } from './PeopleDetails/peopleDetails';
 export { default as Profile } from './Profile/profile'
 export { default as Booking } from './Booking/booking'
 export { default as ForgotPassword } from './ForgotPassword/index'
+export {default as TransactionHistory} from './TransactionHistory/transactionHistory'

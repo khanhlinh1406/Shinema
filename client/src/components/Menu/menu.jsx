@@ -46,7 +46,7 @@ export const CustomerMenu = ({ accountToggleHandle }) => {
                 user.rank == "Customer"
                 &&
                 <div className='menu__item'>
-                    <p onClick={() => { accountToggleHandle(); navigate('/manager') }}>Transaction history</p>
+                    <p onClick={() => { accountToggleHandle(); navigate('/transactions') }}>Transaction history</p>
                     <VscHistory className='menu__item__icon' color={defaultColor} size={23} />
                 </div>
             }

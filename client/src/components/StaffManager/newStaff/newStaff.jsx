@@ -71,7 +71,7 @@ const NewStaff = () => {
     email: '',
     password: '123456',
     gender: 'male',
-    role: "Staff",
+    rank: "Staff",
     enable: true
   })
 
@@ -216,7 +216,7 @@ const NewStaff = () => {
   return (
     <div style={styles.page}>
       <div style={styles.container}>
-        <Typography variant="h5" style={{ fontWeight: 'bold'}}>New staff</Typography>
+        <Typography variant="h5" style={{ fontWeight: 'bold', color: 'red'}}>New staff</Typography>
         <Stack direction="column" >
 
           <Grid container sx={{ p: 2, ml: 2, mr: 2 }}>
@@ -330,7 +330,7 @@ const NewStaff = () => {
               }
             </Grid>
 
-            <Grid xs={4} item >
+            {/* <Grid xs={4} item >
               <Typography variant="body1" style={styles.typo}>Male: </Typography>
             </Grid>
             <Grid xs={8} item >
@@ -340,7 +340,7 @@ const NewStaff = () => {
               //   staff.gender === 'male' ? true: false
               // }
               />
-            </Grid>
+            </Grid> */}
 
             
           </Grid>
@@ -366,7 +366,7 @@ const NewStaff = () => {
 export default NewStaff
 
 const CustomFillButton = styled(Button)(({ theme }) => ({
-  color: theme.palette.getContrastText('#fff'),
+  color: '#fff',
   backgroundColor: red[600],
   '&:hover': {
       backgroundColor: red[700],
