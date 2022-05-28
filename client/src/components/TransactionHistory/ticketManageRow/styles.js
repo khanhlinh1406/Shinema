@@ -13,6 +13,6 @@ export const styles = {
     },
 
     icon: {
-        color: 'black',
+        color: '#040C18',
     }
 }

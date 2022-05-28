@@ -39,6 +39,22 @@ export const ticketSlice = createSlice({
         deleteticket: (state, action) => {
             state.ticketList = state.ticketList.filter(ite => ite._id != action.payload)
         },
+        cancelTicket: (state, action) => {
+
+            let tmp = []
+
+            state.ticketList.forEach((ticket) => {
+                if (ticket._id == action.payload) {
+                    let t = {};
+                    t = {...ticket, isCancelled: true }
+                    console.log(t)
+                    tmp.push(t)
+                } else
+                    tmp.push(ticket)
+            })
+
+            state.ticketList = tmp
+        }
     },
     extraReducers: {
         [getByUser.pending]: (state) => {

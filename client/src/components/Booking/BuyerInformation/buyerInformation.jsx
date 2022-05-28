@@ -92,7 +92,6 @@ const BuyerInformation = ({ movieInfo }) => {
         })
     }
 
-
     const [errorNotification, setErrorNotification] = useState({
         status: false,
         message: '',
@@ -350,9 +349,9 @@ const BuyerInformation = ({ movieInfo }) => {
                 "-------------------------------------------------------- \n" +
                 `Movie: ${movieInfo.title} \n` +
                 `Theater: ${CURRENT_BOOKING.selectedTheater.name + " - Room: " + CURRENT_BOOKING.selectedRoom} \n` +
-                `Seats: ${data.seatIdArray} \n` +
+                `Seats: ${CURRENT_BOOKING.selectedSeats} \n` +
                 "-------------------------------------------------------- \n" +
-                `Total: ${data.invoice.total} VND` + "\n" +
+                `Total: ${CURRENT_BOOKING.selectedSeats.length * CURRENT_BOOKING.selectedTheater.price} USD` + "\n" +
                 `Method: Cash` + "\n" +
                 "-------------------------------------------------------- \n" +
                 "Any wondered things. Please contact with our shop with contact below site: shinema.com"

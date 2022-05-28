@@ -59,8 +59,8 @@ const DisplayHistory = () => {
 
     useEffect(() => {
         setTicketList(_ticketList)
+        console.log('refresh')
     }, [_ticketList])
-
 
 
     const tfTheme = createTheme({
@@ -125,7 +125,6 @@ const TicketTable = (props) => {
     const data = props.data
     return (
         <div >
-
             <TableContainer component={Paper} sx={{ marginTop: 2, width: '100%' }}>
                 <Table aria-label="collapsible table">
                     <TableHead>
@@ -146,11 +145,14 @@ const TicketTable = (props) => {
                             <StyledTableCell>
                                 <Typography variant="button" sx={styles.title}>Method</Typography>
                             </StyledTableCell>
+                            <StyledTableCell>
+                                <Typography variant="button" sx={styles.title}>Status</Typography>
+                            </StyledTableCell>
                         </TableRow>
                     </TableHead>
                     <TableBody>
                         {data.map((row) => (
-                            <Row sx={{ m: 1 }} key={row.email} row={row} />
+                            <Row sx={{ m: 1 }} key={row._id} row={row} />
                         ))}
                     </TableBody>
                 </Table>
