@@ -40,7 +40,7 @@ import ticketApi from '../../../api/ticketApi';
 import TheaterApi from '../../../api/theaterApi'
 import tmdbApi from '../../../api/tmdbApi'
 import { ticketSlice } from '../../../redux/slices/ticketSlice';
-import { userSelector } from '../../../redux/selector';
+import { userSelector, currentTicketList, currentCancelTicket } from '../../../redux/selector';
 import { useDispatch, useSelector } from 'react-redux';
 import LocalAtmIcon from '@mui/icons-material/LocalAtm';
 import Grid3x3Icon from '@mui/icons-material/Grid3x3';
@@ -70,7 +70,56 @@ const Row = (props) => {
 
   const [theater, setTheater] = React.useState({});
   const [movie, setMovie] = React.useState({})
+  const [ticket, setTicket] = React.useState(row)
+  const [, refresh] = useState()
 
+  const ticketArr = useSelector(currentTicketList)
+  const [_currentTicketList, setCurrentTicketList] = React.useState(ticketArr)
+
+  const ticketCancel = useSelector(currentCancelTicket)
+
+  const [status, setStatus] = useState({
+    note: 'Pending',
+    color: '#ad9403'
+  })
+
+  useEffect(() => {
+    if (ticket.isCancelled) {
+      if (movie != null || movie != undefined) {
+        let day = new Date().getDate()
+        let month = new Date().getMonth()
+        let year = new Date().getFullYear()
+
+        let current = month + "/" + day + "/" + year
+
+        console.log(ticket.isCancelled)
+        if (ticket.isCancelled) {
+          setStatus({
+            note: "Cancelled",
+            color: 'red',
+          })
+        }
+        else {
+          if (mFunction.subDate(row.dateOccur, current) < 1)
+            setStatus({
+              note: "Was shown",
+              color: "#084d08"
+            })
+        }
+      }
+    }
+  }, [ticket])
+
+  useEffect(() => {
+    if (ticketCancel._id === row._id) {
+      let object = ticketCancel
+      setTicket(object)
+    }
+  }, [ticketCancel])
+
+  // useEffect(() => {
+  //   setCurrentTicketList(ticketArr)
+  // }, [ticketArr])
 
   useEffect(() => {
     const getMovie = async () => {
@@ -100,10 +149,7 @@ const Row = (props) => {
     getTheaters()
   }, [])
 
-  const [status, setStatus] = useState({
-    note: 'Pending',
-    color: '#ad9403'
-  })
+
 
   useEffect(() => {
     if (movie != null || movie != undefined) {
@@ -144,9 +190,9 @@ const Row = (props) => {
           </IconButton>
         </TableCell>
         <TableCell align="left" style={{ fontWeight: 'bold' }}>{movie.title}</TableCell>
-        <TableCell component="th" scope="row" style={{ fontStyle: 'italic' }}>{row.bookedTime}</TableCell>
+        <TableCell component="th" scope="row" style={{ fontStyle: 'italic' }}>{ticket.bookedTime}</TableCell>
         <TableCell align="left" style={{}}>{theater.name}</TableCell>
-        <TableCell align="right" style={{ fontWeight: 'bold', color: 'red' }}>{row.invoice.total}$</TableCell>
+        <TableCell align="right" style={{ fontWeight: 'bold', color: 'red' }}>{ticket.invoice.total}$</TableCell>
         <TableCell align="center">
           {row.invoice.method == 'Cash' ?
             <LocalAtmIcon style={{ color: "#0c8243", fontSize: 30 }} />
@@ -170,7 +216,7 @@ const Row = (props) => {
                 Ticket information:
               </Typography >
 
-              <TicketInformation data={row} theater={theater} movie={movie} />
+              <TicketInformation data={ticket} theater={theater} movie={movie} />
             </Box>
           </Collapse>
         </TableCell>
@@ -293,6 +339,8 @@ const TicketInformation = (props) => {
 
         })
           .catch(err => console.log(err))
+
+        setCancelable({ note: 'You have cancelled this ticket', flag: false });
       })
       .catch(err => {
         setErrorNotification({
@@ -410,9 +458,9 @@ const TicketInformation = (props) => {
                   width: '30px',
                   height: '30px',
                   borderRadius: '15px',
-                  border: '1px solid #18608a',
+                  border: '1px solid red',
                   /// backgroundColor: 'red',
-                  color: 'black',
+                  color: 'red',
                   fontSize: '13px',
                   marginBottom: '10px',
                   fontWeight: 'bold',
@@ -428,9 +476,9 @@ const TicketInformation = (props) => {
                   width: '30px',
                   height: '30px',
                   borderRadius: '15px',
-                  border: '1px solid #18608a',
+                  border: '1px solid red',
                   backgroundColor: 'red',
-                  color: 'black',
+                  color: 'white',
                   fontSize: '13px',
                   marginBottom: '10px',
                   fontWeight: 'bold',

@@ -24,7 +24,8 @@ export const ticketSlice = createSlice({
     name: 'ticket',
     initialState: {
         ticketList: [],
-        loading: false
+        loading: false,
+        cancelTicket: {}
     },
     reducers: {
         ticketListChange: (state, action) => {
@@ -47,7 +48,7 @@ export const ticketSlice = createSlice({
                 if (ticket._id == action.payload) {
                     let t = {};
                     t = {...ticket, isCancelled: true }
-                    console.log(t)
+                    state.cancelTicket = t
                     tmp.push(t)
                 } else
                     tmp.push(ticket)

@@ -55,11 +55,12 @@ const DisplayHistory = () => {
             ticketList.forEach((order) => arr = [...arr, createData(order)])
         }
         setData(arr)
+       // console.log('refresh ticketList')
     }, [ticketList])
 
     useEffect(() => {
         setTicketList(_ticketList)
-        console.log('refresh')
+       // console.log('refresh _ticketList')
     }, [_ticketList])
 
 
