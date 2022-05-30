@@ -7,16 +7,19 @@ import { Typography } from '@mui/material';
 import { TextField } from '@mui/material';
 import { Switch } from '@mui/material';
 import Button from '@mui/material/Button';
-
+import Logo from '../../../assets/logo.png'
 import { styled } from '@mui/material/styles';
 import { grey, red } from '@mui/material/colors';
 import mFunction from '../../../function';
-import accountApi from './../../../api/accountApi';
+import AccountApi from './../../../api/accountApi';
 import { useNavigate } from 'react-router';
-
+import cloudinaryApi from './../../../api/cloudinaryAPI';
 import Message from './../../../components/Message/message';
 import Loading from './../../../components/Loading/loading'
 import { Success, Error } from './../../../components/Alert/alert'
+import MenuItem from '@mui/material/MenuItem';
+import FormControl from '@mui/material/FormControl';
+import Select from '@mui/material/Select';
 
 const NewStaff = () => {
   const navigate = useNavigate()
@@ -45,34 +48,66 @@ const NewStaff = () => {
     alert: ''
   })
 
+  const [validIdentityNumber, setValidIdentityNumber] = useState({
+    check: true,
+    alert: ''
+  })
+
+  const [validRank, setValidRank] = useState({
+    check: true,
+    alert: ''
+  })
+
+  const [positionList, setPositionList] = useState([
+    {value: 'Censor', key: 'censor'},
+    {value: 'Manager', key: 'manager'},
+  ])
+
   const resetValidation = () => {
     setValidName({
+      ...validName,
       check: true
     })
     setValidEmail({
+      ...validEmail,
       check: true
     })
     setValidPhone({
+      ...validPhone,
       check: true
     })
     setValidAddress({
+      ...validAddress,
       check: true
     })
     setValidBirthday({
+      ...validBirthday,
+      check: true
+    })
+    setValidIdentityNumber({
+      ...validIdentityNumber,
+      check: true
+    })
+    setValidRank({
+      ...validRank,
       check: true
     })
   }
 
   const [values, setValues] = useState({
     name: '',
-    phoneNumber: '',
+    contact: '',
     address: '',
     birthday: '',
     email: '',
+    gender: '',
+    avatar: '',
+    rank: '',
+    identifyNumber: '',
+    score: 0,
+    listTicketId: [],
+    listReview: [],
     password: '123456',
-    gender: 'male',
-    rank: "Staff",
-    enable: true
   })
 
   const [updateSucceeded, setUpdateSucceeded] = useState({
@@ -110,7 +145,14 @@ const NewStaff = () => {
     let flag = true;
 
     resetValidation()
-
+    if (values.rank === undefined || values.rank ==='')
+    {
+      setValidRank({
+        check: true,
+        alert: 'Please choose postiontion'
+      })
+      flag= false;
+    }
     if (values.name === undefined || values.name === '') {
       setValidName({
         check: false,
@@ -141,7 +183,7 @@ const NewStaff = () => {
       flag = false;
     }
     else {
-      await accountApi.checkEmail(values.email)
+      await AccountApi.checkEmail(values.email)
         .then((res) => {
           if (res.status == 200) {
             setValidEmail({
@@ -155,14 +197,14 @@ const NewStaff = () => {
 
     }
 
-    if (values.phoneNumber === undefined || values.phoneNumber === '') {
+    if (values.contact === undefined || values.contact === '') {
       setValidPhone({
         check: false,
         alert: 'Please enter phone number'
       })
       flag = false;
     }
-    else if (!mFunction.validatePhoneNumber(values.phoneNumber)) {
+    else if (!mFunction.validatePhoneNumber(values.contact)) {
       setValidPhone({
         check: false,
         alert: 'Invalid phone number!'
@@ -170,6 +212,13 @@ const NewStaff = () => {
       flag = false;
     }
 
+    if (values.identifyNumber === undefined || values.identifyNumber === ''){
+      setValidIdentityNumber({
+        check: false,
+        alert: 'Please enter identity number'
+      })
+      flag= false;
+    }
 
     if (values.address === undefined || values.address === '') {
       setValidAddress({
@@ -192,7 +241,7 @@ const NewStaff = () => {
   const create = async () => {
     if (await validate()) {
       setIsLoading(true)
-      await accountApi.createNewAccount(values)
+      await AccountApi.create(values)
         .then((res) => {
           // console.log(res)
           setUpdateSucceeded({
@@ -213,21 +262,68 @@ const NewStaff = () => {
     }
   }
 
+  const changePic = (e) => {
+    if (e.target.files) {
+      const listFile = []
+      for (let i = 0; i < e.target.files.length; i++) {
+        let reader = new FileReader();
+        reader.readAsDataURL(e.target.files[i])
+        reader.onloadend = async () => {
+          listFile.push(reader.result);
+          if (i == e.target.files.length - 1) {
+            await cloudinaryApi.upload(listFile)
+              .then(res => {
+                console.log(res)
+                setIsLoading(false)
+                setValues({ ...values, avatar: res.data[0] })
+              }).catch((err) => {
+                console.log(err)
+                setErrorNotification({
+                  status: true,
+                  message: err
+                })
+              })
+          }
+        }
+      }
+    }
+  }
+
   return (
     <div style={styles.page}>
       <div style={styles.container}>
-        <Typography variant="h5" style={{ fontWeight: 'bold', color: 'red'}}>New staff</Typography>
-        <Stack direction="column" >
+        <Typography variant="h5" style={{ fontWeight: 'bold', color: 'red' }}>New staff</Typography>
 
-          <Grid container sx={{ p: 2, ml: 2, mr: 2 }}>
+        <Grid container spacing={2}>
+          <Grid container item sx={{ p: 2, ml: 2, mr: 1 }} xs={7}>
+            <Grid xs={4} item>
+              <Typography variant="body1" style={styles.typo}>Position</Typography>
+            </Grid>
+            <Grid xs={8} item>
+              <Select
+                labelId="demo-simple-select-label"
+                id="demo-simple-select"
+                value={values.rank}
+                label="Position"
+                onChange={handleChangeValue('rank')}
+              >
+                {
+                  positionList.map((position, key)=>(
+                    <MenuItem key={key} value={position.value}>{position.value}</MenuItem>
+                  ))
+                }
+              </Select>
+              {validRank.check=== true && <Typography variant="subtitle2" style={{color: 'red'}}>{validRank.alert}</Typography>}
+            </Grid>
+
             <Grid xs={4} item >
               <Typography variant="body1" style={styles.typo} >Name: </Typography>
             </Grid>
             <Grid xs={8} item>
               {
                 validName.check === true ?
-                  <TextField id="standard-basic" label="Name" variant="standard" style = {styles.TextField} onChange={handleChangeValue('name')} />
-                  : <TextField id="standard-basic" label="Name" variant="standard" onChange={handleChangeValue('name')} error helperText={validName.alert} style = {styles.TextField}
+                  <TextField id="standard-basic" label="Name" variant="standard" style={styles.TextField} onChange={handleChangeValue('name')} />
+                  : <TextField id="standard-basic" label="Name" variant="standard" onChange={handleChangeValue('name')} error helperText={validName.alert} style={styles.TextField}
                   />
               }
             </Grid>
@@ -238,8 +334,8 @@ const NewStaff = () => {
             <Grid xs={8} item>
               {
                 validEmail.check === true ?
-                  <TextField id="standard-basic" label="Email" variant="standard" onChange={handleChangeValue('email')} style = {styles.TextField}/>
-                  : <TextField id="standard-basic" label="Email" variant="standard" onChange={handleChangeValue('email')} error helperText={validEmail.alert} style = {styles.TextField}
+                  <TextField id="standard-basic" label="Email" variant="standard" onChange={handleChangeValue('email')} style={styles.TextField} />
+                  : <TextField id="standard-basic" label="Email" variant="standard" onChange={handleChangeValue('email')} error helperText={validEmail.alert} style={styles.TextField}
                   />
               }
             </Grid>
@@ -251,8 +347,20 @@ const NewStaff = () => {
             <Grid xs={8} item>
               {
                 validPhone.check === true ?
-                  <TextField id="standard-basic" label="Phone" variant="standard" onChange={handleChangeValue('phoneNumber')} style = {styles.TextField} />
-                  : <TextField id="standard-basic" label="Phone" variant="standard" error helperText={validPhone.alert} onChange={handleChangeValue('phoneNumber')} style = {styles.TextField}
+                  <TextField id="standard-basic" label="Phone" variant="standard" onChange={handleChangeValue('contact')} style={styles.TextField} />
+                  : <TextField id="standard-basic" label="Phone" variant="standard" error helperText={validPhone.alert} onChange={handleChangeValue('contact')} style={styles.TextField}
+                  />
+              }
+            </Grid>
+
+            <Grid xs={4} item >
+              <Typography variant="body1" style={styles.typo}>Identity number: </Typography>
+            </Grid>
+            <Grid xs={8} item>
+              {
+                validIdentityNumber.check === true ?
+                  <TextField id="standard-basic" label="Identity number" variant="standard" onChange={handleChangeValue('identifyNumber')} style={styles.TextField} />
+                  : <TextField id="standard-basic" label="Indentity number" variant="standard" error helperText={validIdentityNumber.alert} onChange={handleChangeValue('identifyNumber')} style={styles.TextField}
                   />
               }
             </Grid>
@@ -263,14 +371,14 @@ const NewStaff = () => {
             <Grid xs={8} item>
               {
                 validAddress.check === true ?
-                  <TextField id="standard-basic" label="Address" variant="standard" onChange={handleChangeValue('address')} style = {styles.TextField}/>
-                  : <TextField id="standard-basic" label="Address" variant="standard" error helperText={validAddress.alert} onChange={handleChangeValue('address')} style = {styles.TextField}
+                  <TextField id="standard-basic" label="Address" variant="standard" onChange={handleChangeValue('address')} style={styles.TextField} />
+                  : <TextField id="standard-basic" label="Address" variant="standard" error helperText={validAddress.alert} onChange={handleChangeValue('address')} style={styles.TextField}
                   />
               }
             </Grid>
 
             <Grid xs={4} item >
-              <Typography variant="body1" style={styles.typo}>Birthday: </Typography> 
+              <Typography variant="body1" style={styles.typo}>Birthday: </Typography>
             </Grid>
             <Grid xs={8} item>
               {
@@ -297,7 +405,7 @@ const NewStaff = () => {
 
                     onChange={handleChangeValue('birthday')}
 
-                    style = {styles.TextField}
+                    style={styles.TextField}
                   />
                   :
                   <TextField className="profile-information__item__content"
@@ -325,12 +433,12 @@ const NewStaff = () => {
 
                     helperText={validBirthday.alert}
 
-                    style = {styles.TextField}
+                    style={styles.TextField}
                   />
               }
             </Grid>
 
-            {/* <Grid xs={4} item >
+            <Grid xs={4} item >
               <Typography variant="body1" style={styles.typo}>Male: </Typography>
             </Grid>
             <Grid xs={8} item >
@@ -340,16 +448,29 @@ const NewStaff = () => {
               //   staff.gender === 'male' ? true: false
               // }
               />
-            </Grid> */}
+            </Grid>
 
-            
+
           </Grid>
 
-          <Stack direction="row" sx={{ p: 1, width: '100%', justifyContent: 'center' }}>
-            <CustomFillButton onClick={create}>New</CustomFillButton>
-            <CustomOutlineButton onClick={() => navigate(-1)}>Cancel</CustomOutlineButton>
-          </Stack>
+          <Grid item xs={4}>
+            {values.avatar == '' ?
+              <img className="profile-pic__img"
+                src={Logo}
+              /> :
+              <img className='profile-pic__img' src={values.avatar}
+              />
+            }
+            <input type="file" name="file" accept="image/png, image/jpeg" onChange={changePic} style={{ padding: 1, marginTop: 20, marginLeft: 100 }}></input>
+          </Grid>
+        </Grid>
+
+
+        <Stack direction="row" sx={{ p: 1, width: '100%', justifyContent: 'center' }}>
+          <CustomFillButton onClick={create}>New</CustomFillButton>
+          <CustomOutlineButton onClick={() => navigate(-1)}>Cancel</CustomOutlineButton>
         </Stack>
+
       </div>
 
       {updateSucceeded.status && <Success message={updateSucceeded.message} status={updateSucceeded.status} />}
@@ -369,7 +490,7 @@ const CustomFillButton = styled(Button)(({ theme }) => ({
   color: '#fff',
   backgroundColor: red[600],
   '&:hover': {
-      backgroundColor: red[700],
+    backgroundColor: red[700],
   },
   padding: '6px 35px',
   marginLeft: '20px',
@@ -382,8 +503,8 @@ const CustomOutlineButton = styled(Button)(({ theme }) => ({
   borderWidth: 1,
   borderStyle: 'solid',
   '&:hover': {
-      backgroundColor: red[900],
-      color: theme.palette.getContrastText(red[900]),
+    backgroundColor: red[900],
+    color: theme.palette.getContrastText(red[900]),
   },
   padding: '6px 35px',
   marginLeft: '20px',

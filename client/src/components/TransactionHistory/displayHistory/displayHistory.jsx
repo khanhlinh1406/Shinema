@@ -2,7 +2,7 @@ import { Typography, Stack } from "@mui/material";
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router";
 import accountApi from '../../../api/accountApi';
-
+import mFunction from '../../../function'
 import Button from '@mui/material/Button';
 import { styled } from '@mui/material/styles';
 import Table from '@mui/material/Table';
@@ -55,12 +55,41 @@ const DisplayHistory = () => {
             ticketList.forEach((order) => arr = [...arr, createData(order)])
         }
         setData(arr)
-       // console.log('refresh ticketList')
+        // console.log('refresh ticketList')
     }, [ticketList])
+
+    const [totalNumber, setTotalNumber] = useState(0)
+    const [pendingNumber, setPendingNumber] = useState(0)
+    const [shownNumber, setShownNumber] = useState(0)
+    const [cancelledNumber, setCancelledNumber] = useState(0)
+    const [paypalNumber, setPaypalNumber] = useState(0)
 
     useEffect(() => {
         setTicketList(_ticketList)
-       // console.log('refresh _ticketList')
+        setTotalNumber(_ticketList.length)
+
+        let paypal = 0
+        let cancel = 0
+        let shown = 0
+        let day = new Date().getDate()
+        let month = new Date().getMonth()
+        let year = new Date().getFullYear()
+
+        let current = month + "/" + day + "/" + year
+
+        _ticketList.forEach((ticket) => {
+            if (ticket.invoice.method == 'Paypal')
+                paypal++;
+            if (ticket.isCancelled)
+                cancel++;
+            else if (mFunction.subDate(row.dateOccur, current) < 1)
+                shown++
+        })
+
+        setPaypalNumber(paypal)
+        setCancelledNumber(cancel)
+        setShownNumber(shown)
+        setPendingNumber(totalNumber - shown - cancel)
     }, [_ticketList])
 
 
@@ -80,41 +109,18 @@ const DisplayHistory = () => {
 
                 <Grid container spacing={2} >
                     <Grid xs={10} item>
-                        {/* <Box textAlign="left">
-                            <ThemeProvider theme={tfTheme}>
-                                <TextField id="standard-basic" label="Search name..." variant="standard" onChange={handleChange} />
-                            </ThemeProvider>
-                        </Box> */}
+                        <Stack direction="row"
+                        spacing={{xs: 8}}>
+                            <Typography variant="subtitle1" style={{ color: 'white' }}>Total: {totalNumber}</Typography>
+                            <Typography variant="subtitle1" style={{ color: 'red' }}>Cancel: {cancelledNumber}</Typography>
+                            <Typography variant="subtitle1" style={{color: 'lightgreen'}}>Shown: {shownNumber}</Typography>
+                            <Typography variant="subtitle1" style={{color: '#ad9403'}}>Pending: {pendingNumber}</Typography>
+                        </Stack>
 
                         {ticketList &&
                             <TicketTable data={ticketList} />
                         }
                     </Grid>
-
-                    {/* <Grid xs={4} item>
-                    <Paper style={{ top: 0,}}>
-                        <Grid container spacing={2}>
-                            <Grid xs={6} item>
-                                <Typography variant="body1">Total: </Typography>
-                                <Typography variant="body1">{_ticketList.length}</Typography>
-                            </Grid>
-                        </Grid>
-                        <Grid container spacing={2}>
-                            <Grid xs={6} item>
-                                <MaleIcon style={{color: "#ba0666"}}/>
-                                <Typography variant="body1">{countMale}</Typography>
-                            </Grid>
-                        </Grid>
-                        <Grid container spacing={2}>
-                            <Grid xs={6} item>
-                                <FemaleIcon style={{color: "#180c75"}} />
-                                <Typography variant="body1">{_ticketList - countMale}</Typography> 
-                            </Grid>
-                        </Grid>
-                    </Paper>
-                </Grid> 
-            */}
-
                 </Grid>
 
             </Box>

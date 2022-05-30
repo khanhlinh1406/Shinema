@@ -14,5 +14,11 @@ export const styles = {
 
     icon: {
         color: 'black',
+    },
+
+    avatar: {
+        height: 200,
+        width: 200,
+        background: 'black'
     }
 }

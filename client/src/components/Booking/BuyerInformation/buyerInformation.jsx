@@ -36,7 +36,7 @@ import format from 'date-fns/format'
 import TicketApi from './../../../api/ticketApi';
 import Loading from '../../Loading/loading'
 import { Success, Error } from '../../Alert/alert'
-
+import { makeStyles } from '@mui/styles';
 import RadioGroup from '@mui/material/RadioGroup';
 import FormControlLabel from '@mui/material/FormControlLabel';
 import FormLabel from '@mui/material/FormLabel';
@@ -420,8 +420,8 @@ const BuyerInformation = ({ movieInfo }) => {
                         <Grid item xs={8}>
                             {
                                 validName.check === true ?
-                                    <TextField 
-                                    fullWidth
+                                    <TextField
+                                        fullWidth
                                         variant="standard"
                                         sx={{
                                             borderRadius: '0.5',
@@ -586,6 +586,19 @@ const BuyerInformation = ({ movieInfo }) => {
 const AddressInput = ({ province, district, commune,
     handleChangeProvince, handleChangeDistrict, handleChangeCommune, handleChangeHouse,
     provinceList, districtList, communeList }) => {
+    const useStyles = makeStyles((theme) => ({
+        select: {
+            '&.Mui-focused .MuiOutlinedInput-notchedOutline': {
+                borderColor: '#fff',
+            },
+            "& .MuiOutlinedInput-notchedOutline": {
+                borderColor: "#fff"
+              },
+        },
+    }));
+
+    const classes = useStyles()
+
     return (
         <Grid item container>
             <TextField
@@ -612,6 +625,7 @@ const AddressInput = ({ province, district, commune,
                             value={province}
                             label="Province/City"
                             onChange={handleChangeProvince}
+                            className={classes.select}
                             sx={{
                                 svg: { color: '#fff' },
                                 input: { color: '#fff' },
@@ -634,6 +648,7 @@ const AddressInput = ({ province, district, commune,
                             id="demo-simple-select"
                             value={district}
                             label="District"
+                            className={classes.select}
                             onChange={handleChangeDistrict}
                             sx={{
                                 svg: { color: '#fff' },
@@ -657,6 +672,7 @@ const AddressInput = ({ province, district, commune,
                             id="demo-simple-select"
                             value={commune}
                             label="Commune"
+                            className={classes.select}
                             onChange={handleChangeCommune}
                             sx={{
                                 svg: { color: '#fff' },
@@ -717,14 +733,14 @@ const TicketInformation = ({ movie }) => {
                         </Stack>
 
 
-                        <Typography variant="subtitle2"sx={{ fontWeight: 'bold', color: 'red' }}>Total: {total}$</Typography>
+                        <Typography variant="subtitle2" sx={{ fontWeight: 'bold', color: 'red' }}>Total: {total}$</Typography>
                     </Stack>
                 </Grid>
             </Grid>
 
-            <Typography variant="caption" sx={{pt: 1, color: 'black', fontStyle: 'italic', fontWeight: 800}}>
+            <Typography variant="caption" sx={{ pt: 1, color: 'black', fontStyle: 'italic', fontWeight: 800 }}>
                 * We will send the booked ticket information to your email right after you order it! Please give this email for our staff before enter the room. Let enjoy the movie!
-                </Typography>
+            </Typography>
         </Box>
 
     )

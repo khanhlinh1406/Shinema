@@ -89,7 +89,6 @@ const DisplayStaff = () => {
                 counter++;
         })
 
-        console.log('fff')
         console.log(counter)
 
         return counter
@@ -171,14 +170,17 @@ const StaffTable = (props) => {
                                 <Typography variant="button" sx={styles.title}>Name</Typography>
                             </StyledTableCell>
                             <StyledTableCell>
+                                <Typography variant="button" sx={styles.title}>Position</Typography>
+                            </StyledTableCell>
+                            <StyledTableCell>
                                 <Typography variant="button" sx={styles.title}>Email</Typography>
                             </StyledTableCell>
                             <StyledTableCell>
                                 <Typography variant="button" sx={styles.title}>Phone</Typography>
                             </StyledTableCell>
-                            {/* <StyledTableCell>
+                            <StyledTableCell>
                                 <Typography variant="button" sx={styles.title}>Gender</Typography>
-                            </StyledTableCell> */}
+                            </StyledTableCell>
                         </TableRow>
                     </TableHead>
                     <TableBody>

@@ -67,7 +67,9 @@ const accountController = {
                         rank: req.body.rank,
                         score: req.body.score,
                         listTicketId: req.body.listTicketId,
-                        listReview: req.body.listReview
+                        listReview: req.body.listReview,
+                        gender: req.body.gender,
+                        avatar: req.body.avatar
                     }
 
                     return AccountModel.create(newAccount)
@@ -89,12 +91,13 @@ const accountController = {
                 email: req.body.email,
                 identifyNumber: req.body.identifyNumber,
                 name: req.body.name,
-                password: encode(req.body.password),
+                password: req.body.password,
                 rank: req.body.rank,
                 score: req.body.score,
                 listTicketId: req.body.listTicketId,
-                listReview: req.body.listReview
-
+                listReview: req.body.listReview,
+                gender: req.body.gender,
+                avatar: req.body.avatar
             }, { new: 'true' })
             .then(data => {
                 res.json("Update successful")
@@ -141,7 +144,7 @@ const accountController = {
     },
 
     getAllStaff: (req, res) => {
-        AccountModel.find({ rank: "Staff" })
+        AccountModel.find({ rank: { $in: ['Manager', 'Censor'] } })
             .then(data => {
                 res.send(data)
             })

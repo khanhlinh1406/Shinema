@@ -24,9 +24,11 @@ import { encode } from 'base-64'
 import Loading from '../../components/Loading/loading'
 import Message from '../../components/Message/message'
 import { Success } from '../../components/Alert/alert'
-
+import Logo from '../../assets/logo.png';
 import background_login from '../../assets/background_login.jpg'
 import { Helmet } from 'react-helmet';
+import cloudinaryApi from '../../api/cloudinaryAPI'
+import { Switch } from '@mui/material';
 
 const Profile = () => {
   const currentUser = useSelector(userSelector);
@@ -60,9 +62,10 @@ const Profile = () => {
     message: ''
   })
 
-  useEffect(() => {
-    console.log(currentUser)
-  }, [])
+  const [errorNotification, setErrorNotification] = useState({
+    status: false,
+    message: ''
+  })
 
   useEffect(() => {
     refresh()
@@ -142,7 +145,9 @@ const Profile = () => {
     rank: currentUser.rank,
     score: currentUser.score,
     listTicketId: currentUser.listTicketId,
-    listReview: currentUser.listReviews
+    listReview: currentUser.listReviews,
+    avatar: currentUser.avatar,
+    gender: currentUser.gender
   })
 
   const [passwords, setPasswords] = useState({
@@ -152,7 +157,14 @@ const Profile = () => {
   })
 
   const handleChangeInformation = (prop) => (event) => {
-    setValues({ ...values, [prop]: event.target.value });
+    if (prop !== 'gender')
+      setValues({ ...values, [prop]: event.target.value });
+    else {
+      if (event.target.value === true)
+        setValues({ ...values, gender: 'male' })
+      else
+        setValues({ ...values, gender: 'female' });
+    }
     setUpdateSucceeded({
       status: false,
       message: ''
@@ -251,7 +263,7 @@ const Profile = () => {
       setRepeatNewPasswordNote({
         ...repeatNewPasswordNote,
         type: 'err',
-        message: 'Repeat password must be same as new password',
+        message: 'Confirm password must be same as new password',
         visible: true
       })
       check = false;
@@ -392,10 +404,65 @@ const Profile = () => {
     }
   }
 
+  useEffect(() => {
+    console.log(values)
+    if (values.avatar !== currentUser.avatar) {
+      updatePic()
+    }
+  }, [values.avatar])
+
+  const updatePic = async () => {
+    await AccountApi.update(values)
+      .then(res => {
+        setIsLoading(false)
+        setUpdateSucceeded({
+          status: true,
+          message: 'Update your avatar successfully!'
+        })
+      })
+      .catch((err) => {
+        setIsLoading(false)
+        setErrorNotification({
+          status: true,
+          message: "Update your avatar fail"
+        })
+      })
+  }
+
+
+  const changePic = (e) => {
+    if (e.target.files) {
+      const listFile = []
+      for (let i = 0; i < e.target.files.length; i++) {
+        let reader = new FileReader();
+        reader.readAsDataURL(e.target.files[i])
+        reader.onloadend = async () => {
+          listFile.push(reader.result);
+          if (i == e.target.files.length - 1) {
+            await cloudinaryApi.upload(listFile)
+              .then(res => {
+                console.log(res)
+                setIsLoading(false)
+                setValues({ ...values, avatar: res.data[0] })
+              }).catch((err) => {
+                console.log(err)
+                setErrorNotification({
+                  status: true,
+                  message: err
+                })
+              })
+          }
+        }
+      }
+    }
+  }
+
   return (
     //  {currentUser.name != ''?
     <div className="profile__container"
-      style={{ backgroundImage: `url(${background_login})` }}
+      style={{
+        /// backgroundImage: `url(${background_login})` 
+      }}
     >
       <Helmet>
         <title>Profile</title>
@@ -553,11 +620,17 @@ const Profile = () => {
                   }}
                 />
               </ThemeProvider>
-              {/* {emailNoteVisible &&
-              <div className="profile-information__item__note">
-                <Message ></Message>
-              </div>
-            } */}
+            </div>
+
+            <div className="profile-information__item">
+              <div className="profile-information__item__title">Gender</div>
+              <ThemeProvider theme={TextFieldTheme}>
+                <Switch onChange={handleChangeInformation('gender')}
+                  defaultChecked={
+                    currentUser.gender === 'male' ? true : false
+                  }
+                />
+              </ThemeProvider>
             </div>
 
             <Box textAlign='center' >
@@ -627,7 +700,7 @@ const Profile = () => {
           </div>
 
           <div className="password-information__item">
-            <div className="password-information__item__title">Repeat new password</div>
+            <div className="password-information__item__title">Confirm new password</div>
             <ThemeProvider theme={TextFieldTheme}>
               <TextField className='password-information__item__txtfield'
                 type="password"
@@ -663,6 +736,28 @@ const Profile = () => {
           </Box>
         </div>
       </div >
+
+      <div className="profile-pic">
+        {currentUser.avatar == '' ?
+          <img className="profile-pic__img"
+            src={Logo}
+          /> :
+          <img className='profile-pic__img' src={currentUser.avatar}
+          />
+        }
+        <Box textAlign='center'>
+          <ThemeProvider theme={ButtonTheme}>
+            {/* <Button variant="contained" className='profile-pic__btnChange'
+              sx={{
+                padding: 1,
+                marginTop: 3
+              }}
+            >CHANGE</Button> */}
+            <input type="file" name="file" accept="image/png, image/jpeg" onChange={changePic} style={{ padding: 1, marginTop: 20, marginLeft: 100 }}></input>
+          </ThemeProvider>
+        </Box>
+        <div className="profile-pic__note">Acceptable formats .png and .jpg only</div>
+      </div>
 
       {isLoading && <Loading />}
       <Success message={updateSucceeded.message} status={updateSucceeded.status} />

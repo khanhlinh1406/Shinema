@@ -192,7 +192,7 @@ const Row = (props) => {
         <TableCell align="left" style={{ fontWeight: 'bold' }}>{movie.title}</TableCell>
         <TableCell component="th" scope="row" style={{ fontStyle: 'italic' }}>{ticket.bookedTime}</TableCell>
         <TableCell align="left" style={{}}>{theater.name}</TableCell>
-        <TableCell align="right" style={{ fontWeight: 'bold', color: 'red' }}>{ticket.invoice.total}$</TableCell>
+        <TableCell align="right" style={{ fontWeight: 'bold' }}>{ticket.invoice.total}$</TableCell>
         <TableCell align="center">
           {row.invoice.method == 'Cash' ?
             <LocalAtmIcon style={{ color: "#0c8243", fontSize: 30 }} />
@@ -204,7 +204,7 @@ const Row = (props) => {
             }} src="https://admin.money24h.vn/wp-content/uploads/2022/03/paypal-la-gi.jpg" />
           }</TableCell>
         <TableCell align="center">
-          <Typography variant="subtitle2" style={{ color: status.color, fontWeight: "bold" }}>{status.note}</Typography>
+          <Typography variant="subtitle2" style={{ color: status.color }}>{status.note}</Typography>
         </TableCell>
       </TableRow>
 

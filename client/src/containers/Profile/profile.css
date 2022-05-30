@@ -31,7 +31,8 @@
      left: 0;
      bottom: 0;
      right: 0;
-     margin-right: 300px;
+     width: 70%;
+     margin-right: 350px;
  }
  
  .profile-container {
@@ -42,13 +43,13 @@
  
  .profile-information {
      width: 77%;
-     padding: 5rem;
+     padding: 2rem;
      padding-bottom: 1rem;
  }
  
  .password-information {
      width: 70%;
-     padding: 5rem;
+     padding: 2rem;
      padding-top: 1rem;
      margin: 3rem;
      margin-bottom: 0.5rem;
@@ -160,4 +161,34 @@
      background-repeat: no-repeat;
      position: relative;
      display: flex;
+ }
+ 
+ .profile-pic {
+     margin-top: 8rem;
+     height: auto;
+     position: absolute;
+     top: 0;
+     left: 0;
+     bottom: 0;
+     right: 0;
+     width: 80%;
+     margin-left: 450px;
+ }
+ 
+ .profile-pic__img {
+     width: 12rem;
+     height: 12rem;
+     border-radius: 6rem;
+     display: flex;
+     margin: auto auto;
+     background-color: #fff
+ }
+ 
+ .profile-pic__note {
+     color: rgba(255, 255, 255, 0.445);
+     font-style: italic;
+     font-size: 0.8rem;
+     width: 100%;
+     text-align: center;
+     margin: 10px 0;
  }

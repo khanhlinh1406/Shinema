@@ -71,7 +71,12 @@ function App() {
 
           {
             <Route path="*" element={_currentUser != '' && _currentUser.rank != 'Customer' ?
-              <Manager />
+              <div>
+                <MainNavBar />
+                <Manager />
+                <Footer />
+              </div>
+
               :
               <div>
                 <ChatBot />
@@ -182,14 +187,14 @@ function App() {
           }
           />
 
-        <Route path="/transactions" element={
-          <div>
-            <MainNavBar />
-            <TransactionHistory/>
-            <Footer/>
-          </div>
-        }
-        />
+          <Route path="/transactions" element={
+            <div>
+              <MainNavBar />
+              <TransactionHistory />
+              <Footer />
+            </div>
+          }
+          />
         </Routes>
       }
 

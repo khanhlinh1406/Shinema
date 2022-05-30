@@ -28,6 +28,17 @@ const AccountSchema = new Schema({
         required: true,
         default: 0
     },
+    gender: {
+        type: String,
+        required: true,
+        default: 'male'
+    },
+    avatar: {
+        type: String,
+        require: true,
+        default: ''
+    },
+
     listTicketId: Array,
     listReview: Array,
 }, { timestamps: true }, {

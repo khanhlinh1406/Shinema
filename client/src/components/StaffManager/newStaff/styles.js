@@ -2,8 +2,8 @@ export const styles = {
     container: {
         backgroundColor: '#fff',
         position: 'absolute',
-        left: 300,
-        right: 300,
+        left: 200,
+        right: 200,
         borderRadius: 10,
         padding: 30,
         zIndex: 1
