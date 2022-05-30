@@ -252,8 +252,11 @@ const SendBox = () => {
 
 const CmtItem = ({ item }) => {
     const [backgroundColorAvatar, setBackgroundColorAvatar] = useState('#FF4820')
-
+    let reviewId = useSelector(state => state.review.current._id)
     const [user, setUser] = useState()
+    const dispatch = useDispatch()
+    const userIns = useSelector(state => state.users.instance)
+
     useEffect(() => {
         const getUser = () => {
             AccountApi.getById(item._userId).then(res => {
@@ -270,6 +273,15 @@ const CmtItem = ({ item }) => {
 
     }, [item])
 
+    const deleteHandle = () => {
+        ReviewApi.deleteCmt(reviewId, item.id).then(res => {
+            if (res.status == 200) {
+                dispatch(reviewSlice.actions.deleteComment(item.id))
+            }
+        }
+        )
+    }
+
     return (
         <div>
             {
@@ -281,7 +293,13 @@ const CmtItem = ({ item }) => {
                             <Typography sx={{ fontWeight: 'bold' }}>{user.name}</Typography>
                             <Typography>{item.message}</Typography>
                         </Stack>
-                        <Typography sx={{ marginLeft: 2, fontSize: 12 }}>{item.time}</Typography>
+
+                        <Stack direction='row' >
+                            {(userIns.rank == 'Censor' || item._userId == userIns._id) &&
+                                <DeleteButton variant="text" onClick={() => deleteHandle()}>Delete</DeleteButton>
+                            }
+                            <Typography sx={{ marginLeft: 2, fontSize: 12 }}>{item.time}</Typography>
+                        </Stack>
                     </Stack>
 
                 </Stack>
@@ -290,6 +308,18 @@ const CmtItem = ({ item }) => {
 
     )
 }
+
+const DeleteButton = styled(Button)(({ theme }) => ({
+    color: '#fff',
+    backgroundColor: 'rgb(23, 32, 48)',
+    '&:hover': {
+        backgroundColor: 'rgb(23, 32, 48)',
+    },
+    padding: 0,
+    marginLeft: 15,
+    fontSize: 11,
+
+}));
 
 const InspectedButton = styled(Button)(({ theme }) => ({
     color: theme.palette.getContrastText('#1b5e20'),

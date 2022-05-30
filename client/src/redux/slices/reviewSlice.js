@@ -21,6 +21,9 @@ export const reviewSlice = createSlice({
         insertComment: (state, action) => {
             state.current.listComments.push(action.payload)
         },
+        deleteComment: (state, action) => {
+            state.current.listComments = state.current.listComments.filter(e => e.id != action.payload)
+        },
         newContentChange: (state, action) => {
             state.newContent = action.payload
         },

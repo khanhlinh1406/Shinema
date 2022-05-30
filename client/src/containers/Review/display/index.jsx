@@ -15,28 +15,6 @@ import { red } from '@mui/material/colors';
 import { useDispatch } from 'react-redux';
 
 const Review = () => {
-    // const [imgs, setImgs] = useState([])
-    // const newImageHandle = (e) => {
-    //     if (e.target.files) {
-    //         const listFile = []
-    //         for (let i = 0; i < e.target.files.length; i++) {
-    //             let reader = new FileReader();
-    //             reader.readAsDataURL(e.target.files[i])
-    //             reader.onloadend = () => {
-    //                 listFile.push(reader.result);
-    //                 if (i == e.target.files.length - 1) {
-    //                     let temp = imgs.concat(listFile)
-    //                     setImgs(temp)
-    //                     cloudinaryApi.upload(temp).then(res => {
-    //                         console.log(res)
-    //                     }).catch(err => console.log(err))
-    //                 }
-    //             }
-    //         }
-    //     }
-
-    //   }
-
     const navigate = useNavigate()
     const dispatch = useDispatch()
     const [data, setData] = useState([])

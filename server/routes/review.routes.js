@@ -11,6 +11,7 @@ router.post('/', reviewController.create)
 
 router.put('/', reviewController.update)
 router.put('/insertCmt', reviewController.insertCmt)
+router.put('/deleteCmt', reviewController.deleteCmt)
 
 router.delete('/:id', reviewController.deleteById)
 

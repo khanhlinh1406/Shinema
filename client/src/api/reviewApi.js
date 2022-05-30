@@ -26,6 +26,15 @@ const ReviewApi = {
         return res
     },
 
+    deleteCmt: async(id, cmtId) => {
+        let obj = {
+            _id: id,
+            cmtId: cmtId
+        }
+        const res = await ApiDatabase.put('/review/deleteCmt', obj)
+        return res
+    },
+
     delete: async(id) => {
         const res = await ApiDatabase.delete('/review/' + id)
         return res

@@ -100,7 +100,15 @@ const reviewController = {
             .catch(err => {
                 res.status(500).json("Cmt error")
             })
-
+    },
+    deleteCmt: (req, res) => {
+        ReviewModel.findByIdAndUpdate(req.body._id, { $pull: { listComments: { id: req.body.cmtId } } })
+            .then(data => {
+                res.json("Delete comment successful")
+            })
+            .catch(err => {
+                res.status(500).json("Delete error")
+            })
     },
 }
 module.exports = reviewController
