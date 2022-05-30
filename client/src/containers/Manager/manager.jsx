@@ -1,8 +1,10 @@
 import styles from './styles'
-import { useSelector } from 'react-redux';
 import { userSelector } from '../../redux/selector'
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+
+import { userSlice } from './../../redux/slices/userSlice';
+import { useSelector, useDispatch } from 'react-redux';
 
 import * as React from 'react';
 import PropTypes from 'prop-types';
@@ -10,18 +12,23 @@ import Tabs from '@mui/material/Tabs';
 import Tab from '@mui/material/Tab';
 import Typography from '@mui/material/Typography';
 import Box from '@mui/material/Box';
+import Stack from '@mui/material/Stack';
+import Button from '@mui/material/Button';
+import LoginRoundedIcon from '@mui/icons-material/LoginRounded';
 
 import { createTheme, ThemeProvider } from '@mui/material/styles';
-import { red, grey } from "@mui/material/colors";
+import { red } from "@mui/material/colors";
 
 import { ShowTimeManager, TheaterManager, Statistics } from '../../components'
 import { StaffManager } from '../../components/StaffManager';
-import { Helmet } from 'react-helmet';
+import Censor from '../Censor'
+import { Helmet } from 'react-helmet-async';
 
 const Manager = () => {
 
     const user = useSelector(userSelector)
-    let navigate = useNavigate();
+    const navigate = useNavigate()
+    const dispatch = useDispatch()
 
     useEffect(() => {
         const checkAuth = () => {
@@ -67,10 +74,16 @@ const Manager = () => {
         else if (path.includes('manager/theater')) {
             setValue(2)
         }
-        if (path.includes('manager//staff')) {
+        if (path.includes('manager/staff')) {
             setValue(3)
         }
     }, [])
+
+    const logoutHandle = () => {
+        localStorage.setItem('logged', false)
+        dispatch(userSlice.actions.update(''))
+        navigate('/login')
+    }
 
     return (
         <div>
@@ -79,31 +92,39 @@ const Manager = () => {
             </Helmet>
 
             <ThemeProvider theme={tabTheme}>
-                <Typography sx={{ color: '#fff', fontSize: 20, margin: 7 }}>MANAGER</Typography>
-                <Box sx={{ width: '100%' }}>
-                    <Box sx={{ borderBottom: 1, borderColor: 'divider', marginTop: 5, marginLeft: 5 }}>
-                        <Tabs value={value} onChange={handleChange} aria-label="basic tabs example" >
-                            <Tab label="Show time" {...a11yProps(0)} sx={{ color: '#fff' }} />
-                            <Tab label="Statistic" {...a11yProps(1)} sx={{ color: '#fff' }} />
-                            <Tab label="Theater" {...a11yProps(2)} sx={{ color: '#fff' }} />
-                            <Tab label="Staff" {...a11yProps(3)} sx={{ color: '#fff' }} />
-                        </Tabs>
-                    </Box>
+                <Stack direction='row' sx={{ alignItems: 'center', justifyContent: 'space-between', margin: 5 }}>
+                    <Typography sx={{ color: '#fff', fontSize: 20 }}>MANAGER</Typography>
+                    <Button sx={{ paddingX: 2.5, paddingY: 1 }} onClick={() => logoutHandle()} variant="contained" endIcon={<LoginRoundedIcon />} >Logout</Button>
+                </Stack>
 
-                    <TabPanel value={value} index={0}>
-                        <ShowTimeManager />
-                    </TabPanel>
-                    <TabPanel value={value} index={1}>
-                        <Statistics />
-                    </TabPanel>
-                    <TabPanel value={value} index={2}>
-                        <TheaterManager />
-                    </TabPanel>
-                    <TabPanel value={value} index={3}>
-                        <StaffManager />
-                    </TabPanel>
+                {
+                    user.rank == "Censor" ? <Censor /> :
+                        <Box sx={{ width: '100%' }}>
+                            <Box sx={{ borderBottom: 1, borderColor: 'divider', marginTop: 5, marginLeft: 5 }}>
+                                <Tabs value={value} onChange={handleChange} aria-label="basic tabs example" >
+                                    <Tab label="Show time" {...a11yProps(0)} sx={{ color: '#fff' }} />
+                                    <Tab label="Statistic" {...a11yProps(1)} sx={{ color: '#fff' }} />
+                                    <Tab label="Theater" {...a11yProps(2)} sx={{ color: '#fff' }} />
+                                    <Tab label="Staff" {...a11yProps(3)} sx={{ color: '#fff' }} />
+                                </Tabs>
+                            </Box>
 
-                </Box>
+                            <TabPanel value={value} index={0}>
+                                <ShowTimeManager />
+                            </TabPanel>
+                            <TabPanel value={value} index={1}>
+                                <Statistics />
+                            </TabPanel>
+                            <TabPanel value={value} index={2}>
+                                <TheaterManager />
+                            </TabPanel>
+                            <TabPanel value={value} index={3}>
+                                <StaffManager />
+                            </TabPanel>
+
+                        </Box>
+                }
+
             </ThemeProvider>
         </div>
     );

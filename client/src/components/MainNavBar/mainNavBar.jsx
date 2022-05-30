@@ -3,8 +3,6 @@ import './mainNavBar.css'
 import { Link } from 'react-router-dom'
 import { useNavigate } from 'react-router-dom';
 
-
-
 import { AiOutlineUser, AiOutlineMenu } from 'react-icons/ai'
 import { BsBell } from 'react-icons/bs'
 

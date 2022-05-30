@@ -55,3 +55,15 @@ export const currentStaffList = (state) => state.staff.staffList
 
 export const currentTicketList = (state) => state.ticket.ticketList
 export const currentCancelTicket = (state) => state.ticket.cancelTicket
+export const reviewSelector = (state) => state.review.data
+export const reviewStatusSearchSelector = (state) => state.review.statusSearch
+export const reviewListByStatusSelector = createSelector(
+    reviewSelector,
+    reviewStatusSearchSelector,
+    (listReviews, status) => {
+        if (status == 'All') return listReviews
+        else
+            return listReviews.filter(review => {
+                return review.status == status
+            })
+    })

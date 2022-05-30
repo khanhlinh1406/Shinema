@@ -5,7 +5,10 @@ export const movieSlice = createSlice({
     initialState: {
         data: [],
         upcoming: [],
-        movie: {}
+        movie: {},
+        listFromReviewSelect: [],
+        keywordReview: '',
+        selectForReview: {}
     },
     reducers: {
         addMovie: (state, action) => {
@@ -38,7 +41,15 @@ export const movieSlice = createSlice({
             if (upcoming.length == 0) {
                 state.upcoming.push(action.payload)
             }
-
+        },
+        updateListFromReviewSelect: (state, action) => {
+            state.listFromReviewSelect = action.payload
+        },
+        updateKeywordReview: (state, action) => {
+            state.keywordReview = action.payload
+        },
+        updateSelectForReview: (state, action) => {
+            state.selectForReview = action.payload
         },
     }
 })

@@ -1,10 +1,10 @@
 import React, { useEffect, useState } from 'react'
-import tmdbApi from "../../../api/tmdbApi"
-import apiConfig from "../../../api/apiConfig";
-import { category } from '../../../api/tmdbApi'
-import AccountApi from '../../../api/accountApi';
+import tmdbApi from "../../../../api/tmdbApi"
+import apiConfig from "../../../../api/apiConfig";
+import { category } from '../../../../api/tmdbApi'
+import AccountApi from '../../../../api/accountApi';
 
-import { useNavigate, Link } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 
 import Avatar from '@mui/material/Avatar';
 import Stack from '@mui/material/Stack';
@@ -13,7 +13,6 @@ import CardContent from '@mui/material/CardContent';
 import CardMedia from '@mui/material/CardMedia';
 import Typography from '@mui/material/Typography';
 import { CardActionArea } from '@mui/material';
-
 
 const ReviewItem = ({ item }) => {
 
@@ -52,7 +51,7 @@ const ReviewItem = ({ item }) => {
         getMovie();
     }, [])
     return (
-        <Card sx={{ maxWidth: 345, minHeight: 400, backgroundColor: 'rgb(9, 24, 48)' }}>
+        <Card sx={{ maxWidth: 400, minHeight: 400, backgroundColor: 'rgb(9, 24, 48)' }}>
             <CardActionArea onClick={() => onClickHandle()}>
                 {img &&
                     <CardMedia
@@ -67,10 +66,8 @@ const ReviewItem = ({ item }) => {
                     <Typography gutterBottom variant="h5" component="div" sx={{ color: "#fff", fontWeight: 'bold' }}>
                         {item.title}
                     </Typography>
-
-                    <Header userId={item._userId} />
+                    <Header userId={item._userId} status={item.status} />
                     <div style={{ width: '40%', height: "2px", backgroundColor: '#c62828', marginTop: '10px', marginBottom: '5px' }}></div>
-
                     <Typography variant="body2" color="text.secondary" sx={{ color: "rgb(203, 203, 203" }}>
                         {content}
                     </Typography>
@@ -80,7 +77,7 @@ const ReviewItem = ({ item }) => {
     )
 }
 
-const Header = ({ userId }) => {
+const Header = ({ userId, status }) => {
 
     const [backgroundColorAvatar, setBackgroundColorAvatar] = useState('#FF4820')
     useEffect(() => {
@@ -105,17 +102,25 @@ const Header = ({ userId }) => {
         <div>
             {
                 user &&
-                <Stack direction='row' sx={{ marginY: 1.5 }}>
-                    <Avatar sx={{ bgcolor: backgroundColorAvatar }}>{user.name.charAt(0)}</Avatar>
-                    <Stack sx={{ marginLeft: 2, }}>
-                        <Typography sx={{ fontWeight: 'bold' }}>{user.name}</Typography>
-                        <Typography sx={{ fontSize: 12 }}>{user.email}</Typography>
+                <Stack direction='row' sx={{ justifyContent: 'space-between', marginY: 1.5 }}>
+                    <Stack direction='row' >
+                        <Avatar >{user.name.charAt(0)}</Avatar>
+                        <Stack sx={{ marginLeft: 2, }}>
+                            <Typography sx={{ fontWeight: 'bold' }}>{user.name}</Typography>
+                            <Typography sx={{ fontSize: 12 }}>{user.email}</Typography>
+                        </Stack>
                     </Stack>
 
+                    {status == "Inspected" && <Typography sx={{ color: '#2e7d32', fontWeight: 'bold' }}>{status}</Typography>}
+                    {status == "Inspecting" && <Typography sx={{ color: '#f57f17', fontWeight: 'bold' }}>{status}</Typography>}
+                    {status == "Uninspected" && <Typography sx={{ color: '#b71c1c', fontWeight: 'bold' }}>{status}</Typography>}
+
                 </Stack>
+
             }
-        </div>
+        </div >
 
     )
 }
+
 export default ReviewItem

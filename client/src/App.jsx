@@ -105,8 +105,8 @@ function App() {
 
           <Route path="/reviews/*" element={
             <div>
-              <ChatBot />
-              <MainNavBar />
+              {_currentUser.rank == 'Customer' && <ChatBot />}
+              {_currentUser.rank == 'Customer' && <MainNavBar />}
               <Review />
               <Footer />
             </div>} />
