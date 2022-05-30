@@ -10,6 +10,7 @@ router.get('/:id', reviewController.getById)
 router.post('/', reviewController.create)
 
 router.put('/', reviewController.update)
+router.put('/insertCmt', reviewController.insertCmt)
 
 router.delete('/:id', reviewController.deleteById)
 

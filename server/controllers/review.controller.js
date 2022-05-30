@@ -1,4 +1,5 @@
 const ReviewModel = require('../models/review.model')
+const mFunction = require('../../client/src/function')
 
 const reviewController = {
     getAll: (req, res) => {
@@ -27,15 +28,17 @@ const reviewController = {
         const newTheater = {
             title: req.body.title,
             description: req.body.description,
-            pilot: req.body.pilot,
+            plot: req.body.plot,
             advantage: req.body.advantage,
             defect: req.body.defect,
             overview: req.body.overview,
+            time: req.body.time,
             star: req.body.star,
-            isVisible: req.body.isVisible,
-            lisComments: req.body.lisComments,
+            status: req.body.status,
+            listComments: req.body.listComments,
             _userId: req.body._userId,
-            _filmId: req.body._filmId
+            _filmId: req.body._filmId,
+            _censorId: req.body._censorId
         }
         ReviewModel.create(newTheater)
             .then(data => {
@@ -47,19 +50,21 @@ const reviewController = {
     },
 
     update: (req, res) => {
-        ReviewModel.updateOne({ id: req.body._id }, {
+        ReviewModel.updateOne({ _id: req.body._id }, {
                 title: req.body.title,
                 description: req.body.description,
-                pilot: req.body.pilot,
+                plot: req.body.plot,
                 advantage: req.body.advantage,
                 defect: req.body.defect,
                 overview: req.body.overview,
+                time: req.body.time,
                 star: req.body.star,
+                status: req.body.status,
                 isVisible: req.body.isVisible,
                 listComments: req.body.listComments,
-                _censorshipId: req.body._censorshipId,
                 _userId: req.body._userId,
-                _filmId: req.body._filmId
+                _filmId: req.body._filmId,
+                _censorId: req.body._censorId
             }, { new: 'true' })
             .then(data => {
                 res.json("Update successful")
@@ -71,7 +76,7 @@ const reviewController = {
 
     deleteById: (req, res) => {
         ReviewModel.deleteOne({
-                id: req.params.id
+                _id: req.params.id
             })
             .then(data => {
                 res.json("Delete successful")
@@ -79,6 +84,23 @@ const reviewController = {
             .catch(err => {
                 res.status(500).json("Delete error")
             })
+    },
+
+    insertCmt: (req, res) => {
+        let cmtObj = {
+            id: mFunction.makeId(6),
+            message: req.body.message,
+            time: req.body.time,
+            _userId: req.body._userId,
+        }
+        ReviewModel.findByIdAndUpdate(req.body._reviewId, { $push: { listComments: cmtObj } })
+            .then(data => {
+                res.json("Cmt successful")
+            })
+            .catch(err => {
+                res.status(500).json("Cmt error")
+            })
+
     },
 }
 module.exports = reviewController

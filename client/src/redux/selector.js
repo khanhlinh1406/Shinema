@@ -52,3 +52,16 @@ export const bookingSelector = (state) => state.booking
 export const movieCornerSelector = (state) => state.corner__movie
 
 export const currentStaffList = (state) => state.staff.staffList
+
+export const reviewSelector = (state) => state.review.data
+export const reviewStatusSearchSelector = (state) => state.review.statusSearch
+export const reviewListByStatusSelector = createSelector(
+    reviewSelector,
+    reviewStatusSearchSelector,
+    (listReviews, status) => {
+        if (status == 'All') return listReviews
+        else
+            return listReviews.filter(review => {
+                return review.status == status
+            })
+    })

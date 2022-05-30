@@ -1,40 +1,44 @@
 import React, { useEffect, useState } from "react";
-import { Helmet } from "react-helmet";
-import { Route, Routes, useNavigate, useParams } from "react-router-dom";
+import { useParams } from "react-router-dom";
 import ReviewApi from './../../../api/reviewApi';
-import AccountApi from './../../../api/accountApi';
 
-import CastList from "../../../components/CastList/castList";
+import { useSelector, useDispatch } from 'react-redux';
+import { userSlice } from '../../../redux/slices/userSlice';
+import { reviewSlice } from "../../../redux/slices/reviewSlice";
+import { useNavigate } from 'react-router-dom';
+
+import Button from '@mui/material/Button';
+import LoginRoundedIcon from '@mui/icons-material/LoginRounded';
+import { styled } from '@mui/material/styles';
 
 import tmdbApi from "../../../api/tmdbApi"
 import apiConfig from "../../../api/apiConfig";
-import { movieType, category } from '../../../api/tmdbApi'
+import { category } from '../../../api/tmdbApi'
 
-import Grid from '@mui/material/Grid';
-import { Typography } from "@mui/material";
-import Button from '@mui/material/Button';
-import Box from '@mui/material/Box';
+import { Helmet } from 'react-helmet-async';
 
-import Avatar from '@mui/material/Avatar';
-import Stack from '@mui/material/Stack';
+import Content from './content'
+import CastList from "../../../components/CastList/castList";
 
 const ReviewDetail = () => {
     const { reviewId } = useParams();
+    const dispatch = useDispatch()
+    const navigate = useNavigate()
+    const reviewIns = useSelector(state => state.review.current)
+    const userIns = useSelector(state => state.users.instance)
 
-    const [reviewIns, setReviewIns] = useState()
     const [filmIns, setFilmIns] = useState()
 
     useEffect(() => {
         ReviewApi.getById(reviewId).then(res => {
             if (res.status == 200) {
-                setReviewIns(res.data)
+                dispatch(reviewSlice.actions.updateCurrent(res.data))
             }
         }).catch(err => console.log(err))
 
     }, [reviewId])
 
     useEffect(() => {
-
         if (reviewIns) {
             const getMovie = async () => {
                 const params = {
@@ -54,6 +58,12 @@ const ReviewDetail = () => {
         }
 
     }, [reviewIns])
+
+    const logoutHandle = () => {
+        localStorage.setItem('logged', false)
+        dispatch(userSlice.actions.update(''))
+        navigate('/login')
+    }
 
     return (
         <div className="film-details">
@@ -101,6 +111,10 @@ const ReviewDetail = () => {
                         </div>
 
                         <Content item={reviewIns} />
+                        {
+                            userIns.rank != "Customer" && <LogoutButton onClick={() => logoutHandle()} variant="contained" endIcon={<LoginRoundedIcon />} >Logout</LogoutButton>
+                        }
+
                     </>
                 )
             }
@@ -108,69 +122,16 @@ const ReviewDetail = () => {
     )
 }
 
-const Content = ({ item }) => {
-    return (
-        <div style={{ margin: '0 160px', paddingBottom: "20px" }}>
-            <Typography variant="h3" sx={{ marginTop: '10px' }}>{item.title}</Typography>
-
-            <Typography sx={{ fontWeight: 'lighter' }}>{item.overview}</Typography>
-
-            <Typography sx={{ fontWeight: 'bold', marginTop: '20px', fontSize: '23px' }}>Advantage</Typography>
-            <Typography sx={{ fontWeight: 'lighter' }}>{item.advantage}</Typography>
-
-            <Typography sx={{ fontWeight: 'bold', marginTop: '10px', fontSize: '23px' }}>Defect</Typography>
-            <Typography sx={{ fontWeight: '1' }}>{item.defect}</Typography>
-
-            <Typography sx={{ fontWeight: 'bold', marginTop: '10px', fontSize: '23px' }}>Overview</Typography>
-            <Typography>{item.overview}</Typography>
-
-            <ListComment data={item.listComments} />
-        </div>
-    )
-}
-
-const ListComment = ({ data }) => {
-    const [listCmt, setListCmt] = useState()
-    useEffect(() => {
-        let listObjCtm = []
-
-        data.map((item, index) => (
-            AccountApi.getById(item._userId).then(res => {
-                let objCmt = { ...item, user: res.data }
-                listObjCtm.push(objCmt)
-                if (index == data.length - 1) setListCmt(listObjCtm)
-            }).catch(err => console.log(err))
-        ))
-
-    }, [])
-
-    useEffect(() => {
-        console.log(listCmt)
-    }, [listCmt])
-    return (
-        <Stack>
-            {
-                listCmt && listCmt.map((item, index) => (
-                    <CmtItem item={item} />
-                ))
-            }
-        </Stack>
-    )
-}
-
-const CmtItem = ({ item }) => {
-    console.log(item)
-    return (
-        <Stack>
-            <Stack direction='row' sx={{ alignItems: 'center' }}>
-                <Avatar sx={{ bgcolor: "#FF4820" }}>{item.user.name.charAt(0)}</Avatar>
-                <Typography sx={{ marginLeft: 2 }}>{item.user.name}</Typography>
-                <Typography sx={{ marginLeft: 2 }}>{item.user.time}</Typography>
-            </Stack>
-
-            <Typography sx={{ marginLeft: 2 }}>{item.message}</Typography>
-        </Stack>
-    )
-}
+const LogoutButton = styled(Button)(({ theme }) => ({
+    color: theme.palette.getContrastText('#f44336'),
+    backgroundColor: '#f44336',
+    '&:hover': {
+        backgroundColor: '#c62828',
+    },
+    padding: '10px 20px',
+    position: 'absolute',
+    top: 30,
+    right: 30
+}));
 
 export default ReviewDetail

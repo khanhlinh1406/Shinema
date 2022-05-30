@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
-import { Helmet } from "react-helmet";
-import { Routes, Route } from 'react-router-dom';
+import { Helmet } from 'react-helmet-async';
+import { useNavigate } from 'react-router-dom';
+import { movieSlice } from "../../../redux/slices/movieSlice";
 
 import ReviewApi from '../../../api/reviewApi';
 import ReviewItem from "../reviewItem";
@@ -8,7 +9,10 @@ import ReviewItem from "../reviewItem";
 import Grid from '@mui/material/Grid';
 import Skeleton from '@mui/material/Skeleton';
 import Stack from '@mui/material/Stack';
-import { Typography } from "@mui/material";
+import { Typography, Button } from "@mui/material";
+import { styled } from '@mui/material/styles';
+import { red } from '@mui/material/colors';
+import { useDispatch } from 'react-redux';
 
 const Review = () => {
     // const [imgs, setImgs] = useState([])
@@ -33,6 +37,8 @@ const Review = () => {
 
     //   }
 
+    const navigate = useNavigate()
+    const dispatch = useDispatch()
     const [data, setData] = useState([])
 
     useEffect(() => {
@@ -43,26 +49,35 @@ const Review = () => {
         }).catch(err => console.log(err))
     }, [])
 
+    const newPostHandle = () => {
+        dispatch(movieSlice.actions.updateSelectForReview({}))
+
+        navigate('/reviews/new-post')
+    }
+
     return (
-        <div >
+        <Stack >
             <Helmet>
                 <title>Review</title>
             </Helmet>
-            <Typography variant="h5" sx={{ marginTop: 5, marginLeft: 5 }}>REVIEWS FILM</Typography>
 
+            <div style={{ display: 'flex', marginTop: 120, justifyContent: 'space-between', paddingLeft: 50, paddingRight: 55, boxSizing: 'border-box' }}>
+                <Typography variant="h5" >REVIEWS FILM</Typography>
+                <CustomFillButton onClick={() => newPostHandle()}>New post</CustomFillButton>
+            </div>
 
-            <Grid container spacing={2} sx={{ margin: 4 }}>
+            <Grid container spacing={2} sx={{ padding: 4, }}>
                 {
                     !data ? <LoadingBlog /> :
                         data.map((item, index) => (
                             <Grid item key={index} >
-                                <ReviewItem item={item} />
+                                {item.status == 'Inspected' && item._censorId != null && item._censorId != '' && <ReviewItem item={item} />}
                             </Grid>
                         ))
                 }
             </Grid>
 
-        </div>
+        </Stack >
     )
 }
 
@@ -75,5 +90,16 @@ const LoadingBlog = () => {
         </Stack>
     )
 }
+
+const CustomFillButton = styled(Button)(({ theme }) => ({
+    color: theme.palette.getContrastText(red[900]),
+    backgroundColor: red[800],
+    '&:hover': {
+        backgroundColor: red[500],
+    },
+    padding: '6px 35px',
+    //borderRadius: '10px'
+
+}));
 
 export default Review

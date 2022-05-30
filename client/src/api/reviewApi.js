@@ -21,6 +21,11 @@ const ReviewApi = {
         return res
     },
 
+    insertCmt: async(cmt) => {
+        const res = await ApiDatabase.put('/review/insertCmt', cmt)
+        return res
+    },
+
     delete: async(id) => {
         const res = await ApiDatabase.delete('/review/' + id)
         return res

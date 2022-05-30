@@ -16,14 +16,17 @@ const reviewSchema = new mongoose.Schema({
     overview: {
         type: String,
     },
+    time: {
+        type: String,
+    },
     star: {
         type: String,
     },
     voteNum: {
         type: Number,
     },
-    isVisible: {
-        type: Boolean
+    status: {
+        type: String
     },
     listComments: {
         type: Array
@@ -32,6 +35,9 @@ const reviewSchema = new mongoose.Schema({
         type: String
     },
     _filmId: {
+        type: String
+    },
+    _censorId: {
         type: String
     },
 
