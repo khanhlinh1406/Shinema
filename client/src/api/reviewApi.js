@@ -7,6 +7,7 @@ const ReviewApi = {
     },
 
     create: async(review) => {
+        console.log(review)
         const res = await ApiDatabase.post('/review', review)
         return res
     },

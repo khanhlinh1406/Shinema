@@ -36,7 +36,7 @@ const Content = ({ item }) => {
             <Header userId={item._userId} reviewItem={item} />
 
             <Typography variant="h3" sx={{ marginTop: '10px' }}>{item.title}</Typography>
-            <Typography sx={{ fontWeight: 'lighter' }}>{item.overview}</Typography>
+            <Typography sx={{ fontWeight: 'lighter' }}>{item.description}</Typography>
 
             <Typography sx={{ fontWeight: 'bold', marginTop: '20px', fontSize: '23px' }}>Plot</Typography>
             <Typography sx={{ fontWeight: 'lighter' }}>{item.plot}</Typography>

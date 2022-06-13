@@ -4,6 +4,9 @@ const reviewSchema = new mongoose.Schema({
     title: {
         type: String,
     },
+    description: {
+        type: String,
+    },
     pilot: {
         type: String,
     },

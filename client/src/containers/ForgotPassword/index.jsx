@@ -62,7 +62,6 @@ const ForgotPassword = () => {
     const forgotHandle = async () => {
         checkInfo()
             .then(res => {
-                console.log(res)
                 if (res) sendMail()
             })
     }
@@ -104,7 +103,6 @@ const ForgotPassword = () => {
             let flag = false;
             await AccountApi.checkEmail(values.email)
                 .then(res => {
-                    console.log(res)
                     if (res == 'Email already exists') {
                         setEmailWarningVisible(false)
                         flag = true
