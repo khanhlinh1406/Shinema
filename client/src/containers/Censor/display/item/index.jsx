@@ -49,9 +49,9 @@ const ReviewItem = ({ item }) => {
         }
 
         getMovie();
-    }, [])
+    }, [item])
     return (
-        <Card sx={{ maxWidth: 400, minHeight: 400, backgroundColor: 'rgb(9, 24, 48)' }}>
+        <Card sx={{ maxWidth: 400, minHeight: 460, backgroundColor: 'rgb(9, 24, 48)' }}>
             <CardActionArea onClick={() => onClickHandle()}>
                 {img &&
                     <CardMedia

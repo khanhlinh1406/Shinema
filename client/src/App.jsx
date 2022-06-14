@@ -72,7 +72,6 @@ function App() {
           {
             <Route path="*" element={_currentUser != '' && _currentUser.rank != 'Customer' ?
               <div>
-                <MainNavBar />
                 <Manager />
                 <Footer />
               </div>
