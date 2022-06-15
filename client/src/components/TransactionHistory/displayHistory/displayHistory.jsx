@@ -90,7 +90,7 @@ const DisplayHistory = () => {
         setCancelledNumber(cancel)
         setShownNumber(shown)
         setPendingNumber(totalNumber - shown - cancel)
-    }, [_ticketList])
+    })
 
 
     const tfTheme = createTheme({

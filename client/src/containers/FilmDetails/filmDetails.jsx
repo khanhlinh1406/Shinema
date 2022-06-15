@@ -24,6 +24,7 @@ import { createTheme, ThemeProvider } from '@mui/material/styles';
 import { red } from '@mui/material/colors'
 
 import format from 'date-fns/format'
+import { useSelector } from 'react-redux';
 
 const FilmDetails = () => {
 
@@ -64,8 +65,8 @@ const FilmDetails = () => {
       let month = new Date().getMonth()
       let year = new Date().getFullYear()
 
-      let current = month +"/"+ day +"/"+ year
-      
+      let current = month + "/" + day + "/" + year
+
       await showTimeList.forEach((showTime) => {
         showTime.listDateTime.forEach((object) => {
           console.log(object.date)
@@ -164,6 +165,7 @@ export default FilmDetails;
 
 
 export const BookingBtn = (props) => {
+  const _currentUser = useSelector(state => state.users.instance)
   const btnTheme = createTheme({
     shape: {
       borderRadius: 20
@@ -176,6 +178,9 @@ export const BookingBtn = (props) => {
   const navigate = useNavigate();
 
   const onClick = () => {
+    if (_currentUser == "")
+      navigate('/login')
+    else
     navigate(`/booking/${props.id}`);
   }
 

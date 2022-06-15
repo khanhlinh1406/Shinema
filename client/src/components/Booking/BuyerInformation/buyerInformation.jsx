@@ -358,7 +358,7 @@ const BuyerInformation = ({ movieInfo }) => {
         }).then(data => {
 
         })
-            .catch(err => console.log(err))
+        .catch(err => console.log(err))
     }
 
     const [methodVisible, setMethodVisible] = useState(false)
@@ -555,7 +555,6 @@ const BuyerInformation = ({ movieInfo }) => {
                 <ChooseMethodBtn onClick={chooseMethod} />
                 {methodVisible &&
                     <FormControl>
-                        <FormLabel id="demo-controlled-radio-buttons-group">Paying method</FormLabel>
                         <RadioGroup
                             aria-labelledby="demo-controlled-radio-buttons-group"
                             name="controlled-radio-buttons-group"
