@@ -11,11 +11,7 @@ import { CustomerMenu } from '../Menu/menu';
 
 import Button from '@mui/material/Button';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
-import { red, grey } from "@mui/material/colors";
-
-import AccountApi from './../../api/accountApi';
-import { useSelector, useDispatch } from 'react-redux';
-import { userSlice } from './../../redux/slices/userSlice';
+import { red } from "@mui/material/colors";
 
 const defaultColor = '#fff'
 const selectedColor = '#ff492094'
@@ -23,14 +19,11 @@ const selectedColor = '#ff492094'
 
 const MainNavBar = () => {
     let navigate = useNavigate();
-    const dispatch = useDispatch()
 
     let logged = localStorage.getItem('logged')
     const [accountToggle, setAccountToggle] = useState(false)
 
     const [menuToggle, setMenuToggle] = useState(false)
-
-    const user = useSelector(state => state.users.instance)
 
     const accountToggleHandle = () => {
         setAccountToggle(!accountToggle)

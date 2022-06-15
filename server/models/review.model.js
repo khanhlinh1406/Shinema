@@ -4,7 +4,10 @@ const reviewSchema = new mongoose.Schema({
     title: {
         type: String,
     },
-    pilot: {
+    description: {
+        type: String,
+    },
+    plot: {
         type: String,
     },
     advantage: {

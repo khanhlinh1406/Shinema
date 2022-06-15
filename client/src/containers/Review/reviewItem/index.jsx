@@ -31,16 +31,17 @@ const ReviewItem = ({ item }) => {
         const getMovie = async () => {
             const params = {
             }
+            console.log(item)
 
             try {
                 const response = await tmdbApi.detail(category.movie, item._filmId, { params: params });
                 setImg(apiConfig.originalImage(response.backdrop_path ? response.backdrop_path : response.poster_path))
 
-                if (item.plot.length < LIMIT_CONTENT_LENGTH) {
-                    setContent(item.plot)
+                if (item.description.length < LIMIT_CONTENT_LENGTH) {
+                    setContent(item.description)
                 }
                 else {
-                    const toShow = item.plot.substring(0, LIMIT_CONTENT_LENGTH) + "...";
+                    const toShow = item.description.substring(0, LIMIT_CONTENT_LENGTH) + "...";
                     setContent(toShow)
                 }
 

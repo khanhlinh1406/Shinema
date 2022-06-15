@@ -40,6 +40,7 @@ const reviewController = {
             _filmId: req.body._filmId,
             _censorId: req.body._censorId
         }
+        console.log(newTheater)
         ReviewModel.create(newTheater)
             .then(data => {
                 res.send("Successful")
