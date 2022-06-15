@@ -147,8 +147,7 @@ const ticketController = {
     },
 
     update: (req, res) => {
-        TicketModel.updateOne({ id: req.body.id }, {
-                id: req.body.id,
+        TicketModel.updateOne({ _id: req.body._id }, {
                 _filmId: req.body._filmId,
                 _theaterId: req.body._theaterId,
                 _roomId: req.body._roomId,

@@ -27,16 +27,13 @@ import PhoneIcon from '@mui/icons-material/Phone';
 import Logo from '../../../assets/logo.png'
 import MaleIcon from '@mui/icons-material/Male';
 import FemaleIcon from '@mui/icons-material/Female';
-
+import Loading from '../../Loading/loading'
 import { styles } from './styles'
-
 import { Route, Routes, useNavigate } from "react-router-dom";
-
-
-
+import { Success, Error } from '../../Alert/alert'
 
 import { CustomFillButton, CustomOutlineButton } from '../index';
-import accountApi from '../../../api/accountApi';
+import AccountApi from '../../../api/accountApi';
 import { staffSlice } from '../../../redux/slices/staffSlice';
 import { useDispatch } from 'react-redux';
 
@@ -116,14 +113,26 @@ const StaffInformation = (props) => {
   const dispatch = useDispatch()
 
   const handleDelete = async () => {
-    const response = await accountApi.deleteAccount(data._id)
-    if (response.status == 200) {
-      console.log('Xoa thanh cong')
-      dispatch(staffSlice.actions.deleteStaff(data._id))
-    }
-    else {
-      console.log("Xoa that bai ")
-    }
+    closeConfirm(true)
+    setIsLoading(false)
+    await AccountApi.deleteByEmail(data.email)
+      .then((res) => {
+        console.log('Xoa thanh cong')
+        dispatch(staffSlice.actions.deleteStaff(data._id))
+        setUpdateSucceeded({
+          status: true,
+          message: 'Delete staff successfully!'
+        })
+
+      })
+      .catch(error => {
+        console.log(error)
+        setErrorNotification({
+          status: true,
+          message: 'Sorry! There are something wrong with your request'
+        })
+      })
+    setIsLoading(false)
   }
 
   const [isLoading, setIsLoading] = useState(false)
@@ -135,6 +144,16 @@ const StaffInformation = (props) => {
     setCancelConfirm(false)
   }
 
+  const [updateSucceeded, setUpdateSucceeded] = useState({
+    status: false,
+    message: ''
+  })
+
+  const [errorNotification, setErrorNotification] = useState({
+    status: false,
+    message: '',
+    display: false
+  })
   const navigate = useNavigate()
   return (
     <Box sx={{}}>
@@ -191,7 +210,7 @@ const StaffInformation = (props) => {
           </Grid>
 
           <Grid xs={1} item>
-            <PersonIcon />
+            <PersonIcon style={styles.icon} />
           </Grid>
           <Grid xs={4} item>
             <Typography sx={styles.title}>Gender:</Typography>
@@ -262,6 +281,12 @@ const StaffInformation = (props) => {
           </Button>
         </Dialog>
       </Grid>
+
+      {updateSucceeded.status && <Success message={updateSucceeded.message} status={updateSucceeded.status} />}
+      {errorNotification.status && <Error message={errorNotification.message} status={errorNotification.status} />}
+
+      {isLoading &&
+        <Loading />}
 
     </Box>
 

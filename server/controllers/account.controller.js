@@ -57,7 +57,7 @@ const accountController = {
                     return
                 } else {
                     const newAccount = {
-                        name: req.body.email,
+                        name: req.body.name,
                         contact: req.body.contact,
                         identifyNumber: req.body.identifyNumber,
                         address: req.body.address,
@@ -79,12 +79,14 @@ const accountController = {
                 res.send("Successful")
             })
             .catch(err => {
+                console.log(err)
                 res.status(500).json({ Err: err })
+                    //res.send(err)
             })
     },
 
     update: (req, res) => {
-        AccountModel.updateOne({ email: req.body.email }, {
+        AccountModel.updateOne({ _id: req.body._id }, {
                 //address: req.body.address,
                 birthday: req.body.birthday,
                 contact: req.body.contact,

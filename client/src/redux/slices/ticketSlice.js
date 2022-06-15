@@ -41,9 +41,7 @@ export const ticketSlice = createSlice({
             state.ticketList = state.ticketList.filter(ite => ite._id != action.payload)
         },
         cancelTicket: (state, action) => {
-
             let tmp = []
-
             state.ticketList.forEach((ticket) => {
                 if (ticket._id == action.payload) {
                     let t = {};
