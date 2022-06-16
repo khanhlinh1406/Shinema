@@ -34,11 +34,12 @@ const mFunction = {
         }
         return result;
     },
-    availableRoom: (newListDateTime, defaultListDateTime, runtime) => {
+    availableRoom: async(newListDateTime, defaultListDateTime, runtime) => {
+
         let newList = []
         let defaultList = []
 
-        newListDateTime.forEach(newItem => {
+        await newListDateTime.forEach(newItem => {
             defaultListDateTime.forEach(defaultItem => {
                 if (newItem.date == defaultItem.date) {
                     newList.push(newItem)
@@ -47,7 +48,7 @@ const mFunction = {
             });
         })
 
-        const subTime = (time1, time2) => {
+        const subTime = async(time1, time2) => {
             let time1Arr = time1.split(':')
             let h1 = time1Arr[0]
             let m1 = time1Arr[1]
@@ -60,11 +61,12 @@ const mFunction = {
         }
 
         let result = true
-        for (let i = 0; i < newList.length; i++) {
 
-            newList[i].times.forEach(newTime => {
-                defaultList[i].times.forEach(defaultTime => {
-                    if (parseInt(subTime(newTime, defaultTime)) < (parseInt(runtime) + 30)) {
+        for (let i = 0; i < newList.length; i++) {
+            await newList[i].times.forEach(newTime => {
+                defaultList[i].times.forEach(async defaultTime => {
+
+                    if (parseInt(await subTime(newTime, defaultTime)) < (parseInt(runtime) + 30)) {
                         result = false
                         return
                     }
