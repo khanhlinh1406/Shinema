@@ -43,6 +43,11 @@ const FormRow = ({ row, list, room }) => {
     const CURRENT_BOOKING = useSelector(bookingSelector)
     const dispatch = useDispatch()
 
+    console.log('------------')
+    console.log(row)
+    console.log(list)
+    console.log(room)
+
     // if (CURRENT_BOOKING.selectedRoom !== room.id) {
     //     dispatch(bookingSlice.actions.setSelectedRoom(room.id))
     //     dispatch(bookingSlice.actions.setChosenSeats([]))
@@ -71,7 +76,9 @@ const FormRow = ({ row, list, room }) => {
     }
 
     useEffect(() => {
-        setChosenSeats(CURRENT_BOOKING.selectedSeats)
+        if (room.id === CURRENT_BOOKING.selectedRoom)
+            setChosenSeats(CURRENT_BOOKING.selectedSeats)
+        else setChosenSeats([])
     }, [CURRENT_BOOKING.selectedSeats])
 
 
@@ -81,7 +88,7 @@ const FormRow = ({ row, list, room }) => {
                 <Grid item xs={1} key={index}>
                     {
                         list.includes(item) ?
-                            <BookedItem >{item}</BookedItem>
+                         <BookedItem >{item}</BookedItem>
                             :
                             (!chosenSeats.includes(item) ?
                                 <Item onClick={() => chooseSeats(item)}>{item}</Item>
@@ -102,11 +109,11 @@ const TheaterSeat = ({ item }) => {
     const CURRENT_BOOKING = useSelector(bookingSelector)
     useEffect(async () => {
         const getBookedSeats = async () => {
-            console.log(CURRENT_BOOKING.selectedTheater._id)
-            console.log(item.id)
-            console.log(CURRENT_BOOKING.selectedDate)
-            console.log(CURRENT_BOOKING.selectedTime)
-            
+            // console.log(CURRENT_BOOKING.selectedTheater._id)
+            // console.log(item.id)
+            // console.log(CURRENT_BOOKING.selectedDate)
+            // console.log(CURRENT_BOOKING.selectedTime)
+
             await TicketApi.getBookedSeats(
                 CURRENT_BOOKING.selectedTheater._id,
                 item.id,
@@ -120,7 +127,7 @@ const TheaterSeat = ({ item }) => {
         }
 
         await getBookedSeats()
-    }, [])
+    },[item])
 
     return (
         <Box sx={styles.boxContainer}>

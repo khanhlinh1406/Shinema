@@ -21,7 +21,7 @@ import { Success, Error } from '../../Alert/alert'
 import cloudinaryApi from './../../../api/cloudinaryAPI';
 import Logo from '../../../assets/logo.png'
 import { useSelector } from 'react-redux';
-import {currentStaffList} from '../../../redux/selector'
+import { currentStaffList } from '../../../redux/selector'
 
 const EditStaff = () => {
   const { id } = useParams()
@@ -32,13 +32,45 @@ const EditStaff = () => {
     { value: 'Censor', key: 'censor' },
     { value: 'Manager', key: 'manager' },
   ])
+
+  const [values, setValues] = useState({
+    // _id: id,
+    // name: staff.name,
+    // contact: staff.contact,
+    // address: staff.address,
+    // birthday: staff.birthday,
+    // email: staff.email,
+    // gender: staff.gender,
+    // avatar: staff.avatar,
+    // rank: staff.rank,
+    // identifyNumber: staff.identifyNumber,
+    // score: staff.score,
+    // listTicketId: staff.listTicketId,
+    // listReview: staff.listReview,
+    // password: staff.password,
+
+    _id: '',
+    name: '',
+    contact: '',
+    address: '',
+    birthday: '',
+    email: '',
+    gender: '',
+    avatar: '',
+    rank: '',
+    identifyNumber: '',
+    score: '',
+    listTicketId: [],
+    listReview: [],
+    password: '',
+  })
   const staffList = useSelector(currentStaffList)
 
   useEffect(async () => {
     await AccountApi.getById(id)
       .then((res) => {
         setStaff(res.data)
-        setValues({
+        setValues({...values,
           _id: res.data._id,
           name: res.data.name,
           contact: res.data.contact,
@@ -55,6 +87,8 @@ const EditStaff = () => {
         console.log(err)
       })
   }, [id])
+
+  
 
   const [validName, setValidName] = useState({
     check: true,
@@ -122,23 +156,7 @@ const EditStaff = () => {
     })
   }
 
-  const [values, setValues] = useState({
-    _id: id,
-    name: staff.name,
-    contact: staff.contact,
-    address: staff.address,
-    birthday: staff.birthday,
-    email: staff.email,
-    gender: staff.gender,
-    avatar: staff.avatar,
-    rank: staff.rank,
-    identifyNumber: staff.identifyNumber,
-    score: staff.score,
-    listTicketId: staff.listTicketId,
-    listReview: staff.listReview,
-    password: staff.password,
-  })
-
+  const [birthday, setBirthday] = useState(staff.birthday)
   const [updateSucceeded, setUpdateSucceeded] = useState({
     status: false,
     message: '',
@@ -152,11 +170,10 @@ const EditStaff = () => {
   })
 
   const handleChangeValue = (prop) => (event) => {
-    console.log(event.target.value)
     if (prop !== 'gender')
       setValues({ ...values, [prop]: event.target.value });
     else {
-      if (event.target.value === true)
+      if (event.target.value === 'on')
         setValues({ ...values, gender: 'male' })
       else
         setValues({ ...values, gender: 'female' });
@@ -230,7 +247,7 @@ const EditStaff = () => {
       flag = false;
     }
 
-    if (values.identifyNumber === undefined || values.identifyNumber === ''){
+    if (values.identifyNumber === undefined || values.identifyNumber === '') {
       setValidIdentityNumber({
         check: false,
         alert: 'Please enter an identity number!'
@@ -286,7 +303,7 @@ const EditStaff = () => {
                 console.log(res)
                 setIsLoading(false)
                 setValues({ ...values, avatar: res.data[0] })
-                setStaff({...staff, avatar: res.data[0]})
+                setStaff({ ...staff, avatar: res.data[0] })
               }).catch((err) => {
                 console.log(err)
                 setErrorNotification({
@@ -308,28 +325,28 @@ const EditStaff = () => {
           <Grid container spacing={2}>
             {/* Information */}
             <Grid item container sx={{ p: 2, ml: 2, mr: 2 }} xs={7}>
-            <Grid xs={4} item>
-              <Typography variant="body1" style={styles.typo}>Position</Typography>
-            </Grid>
-            <Grid xs={8} item>
-              <FormControl style={{width: '80%'}} sx={{mt: 2, mb: 2}}>
-                <InputLabel id="demo-simple-select-label">Position</InputLabel>
-                <Select
-                  labelId="demo-simple-select-label"
-                  id="demo-simple-select"
-                  value={values.rank}
-                  label="Position"
-                  onChange={handleChangeValue('rank')}
-                >
-                  {
-                    positionList.map((position, key) => (
-                      <MenuItem key={key} value={position.value}>{position.value}</MenuItem>
-                    ))
-                  }
-                </Select>
-                {validRank.check === true && <Typography variant="subtitle2" style={{ color: 'red' }}>{validRank.alert}</Typography>}
-              </FormControl>
-            </Grid>
+              <Grid xs={4} item>
+                <Typography variant="body1" style={styles.typo}>Position</Typography>
+              </Grid>
+              <Grid xs={8} item>
+                <FormControl style={{ width: '80%' }} sx={{ mt: 2, mb: 2 }}>
+                  <InputLabel id="demo-simple-select-label">Position</InputLabel>
+                  <Select
+                    labelId="demo-simple-select-label"
+                    id="demo-simple-select"
+                    value={values.rank}
+                    label="Position"
+                    onChange={handleChangeValue('rank')}
+                  >
+                    {
+                      positionList.map((position, key) => (
+                        <MenuItem key={key} value={position.value}>{position.value}</MenuItem>
+                      ))
+                    }
+                  </Select>
+                  {validRank.check === true && <Typography variant="subtitle2" style={{ color: 'red' }}>{validRank.alert}</Typography>}
+                </FormControl>
+              </Grid>
 
               <Grid xs={4} item >
                 <Typography variant="body1" style={styles.typo}>Name: </Typography>
@@ -348,10 +365,8 @@ const EditStaff = () => {
               </Grid>
               <Grid xs={8} item>
                 {
-                  validEmail.check === true ?
-                    <TextField id="standard-basic" variant="standard" onChange={handleChangeValue('email')} value={values.email} style={styles.TextField} />
-                    : <TextField id="standard-basic" variant="standard" onChange={handleChangeValue('email')} error helperText={validEmail.alert} style={styles.TextField}
-                    />
+                  <TextField id="standard-basic" variant="standard" disabled onChange={handleChangeValue('email')} value={values.email} style={styles.TextField} />
+
                 }
               </Grid>
 
@@ -418,7 +433,7 @@ const EditStaff = () => {
                       InputProps={{
                         style: { color: "#000" },
                       }}
-                      defaultValue={values.birthday}
+                      defaultValue={birthday}
                       onChange={handleChangeValue('birthday')} />
                     :
                     <TextField className="profile-information__item__content"
@@ -454,9 +469,7 @@ const EditStaff = () => {
               </Grid>
               <Grid xs={8} item>
                 <Switch onChange={handleChangeValue('gender')}
-                  defaultChecked={
-                    staff.gender === 'male' ? true : false
-                  }
+                   defaultChecked={staff.gender === 'male' ? true: false}
                 />
               </Grid>
             </Grid>

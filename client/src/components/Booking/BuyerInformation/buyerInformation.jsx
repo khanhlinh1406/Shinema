@@ -356,7 +356,7 @@ const BuyerInformation = ({ movieInfo }) => {
                 "-------------------------------------------------------- \n" +
                 "Any wondered things. Please contact with our shop with contact below site: shinema.com"
         }).then(data => {
-
+            navigate('/transactions')
         })
         .catch(err => console.log(err))
     }

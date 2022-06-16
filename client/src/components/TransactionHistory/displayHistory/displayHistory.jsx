@@ -41,13 +41,16 @@ const DisplayHistory = () => {
             .unwrap()
             .then((originalPromiseResult) => {
                 if (cancel) return
-                setTicketList(originalPromiseResult)
+                let tmpList = [...originalPromiseResult]
+                console.log(tmpList)
+                console.log(tmpList.reverse())
+                setTicketList(originalPromiseResult.reverse())
             })
             .catch((rejectedValueOrSerializedError) => {
                 console.log(rejectedValueOrSerializedError)
             })
         return () => cancel = true
-    }, [])
+    }, [currentUser])
 
     useEffect(() => {
         let arr = [];
