@@ -47,15 +47,12 @@
   <li>Kommunicate</li>
 </ul>
 
-# Author
+# Authors
 
 <ul>
   <li><a href="https://github.com/TriThuc2321">Trần Trí Thức</a></li>
   <li><a href="https://github.com/khanhlinh1406">Nguyễn Khánh Linh</a></li>  
 </ul>
 
-<<<<<<< Updated upstream
 [product-screenshot]: client/src/assets/product_screenshot.png
-=======
-[product-screenshot]: client/src/assets/product_screenshot.png
->>>>>>> Stashed changes
+
