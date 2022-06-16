@@ -19,7 +19,7 @@ const Footer = () => {
                 <div className="footer-container__introduce__name">Shinema</div>
                 <div className="clear"></div>
                 <div className="footer-container__introduce__content">
-                    Lorem ipsum dolor sit amet, consectetur adipisicing elit. Architecto incidunt, accusantium, cumque obcaecati similique et ducimus inventore fugiat velit exercitationem dolorem iusto porro repellat accusamus quia eum, quos eveniet expedita!
+                In the past 20 years, film production has been profoundly altered by the impact of rapidly improving digital technology. Most mainstream productions are now shot on digital formats with subsequent processes, such as editing and special effects, undertaken on computers. 
                 </div>
                 <p className="footer-container__introduce__more"><Link to=''>More about us</Link></p>
             </div>

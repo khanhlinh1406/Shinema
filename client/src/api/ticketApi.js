@@ -35,6 +35,7 @@ const TicketApi = {
     },
 
     update: async(ticket) => {
+        console.log(ticket)
         const res = await ApiDatabase.put('/ticket', ticket)
         return res
     },

@@ -36,7 +36,7 @@ const AccountApi = {
     },
     create: async(account) => {
         console.log(account)
-        const res = await ApiDatabase.post('/account',
+        const res = await ApiDatabase.post('/account/',
             account
         )
         return res
@@ -63,6 +63,12 @@ const AccountApi = {
             .catch(err => { return err.response })
         return res
     },
+
+    deleteByEmail: async(email) => {
+        const res = ApiDatabase.delete("/account/" + email)
+            .catch(err => { return err.response })
+        return res
+    }
 
 }
 
