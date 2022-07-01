@@ -20,9 +20,14 @@ import { Success, Error } from './../../../components/Alert/alert'
 import MenuItem from '@mui/material/MenuItem';
 import FormControl from '@mui/material/FormControl';
 import Select from '@mui/material/Select';
+import InputLabel from '@mui/material/InputLabel';
+import { useDispatch } from 'react-redux';
+import { staffSlice } from '../../../redux/slices/staffSlice'
 
 const NewStaff = () => {
   const navigate = useNavigate()
+  const dispatch = useDispatch()
+
   const [validName, setValidName] = useState({
     check: true,
     alert: ''
@@ -59,8 +64,8 @@ const NewStaff = () => {
   })
 
   const [positionList, setPositionList] = useState([
-    {value: 'Censor', key: 'censor'},
-    {value: 'Manager', key: 'manager'},
+    { value: 'Censor', key: 'censor' },
+    { value: 'Manager', key: 'manager' },
   ])
 
   const resetValidation = () => {
@@ -100,7 +105,7 @@ const NewStaff = () => {
     address: '',
     birthday: '',
     email: '',
-    gender: '',
+    gender: 'male',
     avatar: '',
     rank: '',
     identifyNumber: '',
@@ -125,7 +130,6 @@ const NewStaff = () => {
 
   const handleChangeValue = (prop) => (event) => {
     if (prop == 'gender') {
-
       if (event.target.checked === true)
         setValues({ ...values, [prop]: 'male' })
       else
@@ -145,13 +149,12 @@ const NewStaff = () => {
     let flag = true;
 
     resetValidation()
-    if (values.rank === undefined || values.rank ==='')
-    {
+    if (values.rank === undefined || values.rank === '') {
       setValidRank({
         check: true,
         alert: 'Please choose postiontion'
       })
-      flag= false;
+      flag = false;
     }
     if (values.name === undefined || values.name === '') {
       setValidName({
@@ -212,12 +215,12 @@ const NewStaff = () => {
       flag = false;
     }
 
-    if (values.identifyNumber === undefined || values.identifyNumber === ''){
+    if (values.identifyNumber === undefined || values.identifyNumber === '') {
       setValidIdentityNumber({
         check: false,
         alert: 'Please enter identity number'
       })
-      flag= false;
+      flag = false;
     }
 
     if (values.address === undefined || values.address === '') {
@@ -248,7 +251,10 @@ const NewStaff = () => {
             status: true,
             message: 'Add new staff successfully!'
           })
-          ///setIsLoading(false)
+
+          dispatch(staffSlice.actions.addStaff(values))
+          setIsLoading(false)
+          navigate('/manager/staff')
         })
         .catch((err) => {
           console.log(err)
@@ -290,195 +296,200 @@ const NewStaff = () => {
   }
 
   return (
-    <div style={styles.page}>
-      <div style={styles.container}>
-        <Typography variant="h5" style={{ fontWeight: 'bold', color: 'red' }}>New staff</Typography>
+    <div>
+      <div style={styles.page}>
+        <div style={styles.container}>
+          <Typography variant="h5" style={{ fontWeight: 'bold', color: 'red' }}>New staff</Typography>
 
-        <Grid container spacing={2}>
-          <Grid container item sx={{ p: 2, ml: 2, mr: 1 }} xs={7}>
-            <Grid xs={4} item>
-              <Typography variant="body1" style={styles.typo}>Position</Typography>
-            </Grid>
-            <Grid xs={8} item>
-              <Select
-                labelId="demo-simple-select-label"
-                id="demo-simple-select"
-                value={values.rank}
-                label="Position"
-                onChange={handleChangeValue('rank')}
-              >
+          <Grid container spacing={2}>
+            <Grid container item sx={{ p: 2, ml: 2, mr: 1 }} xs={7}>
+              <Grid xs={4} item>
+                <Typography variant="body1" style={styles.typo}>Position</Typography>
+              </Grid>
+              <Grid xs={8} item>
+                <FormControl style={{ width: '80%' }} sx={{ mt: 2, mb: 2 }}>
+                  <InputLabel id="demo-simple-select-label">Position</InputLabel>
+                  <Select
+                    labelId="demo-simple-select-label"
+                    id="demo-simple-select"
+                    value={values.rank}
+                    label="Position"
+                    onChange={handleChangeValue('rank')}
+                  >
+                    {
+                      positionList.map((position, key) => (
+                        <MenuItem key={key} value={position.value}>{position.value}</MenuItem>
+                      ))
+                    }
+                  </Select>
+                  {validRank.check === true && <Typography variant="subtitle2" style={{ color: 'red' }}>{validRank.alert}</Typography>}
+                </FormControl>
+              </Grid>
+
+              <Grid xs={4} item >
+                <Typography variant="body1" style={styles.typo} >Name: </Typography>
+              </Grid>
+              <Grid xs={8} item>
                 {
-                  positionList.map((position, key)=>(
-                    <MenuItem key={key} value={position.value}>{position.value}</MenuItem>
-                  ))
+                  validName.check === true ?
+                    <TextField id="standard-basic" label="Name" variant="standard" style={styles.TextField} onChange={handleChangeValue('name')} />
+                    : <TextField id="standard-basic" label="Name" variant="standard" onChange={handleChangeValue('name')} error helperText={validName.alert} style={styles.TextField}
+                    />
                 }
-              </Select>
-              {validRank.check=== true && <Typography variant="subtitle2" style={{color: 'red'}}>{validRank.alert}</Typography>}
+              </Grid>
+
+              <Grid xs={4} item >
+                <Typography variant="body1" style={styles.typo}>Email: </Typography>
+              </Grid>
+              <Grid xs={8} item>
+                {
+                  validEmail.check === true ?
+                    <TextField id="standard-basic" label="Email" variant="standard" onChange={handleChangeValue('email')} style={styles.TextField} />
+                    : <TextField id="standard-basic" label="Email" variant="standard" onChange={handleChangeValue('email')} error helperText={validEmail.alert} style={styles.TextField}
+                    />
+                }
+              </Grid>
+
+
+              <Grid xs={4} item >
+                <Typography variant="body1" style={styles.typo}>Phone number: </Typography>
+              </Grid>
+              <Grid xs={8} item>
+                {
+                  validPhone.check === true ?
+                    <TextField id="standard-basic" label="Phone" variant="standard" onChange={handleChangeValue('contact')} style={styles.TextField} />
+                    : <TextField id="standard-basic" label="Phone" variant="standard" error helperText={validPhone.alert} onChange={handleChangeValue('contact')} style={styles.TextField}
+                    />
+                }
+              </Grid>
+
+              <Grid xs={4} item >
+                <Typography variant="body1" style={styles.typo}>Identity number: </Typography>
+              </Grid>
+              <Grid xs={8} item>
+                {
+                  validIdentityNumber.check === true ?
+                    <TextField id="standard-basic" label="Identity number" variant="standard" onChange={handleChangeValue('identifyNumber')} style={styles.TextField} />
+                    : <TextField id="standard-basic" label="Indentity number" variant="standard" error helperText={validIdentityNumber.alert} onChange={handleChangeValue('identifyNumber')} style={styles.TextField}
+                    />
+                }
+              </Grid>
+
+              <Grid xs={4} item >
+                <Typography variant="body1" style={styles.typo}>Address: </Typography>
+              </Grid>
+              <Grid xs={8} item>
+                {
+                  validAddress.check === true ?
+                    <TextField id="standard-basic" label="Address" variant="standard" onChange={handleChangeValue('address')} style={styles.TextField} />
+                    : <TextField id="standard-basic" label="Address" variant="standard" error helperText={validAddress.alert} onChange={handleChangeValue('address')} style={styles.TextField}
+                    />
+                }
+              </Grid>
+
+              <Grid xs={4} item >
+                <Typography variant="body1" style={styles.typo}>Birthday: </Typography>
+              </Grid>
+              <Grid xs={8} item>
+                {
+                  validBirthday.check === true ?
+                    <TextField className="profile-information__item__content"
+                      variant="standard"
+                      type="date"
+                      format="yyyy-MM-dd"
+                      sx={{
+                        borderRadius: '0.5',
+                        input: { color: '#000', marginLeft: 10, marginX: 0.4 },
+                        // backgroundColor: 'rgb(9, 24, 48)',
+                        // label: { color: 'rgb(153, 153, 153)', fontSize: 15 }
+                      }}
+                      InputLabelProps={{
+                        color: "#fff",
+                        style: { color: "#000" },
+                        shrink: true,
+                      }}
+
+                      InputProps={{
+                        style: { color: "#000" },
+                      }}
+
+                      onChange={handleChangeValue('birthday')}
+
+                      style={styles.TextField}
+                    />
+                    :
+                    <TextField className="profile-information__item__content"
+                      variant="standard"
+                      type="date"
+                      format="yyyy-MM-dd"
+                      error
+                      sx={{
+                        borderRadius: '0.5',
+                        input: { color: '#000', marginLeft: 10, marginX: 0.4 },
+                        // backgroundColor: 'rgb(9, 24, 48)',
+                        // label: { color: 'rgb(153, 153, 153)', fontSize: 15 }
+                      }}
+                      InputLabelProps={{
+                        color: "#fff",
+                        style: { color: "#000" },
+                        shrink: true,
+                      }}
+
+                      InputProps={{
+                        style: { color: "#000" },
+                      }}
+
+                      onChange={handleChangeValue('birthday')}
+
+                      helperText={validBirthday.alert}
+
+                      style={styles.TextField}
+                    />
+                }
+              </Grid>
+
+              <Grid xs={4} item >
+                <Typography variant="body1" style={styles.typo}>Male: </Typography>
+              </Grid>
+              <Grid xs={8} item >
+                <Switch onChange={handleChangeValue('gender')}
+                  defaultChecked
+                // defaultChecked={
+                //   staff.gender === 'male' ? true: false
+                // }
+                />
+              </Grid>
+
+
             </Grid>
 
-            <Grid xs={4} item >
-              <Typography variant="body1" style={styles.typo} >Name: </Typography>
-            </Grid>
-            <Grid xs={8} item>
-              {
-                validName.check === true ?
-                  <TextField id="standard-basic" label="Name" variant="standard" style={styles.TextField} onChange={handleChangeValue('name')} />
-                  : <TextField id="standard-basic" label="Name" variant="standard" onChange={handleChangeValue('name')} error helperText={validName.alert} style={styles.TextField}
-                  />
+            <Grid item xs={4}>
+              {values.avatar == '' ?
+                <img className="profile-pic__img"
+                  src={Logo}
+                /> :
+                <img className='profile-pic__img' src={values.avatar}
+                />
               }
+              <input type="file" name="file" accept="image/png, image/jpeg" onChange={changePic} style={{ padding: 1, marginTop: 20, marginLeft: 100 }}></input>
             </Grid>
-
-            <Grid xs={4} item >
-              <Typography variant="body1" style={styles.typo}>Email: </Typography>
-            </Grid>
-            <Grid xs={8} item>
-              {
-                validEmail.check === true ?
-                  <TextField id="standard-basic" label="Email" variant="standard" onChange={handleChangeValue('email')} style={styles.TextField} />
-                  : <TextField id="standard-basic" label="Email" variant="standard" onChange={handleChangeValue('email')} error helperText={validEmail.alert} style={styles.TextField}
-                  />
-              }
-            </Grid>
-
-
-            <Grid xs={4} item >
-              <Typography variant="body1" style={styles.typo}>Phone number: </Typography>
-            </Grid>
-            <Grid xs={8} item>
-              {
-                validPhone.check === true ?
-                  <TextField id="standard-basic" label="Phone" variant="standard" onChange={handleChangeValue('contact')} style={styles.TextField} />
-                  : <TextField id="standard-basic" label="Phone" variant="standard" error helperText={validPhone.alert} onChange={handleChangeValue('contact')} style={styles.TextField}
-                  />
-              }
-            </Grid>
-
-            <Grid xs={4} item >
-              <Typography variant="body1" style={styles.typo}>Identity number: </Typography>
-            </Grid>
-            <Grid xs={8} item>
-              {
-                validIdentityNumber.check === true ?
-                  <TextField id="standard-basic" label="Identity number" variant="standard" onChange={handleChangeValue('identifyNumber')} style={styles.TextField} />
-                  : <TextField id="standard-basic" label="Indentity number" variant="standard" error helperText={validIdentityNumber.alert} onChange={handleChangeValue('identifyNumber')} style={styles.TextField}
-                  />
-              }
-            </Grid>
-
-            <Grid xs={4} item >
-              <Typography variant="body1" style={styles.typo}>Address: </Typography>
-            </Grid>
-            <Grid xs={8} item>
-              {
-                validAddress.check === true ?
-                  <TextField id="standard-basic" label="Address" variant="standard" onChange={handleChangeValue('address')} style={styles.TextField} />
-                  : <TextField id="standard-basic" label="Address" variant="standard" error helperText={validAddress.alert} onChange={handleChangeValue('address')} style={styles.TextField}
-                  />
-              }
-            </Grid>
-
-            <Grid xs={4} item >
-              <Typography variant="body1" style={styles.typo}>Birthday: </Typography>
-            </Grid>
-            <Grid xs={8} item>
-              {
-                validBirthday.check === true ?
-                  <TextField className="profile-information__item__content"
-                    variant="standard"
-                    type="date"
-                    format="yyyy-MM-dd"
-                    sx={{
-                      borderRadius: '0.5',
-                      input: { color: '#000', marginLeft: 10, marginX: 0.4 },
-                      // backgroundColor: 'rgb(9, 24, 48)',
-                      // label: { color: 'rgb(153, 153, 153)', fontSize: 15 }
-                    }}
-                    InputLabelProps={{
-                      color: "#fff",
-                      style: { color: "#000" },
-                      shrink: true,
-                    }}
-
-                    InputProps={{
-                      style: { color: "#000" },
-                    }}
-
-                    onChange={handleChangeValue('birthday')}
-
-                    style={styles.TextField}
-                  />
-                  :
-                  <TextField className="profile-information__item__content"
-                    variant="standard"
-                    type="date"
-                    format="yyyy-MM-dd"
-                    error
-                    sx={{
-                      borderRadius: '0.5',
-                      input: { color: '#000', marginLeft: 10, marginX: 0.4 },
-                      // backgroundColor: 'rgb(9, 24, 48)',
-                      // label: { color: 'rgb(153, 153, 153)', fontSize: 15 }
-                    }}
-                    InputLabelProps={{
-                      color: "#fff",
-                      style: { color: "#000" },
-                      shrink: true,
-                    }}
-
-                    InputProps={{
-                      style: { color: "#000" },
-                    }}
-
-                    onChange={handleChangeValue('birthday')}
-
-                    helperText={validBirthday.alert}
-
-                    style={styles.TextField}
-                  />
-              }
-            </Grid>
-
-            <Grid xs={4} item >
-              <Typography variant="body1" style={styles.typo}>Male: </Typography>
-            </Grid>
-            <Grid xs={8} item >
-              <Switch onChange={handleChangeValue('gender')}
-                defaultChecked
-              // defaultChecked={
-              //   staff.gender === 'male' ? true: false
-              // }
-              />
-            </Grid>
-
-
           </Grid>
 
-          <Grid item xs={4}>
-            {values.avatar == '' ?
-              <img className="profile-pic__img"
-                src={Logo}
-              /> :
-              <img className='profile-pic__img' src={values.avatar}
-              />
-            }
-            <input type="file" name="file" accept="image/png, image/jpeg" onChange={changePic} style={{ padding: 1, marginTop: 20, marginLeft: 100 }}></input>
-          </Grid>
-        </Grid>
 
+          <Stack direction="row" sx={{ p: 1, width: '100%', justifyContent: 'center' }}>
+            <CustomFillButton onClick={create}>New</CustomFillButton>
+            <CustomOutlineButton onClick={() => navigate(-1)}>Cancel</CustomOutlineButton>
+          </Stack>
 
-        <Stack direction="row" sx={{ p: 1, width: '100%', justifyContent: 'center' }}>
-          <CustomFillButton onClick={create}>New</CustomFillButton>
-          <CustomOutlineButton onClick={() => navigate(-1)}>Cancel</CustomOutlineButton>
-        </Stack>
+        </div>
 
+        {updateSucceeded.status && <Success message={updateSucceeded.message} status={updateSucceeded.status} />}
+        {errorNotification.status && <Error message={errorNotification.message} status={errorNotification.status} />}
+
+        {isLoading &&
+          <Loading />
+        }
       </div>
-
-      {updateSucceeded.status && <Success message={updateSucceeded.message} status={updateSucceeded.status} />}
-      {errorNotification.status && <Error message={errorNotification.message} status={errorNotification.status} />}
-
-      {isLoading &&
-        <Loading />
-      }
     </div>
   )
 }

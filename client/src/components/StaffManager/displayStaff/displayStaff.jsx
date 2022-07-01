@@ -68,7 +68,7 @@ const DisplayStaff = () => {
                 console.log(rejectedValueOrSerializedError)
             })
         return () => cancel = true
-    }, [])
+    },[])
 
     useEffect(() => {
         let arr = [];
@@ -111,9 +111,15 @@ const DisplayStaff = () => {
                 <Grid container spacing={2} >
                     <Grid xs={10} item>
                         <Box textAlign="left">
-                            <ThemeProvider theme={tfTheme}>
-                                <TextField id="standard-basic" label="Search name..." variant="standard" onChange={handleChange} />
-                            </ThemeProvider>
+                            <TextField id="standard-basic" label="Search name..." 
+                            sx={{
+                                marginY: 1,
+                                input: { color: 'white', marginLeft: 1, marginX: 0.4 },
+                                label: { color: 'rgb(153, 153, 153)', marginLeft: 1, marginX: 0.4 },
+
+                            }} 
+                            variant="standard" 
+                            onChange={handleChange} />
                         </Box>
 
                         <Box textAlign="right">
@@ -203,5 +209,25 @@ const StyledTableCell = styled(TableCell)(({ theme }) => ({
         fontSize: 14,
     },
 }));
+
+const CustomTextField = styled(TextField)({
+    '& label.Mui-focused': {
+        color: '#fff',
+    },
+    '& .MuiInput-underline:after': {
+        borderBottomColor: '#fff',
+    },
+    '& .MuiOutlinedInput-root': {
+        '& fieldset': {
+            borderColor: '#fff',
+        },
+        '&:hover fieldset': {
+            borderColor: '#fff',
+        },
+        '&.Mui-focused fieldset': {
+            borderColor: '#fff',
+        },
+    },
+});
 
 export default DisplayStaff

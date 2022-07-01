@@ -8,7 +8,7 @@ router.get('/', authenToken, showTimeController.getAll)
 router.get('/:id', authenToken, showTimeController.getById)
 router.get('/byFilmId/:filmId', showTimeController.getByFilmId)
 
-router.post('/', authenToken, showTimeController.create)
+router.post('/', showTimeController.create)
 
 router.put('/', authenToken, showTimeController.update)
 router.put('/byFilmId', authenToken, showTimeController.updateByFilmId)

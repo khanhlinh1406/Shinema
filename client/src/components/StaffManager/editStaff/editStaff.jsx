@@ -9,7 +9,10 @@ import { Switch } from '@mui/material';
 
 import { CustomFillButton, CustomOutlineButton } from '../index'
 import { useNavigate, useParams } from 'react-router';
-
+import MenuItem from '@mui/material/MenuItem';
+import FormControl from '@mui/material/FormControl';
+import Select from '@mui/material/Select';
+import InputLabel from '@mui/material/InputLabel';
 import mFunction from '../../../function';
 import AccountApi from './../../../api/accountApi';
 import Message from './../../../components/Message/message';
@@ -17,18 +20,57 @@ import Loading from './../../../components/Loading/loading'
 import { Success, Error } from '../../Alert/alert'
 import cloudinaryApi from './../../../api/cloudinaryAPI';
 import Logo from '../../../assets/logo.png'
+import { useSelector } from 'react-redux';
+import { currentStaffList } from '../../../redux/selector'
 
 const EditStaff = () => {
   const { id } = useParams()
   const [staff, setStaff] = useState({})
   const navigate = useNavigate()
   const [isLoading, setIsLoading] = useState(false)
+  const [positionList, setPositionList] = useState([
+    { value: 'Censor', key: 'censor' },
+    { value: 'Manager', key: 'manager' },
+  ])
+
+  const [values, setValues] = useState({
+    // _id: id,
+    // name: staff.name,
+    // contact: staff.contact,
+    // address: staff.address,
+    // birthday: staff.birthday,
+    // email: staff.email,
+    // gender: staff.gender,
+    // avatar: staff.avatar,
+    // rank: staff.rank,
+    // identifyNumber: staff.identifyNumber,
+    // score: staff.score,
+    // listTicketId: staff.listTicketId,
+    // listReview: staff.listReview,
+    // password: staff.password,
+
+    _id: '',
+    name: '',
+    contact: '',
+    address: '',
+    birthday: '',
+    email: '',
+    gender: '',
+    avatar: '',
+    rank: '',
+    identifyNumber: '',
+    score: '',
+    listTicketId: [],
+    listReview: [],
+    password: '',
+  })
+  const staffList = useSelector(currentStaffList)
 
   useEffect(async () => {
     await AccountApi.getById(id)
       .then((res) => {
         setStaff(res.data)
-        setValues({
+        setValues({...values,
           _id: res.data._id,
           name: res.data.name,
           contact: res.data.contact,
@@ -45,6 +87,8 @@ const EditStaff = () => {
         console.log(err)
       })
   }, [id])
+
+  
 
   const [validName, setValidName] = useState({
     check: true,
@@ -76,6 +120,11 @@ const EditStaff = () => {
     alert: ''
   })
 
+  const [validRank, setValidRank] = useState({
+    check: true,
+    alert: ''
+  })
+
   const resetValidation = () => {
     setValidName({
       ...validName,
@@ -101,25 +150,13 @@ const EditStaff = () => {
       ...validIdentityNumber,
       check: true
     })
+    setValidRank({
+      ...validRank,
+      check: true
+    })
   }
 
-  const [values, setValues] = useState({
-    _id: id,
-    name: staff.name,
-    contact: staff.contact,
-    address: staff.address,
-    birthday: staff.birthday,
-    email: staff.email,
-    gender: staff.gender,
-    avatar: staff.avatar,
-    rank: staff.rank,
-    identifyNumber: staff.identifyNumber,
-    score: staff.score,
-    listTicketId: staff.listTicketId,
-    listReview: staff.listReview,
-    password: staff.password,
-  })
-
+  const [birthday, setBirthday] = useState(staff.birthday)
   const [updateSucceeded, setUpdateSucceeded] = useState({
     status: false,
     message: '',
@@ -133,11 +170,10 @@ const EditStaff = () => {
   })
 
   const handleChangeValue = (prop) => (event) => {
-    console.log(event.target.value)
     if (prop !== 'gender')
       setValues({ ...values, [prop]: event.target.value });
     else {
-      if (event.target.value === true)
+      if (event.target.value === 'on')
         setValues({ ...values, gender: 'male' })
       else
         setValues({ ...values, gender: 'female' });
@@ -149,6 +185,13 @@ const EditStaff = () => {
     let flag = true;
     resetValidation()
 
+    if (values.rank === undefined || values.rank === '') {
+      setValidRank({
+        check: true,
+        alert: 'Please choose postiontion'
+      })
+      flag = false;
+    }
     if (values.name === undefined || values.name === '') {
       setValidName({
         check: false,
@@ -204,7 +247,7 @@ const EditStaff = () => {
       flag = false;
     }
 
-    if (values.identifyNumber === undefined || values.identifyNumber === ''){
+    if (values.identifyNumber === undefined || values.identifyNumber === '') {
       setValidIdentityNumber({
         check: false,
         alert: 'Please enter an identity number!'
@@ -225,13 +268,15 @@ const EditStaff = () => {
   const modify = async () => {
     if (await validate()) {
       setIsLoading(true);
-      await AccountApi.updateAccount(values)
+      await AccountApi.update(values)
         .then((res) => {
           setIsLoading(false);
           setUpdateSucceeded({
             status: true,
             message: 'Update your staff successfully!'
           })
+
+
         })
         .catch((err) => {
           console.log(err)
@@ -241,31 +286,6 @@ const EditStaff = () => {
           })
         })
     }
-  }
-
-  useEffect(() => {
-    console.log(values)
-    if (values.avatar !== staff.avatar) {
-      updatePic()
-    }
-  }, [values.avatar])
-
-  const updatePic = async () => {
-    await AccountApi.update(values)
-      .then(res => {
-        setIsLoading(false)
-        setUpdateSucceeded({
-          status: true,
-          message: 'Update your avatar successfully!'
-        })
-      })
-      .catch((err) => {
-        setIsLoading(false)
-        setErrorNotification({
-          status: true,
-          message: "Update your avatar fail"
-        })
-      })
   }
 
 
@@ -283,6 +303,7 @@ const EditStaff = () => {
                 console.log(res)
                 setIsLoading(false)
                 setValues({ ...values, avatar: res.data[0] })
+                setStaff({ ...staff, avatar: res.data[0] })
               }).catch((err) => {
                 console.log(err)
                 setErrorNotification({
@@ -304,6 +325,29 @@ const EditStaff = () => {
           <Grid container spacing={2}>
             {/* Information */}
             <Grid item container sx={{ p: 2, ml: 2, mr: 2 }} xs={7}>
+              <Grid xs={4} item>
+                <Typography variant="body1" style={styles.typo}>Position</Typography>
+              </Grid>
+              <Grid xs={8} item>
+                <FormControl style={{ width: '80%' }} sx={{ mt: 2, mb: 2 }}>
+                  <InputLabel id="demo-simple-select-label">Position</InputLabel>
+                  <Select
+                    labelId="demo-simple-select-label"
+                    id="demo-simple-select"
+                    value={values.rank}
+                    label="Position"
+                    onChange={handleChangeValue('rank')}
+                  >
+                    {
+                      positionList.map((position, key) => (
+                        <MenuItem key={key} value={position.value}>{position.value}</MenuItem>
+                      ))
+                    }
+                  </Select>
+                  {validRank.check === true && <Typography variant="subtitle2" style={{ color: 'red' }}>{validRank.alert}</Typography>}
+                </FormControl>
+              </Grid>
+
               <Grid xs={4} item >
                 <Typography variant="body1" style={styles.typo}>Name: </Typography>
               </Grid>
@@ -321,10 +365,8 @@ const EditStaff = () => {
               </Grid>
               <Grid xs={8} item>
                 {
-                  validEmail.check === true ?
-                    <TextField id="standard-basic" variant="standard" onChange={handleChangeValue('email')} value={values.email} style={styles.TextField} />
-                    : <TextField id="standard-basic" variant="standard" onChange={handleChangeValue('email')} error helperText={validEmail.alert} style={styles.TextField}
-                    />
+                  <TextField id="standard-basic" variant="standard" disabled onChange={handleChangeValue('email')} value={values.email} style={styles.TextField} />
+
                 }
               </Grid>
 
@@ -391,7 +433,7 @@ const EditStaff = () => {
                       InputProps={{
                         style: { color: "#000" },
                       }}
-                      defaultValue={values.birthday}
+                      defaultValue={birthday}
                       onChange={handleChangeValue('birthday')} />
                     :
                     <TextField className="profile-information__item__content"
@@ -427,10 +469,7 @@ const EditStaff = () => {
               </Grid>
               <Grid xs={8} item>
                 <Switch onChange={handleChangeValue('gender')}
-
-                  defaultChecked={
-                    staff.gender === 'male' ? true : false
-                  }
+                   defaultChecked={staff.gender === 'male' ? true: false}
                 />
               </Grid>
             </Grid>
@@ -440,7 +479,7 @@ const EditStaff = () => {
                 <img className="profile-pic__img"
                   src={Logo}
                 /> :
-                <img className='profile-pic__img' src={staff.avatar}
+                <img className='profile-pic__img' src={values.avatar}
                 />
               }
               <input type="file" name="file" accept="image/png, image/jpeg" onChange={changePic} style={{ padding: 1, marginTop: 20, marginLeft: 100 }}></input>

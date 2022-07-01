@@ -116,14 +116,14 @@ const PayPal = ({ purcharses, ticket, movieInfo }) => {
 
     const handleCloseDialog = async () => {
             setPaidSuccessfully(false)
-            navigate('/')
+            navigate('/transactions')
         }
 
     return (
         <div >
             <div ref={paypal}></div>
             <Dialog open={paidSuccessfully}>
-                <DialogTitle color='success'>Paid Successfully. Click OK to back to Main Page</DialogTitle>
+                <DialogTitle color='success'>Paid Successfully</DialogTitle>
                 <Button
                     onClick={handleCloseDialog}
                     style={{

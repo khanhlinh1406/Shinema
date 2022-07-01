@@ -31,6 +31,7 @@ const ReviewItem = ({ item }) => {
         const getMovie = async () => {
             const params = {
             }
+            console.log(item)
 
             try {
                 const response = await tmdbApi.detail(category.movie, item._filmId, { params: params });

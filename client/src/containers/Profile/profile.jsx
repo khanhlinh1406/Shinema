@@ -24,8 +24,7 @@ import { encode } from 'base-64'
 import Loading from '../../components/Loading/loading'
 import Message from '../../components/Message/message'
 import { Success } from '../../components/Alert/alert'
-import Logo from '../../assets/logo.png';
-import background_login from '../../assets/background_login.jpg'
+//import logo from '../../assets/logo.png';
 import { Helmet } from 'react-helmet';
 import cloudinaryApi from '../../api/cloudinaryAPI'
 import { Switch } from '@mui/material';
@@ -740,7 +739,7 @@ const Profile = () => {
       <div className="profile-pic">
         {currentUser.avatar == '' ?
           <img className="profile-pic__img"
-            src={Logo}
+            src='https://minervastrategies.com/wp-content/uploads/2016/03/default-avatar.jpg' alt='logo'
           /> :
           <img className='profile-pic__img' src={currentUser.avatar}
           />

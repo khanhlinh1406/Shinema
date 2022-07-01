@@ -199,7 +199,7 @@ const Booking = () => {
                                         <div >
                                             <BookingForm showTimeList={showTimeList} />
                                             {
-                                                data && <RoomItem theater={data} />
+                                                data && <RoomItem theater={data} key={data._id}/>
                                             }
                                         </div>
                                     ) : (<BuyerInformation movieInfo={movieInfo}></BuyerInformation>)

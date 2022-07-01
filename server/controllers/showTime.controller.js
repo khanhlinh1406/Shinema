@@ -90,23 +90,32 @@ const showTimeController = {
                 if (err) {
                     res.send('Times is not available')
                 } else {
-                    ShowTimeModel.findOne({
+                    ShowTimeModel.find({
                         theaterId: newShowTime.theaterId,
-                        roomId: req.body.roomId
-                    }).then(data => {
-                        if (data) {
+                        roomId: req.body.roomId,
 
-                            if (mFunction.availableRoom(newShowTime.listDateTime, data.listDateTime, runtime)) {
-                                ShowTimeModel.create(newShowTime)
-                                    .then(data => {
-                                        return res.send("Successful")
-                                    })
-                                    .catch(err => {
-                                        res.status(500).json({ Err: err })
-                                    })
-                            } else {
-                                res.send('Room is not available')
-                            }
+                    }).then(async data => {
+                        if (data) {
+                            let flag = true
+                            data.forEach((item, i) => {
+                                mFunction.availableRoom(newShowTime.listDateTime, item.listDateTime, runtime).then(result => {
+
+                                    if (!result && flag) {
+                                        flag = false
+                                        return res.send('Room is not available')
+                                    } else if (i == data.length - 1) {
+
+                                        ShowTimeModel.create(newShowTime)
+                                            .then(data => {
+                                                return res.send("Successful")
+                                            })
+                                            .catch(err => {
+                                                res.status(500).json({ Err: err })
+                                            })
+
+                                    }
+                                })
+                            })
 
                         } else {
                             ShowTimeModel.create(newShowTime)
